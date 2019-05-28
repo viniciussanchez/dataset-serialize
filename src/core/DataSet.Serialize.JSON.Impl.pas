@@ -52,10 +52,7 @@ type
     /// <param name="Merging">
     ///   Indicates whether to include or change the DataSet record.
     /// </param>
-    /// <param name="Owns">
-    ///   Indicates the owner of the DataSet.
-    /// </param>
-    procedure JSONObjectToDataSet(const JSON: TJSONObject; const DataSet: TDataSet; const Merging: Boolean; const Owns: Boolean);
+    procedure JSONObjectToDataSet(const JSON: TJSONObject; const DataSet: TDataSet; const Merging: Boolean);
     /// <summary>
     ///   Loads a DataSet with a JSONArray.
     /// </summary>
@@ -65,10 +62,7 @@ type
     /// <param name="DataSet">
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
-    /// <param name="Owns">
-    ///   Indicates the owner of the DataSet.
-    /// </param>
-    procedure JSONArrayToDataSet(const JSON: TJSONArray; const DataSet: TDataSet; const Owns: Boolean);
+    procedure JSONArrayToDataSet(const JSON: TJSONArray; const DataSet: TDataSet);
   protected
     /// <summary>
     ///   Loads fields from a DataSet based on JSON.
@@ -83,20 +77,14 @@ type
     /// <param name="DataSet">
     ///   Refers to the DataSet that you want to merge with the JSON object.
     /// </param>
-    /// <param name="Owns">
-    ///   Indicates the owner of the DataSet.
-    /// </param>
-    procedure Merge(const DataSet: TDataSet; const Owns: Boolean = False);
+    procedure Merge(const DataSet: TDataSet);
     /// <summary>
     ///   Loads the DataSet with JSON content.
     /// </summary>
     /// <param name="DataSet">
     ///   Refers to the DataSet you want to load.
     /// </param>
-    /// <param name="Owns">
-    ///   Indicates the owner of the DataSet.
-    /// </param>
-    procedure ToDataSet(const DataSet: TDataSet; const Owns: Boolean = False);
+    procedure ToDataSet(const DataSet: TDataSet);
     /// <summary>
     ///   Defines what the JSONObject.
     /// </summary>
@@ -153,11 +141,11 @@ type
 implementation
 
 uses DataSetField.Types, System.Classes, System.SysUtils, System.NetEncoding, Providers.DataSet.Serialize, System.TypInfo,
-  System.DateUtils, Providers.Constants;
+  System.DateUtils, Providers.DataSet.Serialize.Constants;
 
 { TJSONSerialize }
 
-procedure TJSONSerialize.JSONObjectToDataSet(const JSON: TJSONObject; const DataSet: TDataSet; const Merging: Boolean; const Owns: Boolean);
+procedure TJSONSerialize.JSONObjectToDataSet(const JSON: TJSONObject; const DataSet: TDataSet; const Merging: Boolean);
 var
   Field: TField;
   JSONValue: TJSONValue;
@@ -167,13 +155,10 @@ var
 begin
   if (not Assigned(JSON)) or (not Assigned(DataSet)) then
     Exit;
-  if not Owns then
-  begin
-    if Merging then
-      DataSet.Edit
-    else
-      DataSet.Append;
-  end;
+  if Merging then
+    DataSet.Edit
+  else
+    DataSet.Append;
   for Field in DataSet.Fields do
   begin
     if Field.ReadOnly then
@@ -208,13 +193,13 @@ begin
           NestedDataSet := TDataSetField(Field).NestedDataSet;
           case DataSetFieldType of
             dfJSONObject:
-              JSONObjectToDataSet(JSONValue as TJSONObject, NestedDataSet, 0, True, Owns);
+              JSONObjectToDataSet(JSONValue as TJSONObject, NestedDataSet, True);
             dfJSONArray:
               begin
                 NestedDataSet.First;
                 while not NestedDataSet.Eof do
                   NestedDataSet.Delete;
-                JSONArrayToDataSet(JSONValue as TJSONArray, NestedDataSet, Owns);
+                JSONArrayToDataSet(JSONValue as TJSONArray, NestedDataSet);
               end;
           end;
         end;
@@ -224,16 +209,15 @@ begin
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [Field.FieldName]);
     end;
   end;
-  if not Owns then
-    DataSet.Post;
+  DataSet.Post;
 end;
 
-procedure TJSONSerialize.ToDataSet(const DataSet: TDataSet; const Owns: Boolean = False);
+procedure TJSONSerialize.ToDataSet(const DataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
-    JSONObjectToDataSet(FJSONObject, DataSet, 0, FMerging, Owns)
+    JSONObjectToDataSet(FJSONObject, DataSet, FMerging)
   else if Assigned(FJSONArray) then
-    JSONArrayToDataSet(FJSONArray, DataSet, Owns)
+    JSONArrayToDataSet(FJSONArray, DataSet)
   else
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
 end;
@@ -281,7 +265,7 @@ begin
   FJSONArray := nil;
 end;
 
-procedure TJSONSerialize.JSONArrayToDataSet(const JSON: TJSONArray; const DataSet: TDataSet; const Owns: Boolean);
+procedure TJSONSerialize.JSONArrayToDataSet(const JSON: TJSONArray; const DataSet: TDataSet);
 var
   JSONValue: TJSONValue;
 begin
@@ -290,9 +274,9 @@ begin
   for JSONValue in JSON do
   begin
     if (JSONValue is TJSONArray) then
-      JSONArrayToDataSet(JSONValue as TJSONArray, DataSet, Owns)
+      JSONArrayToDataSet(JSONValue as TJSONArray, DataSet)
     else
-      JSONObjectToDataSet(JSONValue as TJSONObject, DataSet, False, Owns);
+      JSONObjectToDataSet(JSONValue as TJSONObject, DataSet, False);
   end;
 end;
 
@@ -312,11 +296,11 @@ begin
   FOwns := Owns;
 end;
 
-procedure TJSONSerialize.Merge(const DataSet: TDataSet; const Owns: Boolean = False);
+procedure TJSONSerialize.Merge(const DataSet: TDataSet);
 begin
   FMerging := True;
   try
-    ToDataSet(DataSet, Owns);
+    ToDataSet(DataSet);
   finally
     FMerging := False;
   end;

@@ -98,7 +98,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="src\providers\Providers.Sample.pas">
+        <DCCReference Include="src\providers\Providers.DataSet.Serialize.Sample.pas">
             <Form>FrmSamples</Form>
             <FormType>dfm</FormType>
         </DCCReference>
@@ -112,7 +112,7 @@
         <DCCReference Include="src\core\DataSet.Serialize.Impl.pas"/>
         <DCCReference Include="src\core\DataSet.Serialize.DS.Impl.pas"/>
         <DCCReference Include="src\core\DataSet.Serialize.JSON.Impl.pas"/>
-        <DCCReference Include="src\providers\Providers.Constants.pas"/>
+        <DCCReference Include="src\providers\Providers.DataSet.Serialize.Constants.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

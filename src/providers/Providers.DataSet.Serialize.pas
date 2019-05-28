@@ -61,7 +61,7 @@ type
 
 implementation
 
-uses Providers.Constants;
+uses Providers.DataSet.Serialize.Constants;
 
 { TDataSetSerializeUtils }
 

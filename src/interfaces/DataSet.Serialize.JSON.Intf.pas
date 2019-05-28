@@ -20,20 +20,14 @@ type
     /// <param name="DataSet">
     ///   Refers to the DataSet that you want to merge with the JSON object.
     /// </param>
-    /// <param name="Owns">
-    ///   Indicates the owner of the DataSet.
-    /// </param>
-    procedure Merge(const DataSet: TDataSet; const Owns: Boolean = False);
+    procedure Merge(const DataSet: TDataSet);
     /// <summary>
     ///   Loads the DataSet with JSON content.
     /// </summary>
     /// <param name="DataSet">
     ///   Refers to the DataSet you want to load.
     /// </param>
-    /// <param name="Owns">
-    ///   Indicates the owner of the DataSet.
-    /// </param>
-    procedure ToDataSet(const DataSet: TDataSet; const Owns: Boolean = False);
+    procedure ToDataSet(const DataSet: TDataSet);
     /// <summary>
     ///   Defines what the JSONObject.
     /// </summary>

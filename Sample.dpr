@@ -2,7 +2,7 @@ program Sample;
 
 uses
   Vcl.Forms,
-  Providers.Sample in 'src\providers\Providers.Sample.pas' {FrmSamples},
+  Providers.DataSet.Serialize.Sample in 'src\providers\Providers.DataSet.Serialize.Sample.pas' {FrmSamples},
   DataSet.Serialize.Helper in 'src\helpers\DataSet.Serialize.Helper.pas',
   BooleanField.Types in 'src\types\BooleanField.Types.pas',
   DataSetField.Types in 'src\types\DataSetField.Types.pas',
@@ -13,7 +13,7 @@ uses
   DataSet.Serialize.Impl in 'src\core\DataSet.Serialize.Impl.pas',
   DataSet.Serialize.DS.Impl in 'src\core\DataSet.Serialize.DS.Impl.pas',
   DataSet.Serialize.JSON.Impl in 'src\core\DataSet.Serialize.JSON.Impl.pas',
-  Providers.Constants in 'src\providers\Providers.Constants.pas';
+  Providers.DataSet.Serialize.Constants in 'src\providers\Providers.DataSet.Serialize.Constants.pas';
 
 {$R *.res}
 

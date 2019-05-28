@@ -127,7 +127,7 @@ type
 implementation
 
 uses DataSetField.Types, BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize,
-  Providers.Constants, System.Classes, System.NetEncoding, System.TypInfo;
+  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.TypInfo;
 
 { TDataSetSerialize }
 
@@ -140,9 +140,8 @@ function TDataSetSerialize.DataSetToJSONArray(const DataSet: TDataSet): TJSONArr
 var
   BookMark: TBookmark;
 begin
-  Result := nil;
   if DataSet.IsEmpty then
-    Exit;
+    Exit(TJSONArray.Create);
   try
     Result := TJSONArray.Create;
     BookMark := DataSet.BookMark;
@@ -167,10 +166,9 @@ var
   DataSetFieldType: TDataSetFieldType;
   BooleanFieldType: TBooleanFieldType;
 begin
-  Result := nil;
+  Result := TJSONObject.Create;
   if not Assigned(DataSet) or DataSet.IsEmpty then
     Exit;
-  Result := TJSONObject.Create;
   for I := 0 to Pred(DataSet.FieldCount) do
   begin
     if (not DataSet.Fields[I].Visible) or DataSet.Fields[I].IsNull then
