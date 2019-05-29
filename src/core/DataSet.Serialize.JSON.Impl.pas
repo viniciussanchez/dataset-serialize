@@ -2,7 +2,7 @@ unit DataSet.Serialize.JSON.Impl;
 
 interface
 
-uses DataSet.Serialize.JSON.Intf, System.JSON, Data.DB;
+uses DataSet.Serialize.JSON.Intf, System.JSON, Data.DB, Language.Types;
 
 type
   TJSONSerialize = class(TInterfacedObject, IJSONSerialize)
@@ -63,6 +63,22 @@ type
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
     procedure JSONArrayToDataSet(const JSON: TJSONArray; const DataSet: TDataSet);
+    /// <summary>
+    ///   Creates a JSON informing the required field.
+    /// </summary>
+    /// <param name="FieldName">
+    ///   Field name in the DataSet.
+    /// </param>
+    /// <param name="DisplayLabel">
+    ///   Formatted field name.
+    /// </param>
+    /// <param name="Lang">
+    ///   Language used to mount messages.
+    /// </param>
+    /// <returns>
+    ///   Returns a JSON with the message and field name.
+    /// </returns>
+    function AddFieldNotFound(const FieldName, DisplayLabel: string; const Lang: TLanguageType = enUS): TJSONObject;
   protected
     /// <summary>
     ///   Loads fields from a DataSet based on JSON.
@@ -85,6 +101,23 @@ type
     ///   Refers to the DataSet you want to load.
     /// </param>
     procedure ToDataSet(const DataSet: TDataSet);
+    /// <summary>
+    ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
+    /// </summary>
+    /// <param name="DataSet">
+    ///   Refers to the DataSet that will be loaded with JSON.
+    /// </param>
+    /// <param name="Lang">
+    ///   Language used to mount messages.
+    /// </param>
+    /// <returns>
+    ///   Returns a JSONArray with the fields that were not informed.
+    /// </returns>
+    /// <remarks>
+    ///   Walk the DataSet fields by checking the required property.
+    ///   Uses the DisplayLabel property to mount the message.
+    /// </remarks>
+    function Validate(const DataSet: TDataSet; const Lang: TLanguageType = enUS): TJSONArray;
     /// <summary>
     ///   Defines what the JSONObject.
     /// </summary>
@@ -222,6 +255,31 @@ begin
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
 end;
 
+function TJSONSerialize.Validate(const DataSet: TDataSet; const Lang: TLanguageType = enUS): TJSONArray;
+var
+  I: Integer;
+  JSONValue: string;
+begin
+  if not Assigned(FJSONObject) then
+    raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
+  if not Assigned(DataSet) then
+    raise EDataSetSerializeException.Create(DATASET_NOT_CREATED);
+  if DataSet.Fields.Count = 0 then
+    raise EDataSetSerializeException.Create(DATASET_HAS_NO_DEFINED_FIELDS);
+  Result := TJSONArray.Create();
+  for I := 0 to Pred(DataSet.Fields.Count) do
+    if DataSet.Fields.Fields[I].Required then
+    begin
+      if FJSONObject.TryGetValue(DataSet.Fields.Fields[I].FieldName, JSONValue) then
+      begin
+        if JSONValue.Trim.IsEmpty then
+          Result.AddElement(AddFieldNotFound(DataSet.Fields.Fields[I].FieldName, DataSet.Fields.Fields[I].DisplayLabel, Lang));
+      end
+      else
+        Result.AddElement(AddFieldNotFound(DataSet.Fields.Fields[I].FieldName, DataSet.Fields.Fields[I].DisplayLabel, Lang));
+    end;
+end;
+
 procedure TJSONSerialize.LoadBlobFieldFromStream(const Field: TField; const JSONValue: TJSONValue);
 var
   StringStream: TStringStream;
@@ -250,6 +308,18 @@ begin
     JSONArrayToStructure(FJSONArray, DataSet)
   else
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
+end;
+
+function TJSONSerialize.AddFieldNotFound(const FieldName, DisplayLabel: string; const Lang: TLanguageType = enUS): TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  Result.AddPair(TJSONPair.Create('field', FieldName));
+  case Lang of
+    ptBR:
+      Result.AddPair(TJSONPair.Create('error', DisplayLabel + ' não foi informado(a)'));
+    else
+      Result.AddPair(TJSONPair.Create('error', DisplayLabel + ' not informed'));
+  end;
 end;
 
 procedure TJSONSerialize.ClearJSON;
@@ -321,8 +391,9 @@ begin
     begin
       TDataSetSerializeUtils.NewDataSetField(DataSet,
         TFieldType(GetEnumValue(TypeInfo(TFieldType), JSONValue.GetValue<string>('DataType'))),
-        JSONValue.GetValue<string>('FieldName'), StrToIntDef(TJSONObject(JSONValue).GetValue<string>('Size'), 0),
-        JSONValue.GetValue<string>('Origin'), '', JSONValue.GetValue<Boolean>('Key'));
+        StrToIntDef(TJSONObject(JSONValue).GetValue<string>('Size'), 0), JSONValue.GetValue<string>('FieldName'),
+        JSONValue.GetValue<string>('Origin'), JSONValue.GetValue<string>('DisplayLabel'), JSONValue.GetValue<Boolean>('Key'),
+        JSONValue.GetValue<Boolean>('Required'), JSONValue.GetValue<Boolean>('Visible'));
     end;
   finally
     JSONArray.Free;

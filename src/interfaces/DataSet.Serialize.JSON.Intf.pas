@@ -2,7 +2,7 @@ unit DataSet.Serialize.JSON.Intf;
 
 interface
 
-uses System.JSON, Data.DB;
+uses System.JSON, Data.DB, Language.Types;
 
 type
   IJSONSerialize = interface
@@ -28,6 +28,23 @@ type
     ///   Refers to the DataSet you want to load.
     /// </param>
     procedure ToDataSet(const DataSet: TDataSet);
+    /// <summary>
+    ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
+    /// </summary>
+    /// <param name="DataSet">
+    ///   Refers to the DataSet that will be loaded with JSON.
+    /// </param>
+    /// <param name="Lang">
+    ///   Language used to mount messages.
+    /// </param>
+    /// <returns>
+    ///   Returns a JSONArray with the fields that were not informed.
+    /// </returns>
+    /// <remarks>
+    ///   Walk the DataSet fields by checking the required property.
+    ///   Uses the DisplayLabel property to mount the message.
+    /// </remarks>
+    function Validate(const DataSet: TDataSet; const Lang: TLanguageType = enUS): TJSONArray;
     /// <summary>
     ///   Defines what the JSONObject.
     /// </summary>

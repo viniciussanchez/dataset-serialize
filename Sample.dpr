@@ -13,7 +13,8 @@ uses
   DataSet.Serialize.Impl in 'src\core\DataSet.Serialize.Impl.pas',
   DataSet.Serialize.DS.Impl in 'src\core\DataSet.Serialize.DS.Impl.pas',
   DataSet.Serialize.JSON.Impl in 'src\core\DataSet.Serialize.JSON.Impl.pas',
-  Providers.DataSet.Serialize.Constants in 'src\providers\Providers.DataSet.Serialize.Constants.pas';
+  Providers.DataSet.Serialize.Constants in 'src\providers\Providers.DataSet.Serialize.Constants.pas',
+  Language.Types in 'src\types\Language.Types.pas';
 
 {$R *.res}
 

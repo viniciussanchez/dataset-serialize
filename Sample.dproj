@@ -113,6 +113,7 @@
         <DCCReference Include="src\core\DataSet.Serialize.DS.Impl.pas"/>
         <DCCReference Include="src\core\DataSet.Serialize.JSON.Impl.pas"/>
         <DCCReference Include="src\providers\Providers.DataSet.Serialize.Constants.pas"/>
+        <DCCReference Include="src\types\Language.Types.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

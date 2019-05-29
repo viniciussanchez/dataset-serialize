@@ -89,24 +89,33 @@ Returns:
 [
   {
     "FieldName": "ID",
+    "DisplayLabel": "Id",
     "DataType": "ftInteger",
     "Size": 0,
     "Key": false,
-    "Origin": ""
+    "Origin": "",
+    "Required": true,
+    "Visible": true
   },
   {
     "FieldName": "NAME",
+    "DisplayLabel": "Name",
     "DataType": "ftString",
     "Size": 100,
     "Key": false,
-    "Origin": ""
+    "Origin": "",
+    "Required": true,
+    "Visible": true
   },
   {
     "FieldName": "COUNTRY",
+    "DisplayLabel": "Country",
     "DataType": "ftString",
     "Size": 60,
     "Key": false,
-    "Origin": ""
+    "Origin": "",
+    "Required": false,
+    "Visible": false
   }
 ]
 ``` 
@@ -118,24 +127,33 @@ const
     '[
       {
         "FieldName": "ID",
+        "DisplayLabel": "Id",
         "DataType": "ftInteger",
         "Size": 0,
         "Key": false,
-        "Origin": ""
+        "Origin": "",
+        "Required": true,
+        "Visible": true
       },
       {
         "FieldName": "NAME",
+        "DisplayLabel": "Name",
         "DataType": "ftString",
         "Size": 100,
         "Key": false,
-        "Origin": ""
+        "Origin": "",
+        "Required": true,
+        "Visible": true
       },
       {
         "FieldName": "COUNTRY",
+        "DisplayLabel": "Country",
         "DataType": "ftString",
         "Size": 60,
         "Key": false,
-        "Origin": ""
+        "Origin": "",
+        "Required": false,
+        "Visible": false
       }
     ]';
 var
@@ -149,7 +167,7 @@ end;
 #### Load from JSON Object
 ```
 const 
-  STRUCTURE = 
+  JSON = 
     '{
        "NAME": "Vinicius Sanchez",
        "COUNTRY": "Brazil"
@@ -157,7 +175,7 @@ const
 var
   JSONObject: TJSONObject;
 begin
-  JSONObject := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(STRUCTURE),0) as TJSONObject;
+  JSONObject := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSON),0) as TJSONObject;
   qrySample.LoadFromJSONObject(JSONObject);
 end;
 ``` 
@@ -165,7 +183,7 @@ end;
 #### Load from JSON Array
 ```
 const 
-  STRUCTURE = 
+  JSON = 
     '[
        {
          "NAME": "Vinicius Sanchez",
@@ -179,7 +197,7 @@ const
 var
   JSONArray: TJSONArray;
 begin
-  JSONArray := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(STRUCTURE),0) as TJSONArray;
+  JSONArray := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSON),0) as TJSONArray;
   qrySample.LoadFromJSONArray(JSONArray);
 end;
 ``` 
@@ -187,7 +205,7 @@ end;
 #### Merge (Edit current record)
 ```
 const 
-  STRUCTURE = 
+  JSON = 
     '{
        "NAME": "Vinicius",
        "COUNTRY": "United States"
@@ -195,9 +213,61 @@ const
 var
   JSONObject: TJSONObject;
 begin
-  JSONObject := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(STRUCTURE),0) as TJSONObject;
+  JSONObject := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSON),0) as TJSONObject;
   qrySample.MergeFromJSONObject(JSONObject);
 end;
+``` 
+
+#### Validate JSON
+
+Scroll through all DataSet fields by checking the fields that are required. If the field is required and has not been entered in JSON, it is added in the Array.
+
+```
+const 
+  JSON_VALIDATE = 
+    '{
+       "COUNTRY": "Brazil"
+    }';
+var
+  JSON: TJSONObject;
+begin
+  JSON := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSON_VALIDATE),0) as TJSONObject;
+  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON, TLanguageType.ptBR).ToString;
+end;
+``` 
+
+Returns:
+
+``` 
+[
+  {
+    "field": "ID",
+    "error": "Id não foi informado(a)"
+  },
+  {
+    "field": "NAME",
+    "error": "Name não foi informado(a)"
+  }
+]
+``` 
+
+The default language is English (TLanguageType.enUS);
+
+``` 
+mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON).ToString;
+
+Returns:
+
+[
+  {
+    "field": "ID",
+    "error": "Id not defined"
+  },
+  {
+    "field": "NAME",
+    "error": "Name not defined"
+  }
+]
 ``` 
 
 ### Samples - DataSet
@@ -206,4 +276,4 @@ end;
 
 ### Samples - JSON
 
-![Imgur](https://i.imgur.com/Wor3XXC.png)
+![Imgur](https://i.imgur.com/K9VtCzK.png)

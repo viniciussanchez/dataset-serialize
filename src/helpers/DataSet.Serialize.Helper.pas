@@ -2,7 +2,7 @@ unit DataSet.Serialize.Helper;
 
 interface
 
-uses System.JSON, Data.DB;
+uses System.JSON, Data.DB, Language.Types;
 
 type
   TDataSetSerializeHelper = class Helper for TDataSet
@@ -73,6 +73,23 @@ type
     ///   Refers to JSON that you want to merge.
     /// </param>
     procedure MergeFromJSONObject(const JSONObject: TJSONObject);
+    /// <summary>
+    ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
+    /// </summary>
+    /// <param name="JSONObject">
+    ///   Refers to JSON that must be validated.
+    /// </param>
+    /// <param name="Lang">
+    ///   Language used to mount messages.
+    /// </param>
+    /// <returns>
+    ///   Returns a JSONArray with the fields that were not informed.
+    /// </returns>
+    /// <remarks>
+    ///   Walk the DataSet fields by checking the required property.
+    ///   Uses the DisplayLabel property to mount the message.
+    /// </remarks>
+    function ValidateJSON(const JSONObject: TJSONObject; const Lang: TLanguageType = enUS): TJSONArray;
   end;
 
 implementation
@@ -87,6 +104,11 @@ end;
 function TDataSetSerializeHelper.ToJSONObject: TJSONObject;
 begin
   Result := TSerialize.New.SetDataSet(Self).ToJSONObject;
+end;
+
+function TDataSetSerializeHelper.ValidateJSON(const JSONObject: TJSONObject; const Lang: TLanguageType = enUS): TJSONArray;
+begin
+  Result := TSerialize.New.SetJSONObject(JSONObject).Validate(Self, Lang);
 end;
 
 function TDataSetSerializeHelper.SaveStructure: TJSONArray;

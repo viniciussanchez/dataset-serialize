@@ -37,17 +37,24 @@ type
     dsJSON: TDataSource;
     Panel4: TPanel;
     mmJSONArray: TMemo;
-    mmJSONObject: TMemo;
-    mmStructure: TMemo;
     Panel5: TPanel;
-    Panel6: TPanel;
-    Panel7: TPanel;
-    Button5: TButton;
-    Button6: TButton;
     Button7: TButton;
     Panel8: TPanel;
     mmMerge: TMemo;
     Button8: TButton;
+    Panel9: TPanel;
+    Panel10: TPanel;
+    mmJSONObject: TMemo;
+    Panel6: TPanel;
+    Button6: TButton;
+    Panel13: TPanel;
+    Panel7: TPanel;
+    Button5: TButton;
+    mmStructure: TMemo;
+    mmValidateJSON: TMemo;
+    Panel12: TPanel;
+    Button9: TButton;
+    mmJSONArrayValidate: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -61,6 +68,7 @@ type
     procedure Button7Click(Sender: TObject);
     procedure mtJSONAfterInsert(DataSet: TDataSet);
     procedure Button8Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
   private
     FId, FIdJSON: Integer;
     procedure Append;
@@ -75,7 +83,7 @@ implementation
 
 {$R *.dfm}
 
-uses DataSet.Serialize.Helper, System.JSON;
+uses DataSet.Serialize.Helper, System.JSON, Language.Types;
 
 procedure TFrmSamples.Append;
 begin
@@ -133,6 +141,14 @@ begin
   if ValidateStructure then
     if mtJSON.RecordCount > 0 then
       mtJSON.MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmMerge.Lines.Text),0) as TJSONObject);
+end;
+
+procedure TFrmSamples.Button9Click(Sender: TObject);
+var
+  JSON: TJSONObject;
+begin
+  JSON := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmValidateJSON.Lines.Text),0) as TJSONObject;
+  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON, TLanguageType.ptBR).ToString;
 end;
 
 procedure TFrmSamples.ClearFields;

@@ -288,14 +288,15 @@ begin
   Result := TJSONArray.Create;
   for I := 0 to Pred(DataSet.FieldCount) do
   begin
-    if not DataSet.Fields[I].Visible then
-      Continue;
     JSONObject := TJSONObject.Create;
     JSONObject.AddPair('FieldName', TJSONString.Create(DataSet.Fields[I].FieldName));
+    JSONObject.AddPair('DisplayLabel', TJSONString.Create(DataSet.Fields[I].DisplayLabel));
     JSONObject.AddPair('DataType', TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(DataSet.Fields[I].DataType))));
     JSONObject.AddPair('Size', TJSONNumber.Create(DataSet.Fields[I].SIZE));
     JSONObject.AddPair('Key', TJSONBool.Create(pfInKey in DataSet.Fields[I].ProviderFlags));
     JSONObject.AddPair('Origin', TJSONString.Create(DataSet.Fields[I].ORIGIN));
+    JSONObject.AddPair('Required', TJSONBool.Create(DataSet.Fields[I].Required));
+    JSONObject.AddPair('Visible', TJSONBool.Create(DataSet.Fields[I].Visible));
     Result.AddElement(JSONObject);
   end;
 end;

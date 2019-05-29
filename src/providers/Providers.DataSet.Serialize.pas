@@ -15,8 +15,8 @@ type
     /// <summary>
     ///   Creates a new field in the DataSet.
     /// </summary>
-    class function NewDataSetField(const DataSet: TDataSet; const FieldType: TFieldType; const FieldName: string;
-      const Size: Integer = 0; const Origin: string = ''; const DisplayLabel: string = ''; const Key: Boolean = False): TField;
+    class function NewDataSetField(const DataSet: TDataSet; const FieldType: TFieldType; const Size: Integer;
+      const FieldName, Origin, DisplayLabel: string; const Key, Required, Visible: Boolean): TField;
     /// <summary>
     ///   Converts a boolean to a TBooleanFieldType.
     /// </summary>
@@ -95,8 +95,8 @@ var
   Character: Char;
 begin
   I := 0;
-  SetLength(Result, Length(Name));
-  for Character in Name do
+  SetLength(Result, Length(name));
+  for Character in name do
   begin
     if CharInSet(Character, ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '_']) then
     begin
@@ -111,8 +111,8 @@ begin
     Result := '_' + Result;
 end;
 
-class function TDataSetSerializeUtils.NewDataSetField(const DataSet: TDataSet; const FieldType: TFieldType;
-  const FieldName: string; const Size: Integer; const Origin, DisplayLabel: string; const Key: Boolean): TField;
+class function TDataSetSerializeUtils.NewDataSetField(const DataSet: TDataSet; const FieldType: TFieldType; const Size: Integer;
+  const FieldName, Origin, DisplayLabel: string; const Key, Required, Visible: Boolean): TField;
 begin
   Result := DefaultFieldClasses[FieldType].Create(DataSet);
   Result.FieldName := FieldName;
@@ -122,9 +122,10 @@ begin
   Result.DataSet := DataSet;
   Result.Name := CreateValidIdentifier(DataSet.Name + Result.FieldName);
   Result.Size := Size;
+  Result.Visible := Visible;
+  Result.Required := Required;
   Result.Origin := Origin;
-  if not DisplayLabel.IsEmpty then
-    Result.DisplayLabel := DisplayLabel;
+  Result.DisplayLabel := DisplayLabel;
   if Key then
     Result.ProviderFlags := [pfInKey];
   if (FieldType in [ftString, ftWideString]) and (Size <= 0) then

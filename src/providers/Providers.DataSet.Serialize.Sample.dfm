@@ -29,8 +29,6 @@ object FrmSamples: TFrmSamples
     TabOrder = 0
     object tabDataSet: TTabSheet
       Caption = 'DataSet'
-      ExplicitWidth = 976
-      ExplicitHeight = 533
       object Splitter1: TSplitter
         Left = 481
         Top = 0
@@ -47,7 +45,6 @@ object FrmSamples: TFrmSamples
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 0
-        ExplicitLeft = 3
         object Label2: TLabel
           Left = 8
           Top = 12
@@ -125,9 +122,6 @@ object FrmSamples: TFrmSamples
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 4
-          ExplicitLeft = 152
-          ExplicitTop = 248
-          ExplicitWidth = 185
           object Button1: TButton
             Left = 155
             Top = 0
@@ -137,8 +131,6 @@ object FrmSamples: TFrmSamples
             Caption = 'ToJSONArray'
             TabOrder = 0
             OnClick = Button1Click
-            ExplicitLeft = 62
-            ExplicitTop = -6
           end
           object Button3: TButton
             Left = 326
@@ -149,7 +141,6 @@ object FrmSamples: TFrmSamples
             Caption = 'SaveStructure'
             TabOrder = 1
             OnClick = Button3Click
-            ExplicitLeft = 155
           end
           object Button4: TButton
             Left = 0
@@ -172,10 +163,6 @@ object FrmSamples: TFrmSamples
         BevelOuter = bvNone
         Caption = 'Panel2'
         TabOrder = 1
-        ExplicitLeft = 456
-        ExplicitTop = 258
-        ExplicitWidth = 185
-        ExplicitHeight = 41
         object mmDataSet: TMemo
           Left = 0
           Top = 0
@@ -191,8 +178,6 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = 'JSON'
       ImageIndex = 1
-      ExplicitWidth = 976
-      ExplicitHeight = 533
       object Splitter2: TSplitter
         Left = 481
         Top = 0
@@ -221,14 +206,12 @@ object FrmSamples: TFrmSamples
         Width = 481
         Height = 543
         Align = alLeft
-        Caption = 'Panel4'
         TabOrder = 1
-        ExplicitLeft = 9
         object mmJSONArray: TMemo
           Left = 1
-          Top = 301
+          Top = 336
           Width = 479
-          Height = 152
+          Height = 117
           Align = alTop
           Lines.Strings = (
             '['
@@ -264,68 +247,17 @@ object FrmSamples: TFrmSamples
           ReadOnly = True
           ScrollBars = ssVertical
           TabOrder = 0
-          ExplicitTop = 389
-        end
-        object mmJSONObject: TMemo
-          Left = 1
-          Top = 209
-          Width = 479
-          Height = 64
-          Align = alTop
-          Lines.Strings = (
-            '{'
-            '  "NAME": "Vinicius Sanchez",'
-            '  "COUNTRY": "Brazil"'
-            '}')
-          ReadOnly = True
-          ScrollBars = ssVertical
-          TabOrder = 1
-        end
-        object mmStructure: TMemo
-          Left = 1
-          Top = 29
-          Width = 479
-          Height = 152
-          Align = alTop
-          Lines.Strings = (
-            '['
-            '  {'
-            '    "FieldName": "ID",'
-            '    "DataType": "ftInteger",'
-            '    "Size": 0,'
-            '    "Key": false,'
-            '    "Origin": ""'
-            '  },'
-            '  {'
-            '    "FieldName": "NAME",'
-            '    "DataType": "ftString",'
-            '    "Size": 100,'
-            '    "Key": false,'
-            '    "Origin": ""'
-            '  },'
-            '  {'
-            '    "FieldName": "COUNTRY",'
-            '    "DataType": "ftString",'
-            '    "Size": 60,'
-            '    "Key": false,'
-            '    "Origin": ""'
-            '  }'
-            ']')
-          ReadOnly = True
-          ScrollBars = ssVertical
-          TabOrder = 2
         end
         object Panel5: TPanel
           Left = 1
-          Top = 273
+          Top = 308
           Width = 479
           Height = 28
           Align = alTop
           BevelOuter = bvNone
           ParentBackground = False
-          TabOrder = 3
-          ExplicitLeft = 5
-          ExplicitTop = 429
+          TabOrder = 1
+          ExplicitTop = 273
           object Button7: TButton
             Left = 0
             Top = 0
@@ -335,55 +267,6 @@ object FrmSamples: TFrmSamples
             Caption = 'Load from JSON Array'
             TabOrder = 0
             OnClick = Button7Click
-            ExplicitWidth = 28
-            ExplicitHeight = 113
-          end
-        end
-        object Panel6: TPanel
-          Left = 1
-          Top = 181
-          Width = 479
-          Height = 28
-          Align = alTop
-          BevelOuter = bvNone
-          ParentBackground = False
-          TabOrder = 4
-          ExplicitTop = 218
-          object Button6: TButton
-            Left = 0
-            Top = 0
-            Width = 479
-            Height = 28
-            Align = alClient
-            Caption = 'Load from JSON Object'
-            TabOrder = 0
-            OnClick = Button6Click
-            ExplicitWidth = 28
-            ExplicitHeight = 113
-          end
-        end
-        object Panel7: TPanel
-          Left = 1
-          Top = 1
-          Width = 479
-          Height = 28
-          Align = alTop
-          BevelOuter = bvNone
-          ParentBackground = False
-          TabOrder = 5
-          ExplicitLeft = 25
-          ExplicitTop = 0
-          object Button5: TButton
-            Left = 0
-            Top = 0
-            Width = 479
-            Height = 28
-            Align = alClient
-            Caption = 'Load structure'
-            TabOrder = 0
-            OnClick = Button5Click
-            ExplicitWidth = 28
-            ExplicitHeight = 113
           end
         end
         object Panel8: TPanel
@@ -394,8 +277,7 @@ object FrmSamples: TFrmSamples
           Align = alTop
           BevelOuter = bvNone
           ParentBackground = False
-          TabOrder = 6
-          ExplicitTop = 218
+          TabOrder = 2
           object Button8: TButton
             Left = 0
             Top = 0
@@ -405,8 +287,6 @@ object FrmSamples: TFrmSamples
             Caption = 'Merge (Edit current record)'
             TabOrder = 0
             OnClick = Button8Click
-            ExplicitLeft = 4
-            ExplicitTop = 6
           end
         end
         object mmMerge: TMemo
@@ -422,9 +302,194 @@ object FrmSamples: TFrmSamples
             '}')
           ReadOnly = True
           ScrollBars = ssVertical
-          TabOrder = 7
-          ExplicitLeft = -4
-          ExplicitTop = 487
+          TabOrder = 3
+        end
+        object Panel9: TPanel
+          Left = 1
+          Top = 1
+          Width = 479
+          Height = 307
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 4
+          object Panel10: TPanel
+            Left = 193
+            Top = 0
+            Width = 286
+            Height = 307
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 0
+            ExplicitLeft = 0
+            ExplicitWidth = 144
+            ExplicitHeight = 272
+            object mmJSONObject: TMemo
+              Left = 0
+              Top = 28
+              Width = 286
+              Height = 71
+              Align = alClient
+              Lines.Strings = (
+                '{'
+                '  "NAME": "Vinicius Sanchez",'
+                '  "COUNTRY": "Brazil"'
+                '}')
+              ReadOnly = True
+              ScrollBars = ssVertical
+              TabOrder = 0
+              ExplicitHeight = 101
+            end
+            object Panel6: TPanel
+              Left = 0
+              Top = 0
+              Width = 286
+              Height = 28
+              Align = alTop
+              BevelOuter = bvNone
+              ParentBackground = False
+              TabOrder = 1
+              ExplicitLeft = 2
+              ExplicitTop = 9
+              ExplicitWidth = 183
+              object Button6: TButton
+                Left = 0
+                Top = 0
+                Width = 286
+                Height = 28
+                Align = alClient
+                Caption = 'Load from JSON Object'
+                TabOrder = 0
+                OnClick = Button6Click
+                ExplicitWidth = 183
+              end
+            end
+            object mmValidateJSON: TMemo
+              Left = 0
+              Top = 127
+              Width = 286
+              Height = 58
+              Align = alBottom
+              Lines.Strings = (
+                '{'
+                '  "COUNTRY": "Brazil"'
+                '}')
+              ReadOnly = True
+              ScrollBars = ssVertical
+              TabOrder = 2
+              ExplicitTop = 138
+            end
+            object Panel12: TPanel
+              Left = 0
+              Top = 99
+              Width = 286
+              Height = 28
+              Align = alBottom
+              BevelOuter = bvNone
+              ParentBackground = False
+              TabOrder = 3
+              ExplicitTop = 8
+              object Button9: TButton
+                Left = 0
+                Top = 0
+                Width = 286
+                Height = 28
+                Align = alClient
+                Caption = 'Validate JSON'
+                TabOrder = 0
+                OnClick = Button9Click
+              end
+            end
+            object mmJSONArrayValidate: TMemo
+              Left = 0
+              Top = 185
+              Width = 286
+              Height = 122
+              Align = alBottom
+              ReadOnly = True
+              ScrollBars = ssVertical
+              TabOrder = 4
+              ExplicitTop = 184
+            end
+          end
+          object Panel13: TPanel
+            Left = 0
+            Top = 0
+            Width = 193
+            Height = 307
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 1
+            ExplicitHeight = 272
+            object Panel7: TPanel
+              Left = 0
+              Top = 0
+              Width = 193
+              Height = 28
+              Align = alTop
+              BevelOuter = bvNone
+              ParentBackground = False
+              TabOrder = 0
+              ExplicitTop = 8
+              ExplicitWidth = 479
+              object Button5: TButton
+                Left = 0
+                Top = 0
+                Width = 193
+                Height = 28
+                Align = alClient
+                Caption = 'Load structure'
+                TabOrder = 0
+                OnClick = Button5Click
+                ExplicitWidth = 479
+              end
+            end
+            object mmStructure: TMemo
+              Left = 0
+              Top = 28
+              Width = 193
+              Height = 279
+              Align = alClient
+              Lines.Strings = (
+                '['
+                '  {'
+                '    "FieldName": "ID",'
+                '    "DisplayLabel": "Id",'
+                '    "DataType": "ftInteger",'
+                '    "Size": 0,'
+                '    "Key": false,'
+                '    "Origin": "",'
+                '    "Required": true,'
+                '    "Visible": true'
+                '  },'
+                '  {'
+                '    "FieldName": "NAME",'
+                '    "DisplayLabel": "Name",'
+                '    "DataType": "ftString",'
+                '    "Size": 100,'
+                '    "Key": false,'
+                '    "Origin": "",'
+                '    "Required": true,'
+                '    "Visible": true'
+                '  },'
+                '  {'
+                '    "FieldName": "COUNTRY",'
+                '    "DisplayLabel": "Country",'
+                '    "DataType": "ftString",'
+                '    "Size": 60,'
+                '    "Key": false,'
+                '    "Origin": "",'
+                '    "Required": false,'
+                '    "Visible": false'
+                '  }'
+                ']')
+              ReadOnly = True
+              ScrollBars = ssVertical
+              TabOrder = 1
+              ExplicitTop = -111
+              ExplicitWidth = 479
+              ExplicitHeight = 152
+            end
+          end
         end
       end
     end
@@ -441,14 +506,20 @@ object FrmSamples: TFrmSamples
     Left = 912
     Top = 496
     object mtDataSetID: TIntegerField
+      DisplayLabel = 'Id'
       FieldName = 'ID'
+      Required = True
     end
     object mtDataSetNAME: TStringField
+      DisplayLabel = 'Name'
       FieldName = 'NAME'
+      Required = True
       Size = 100
     end
     object mtDataSetCOUNTRY: TStringField
+      DisplayLabel = 'Country'
       FieldName = 'COUNTRY'
+      Visible = False
       Size = 60
     end
   end
