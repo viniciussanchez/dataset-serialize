@@ -316,12 +316,16 @@ begin
     raise EDataSetSerializeException.Create(DATASET_ACTIVATED);
   if DataSet.FieldCount > 0 then
     raise EDataSetSerializeException.Create(PREDEFINED_FIELDS);
-  for JSONValue in JSONArray do
-  begin
-    TDataSetSerializeUtils.NewDataSetField(DataSet,
-      TFieldType(GetEnumValue(TypeInfo(TFieldType), JSONValue.GetValue<string>('DataType'))),
-      JSONValue.GetValue<string>('FieldName'), StrToIntDef(TJSONObject(JSONValue).GetValue<string>('Size'), 0),
-      JSONValue.GetValue<string>('Origin'), '', JSONValue.GetValue<Boolean>('Key'));
+  try
+    for JSONValue in JSONArray do
+    begin
+      TDataSetSerializeUtils.NewDataSetField(DataSet,
+        TFieldType(GetEnumValue(TypeInfo(TFieldType), JSONValue.GetValue<string>('DataType'))),
+        JSONValue.GetValue<string>('FieldName'), StrToIntDef(TJSONObject(JSONValue).GetValue<string>('Size'), 0),
+        JSONValue.GetValue<string>('Origin'), '', JSONValue.GetValue<Boolean>('Key'));
+    end;
+  finally
+    JSONArray.Free;
   end;
 end;
 
