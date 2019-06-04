@@ -7,7 +7,7 @@ This component is a JSON serializer for the DataSet component of Delphi. Allows 
 ### Prerequisites
  * [**Boss**](https://github.com/HashLoad/boss) - Dependency Manager for Delphi
  
-### Installation: 
+### Installation
 ```
 boss install github.com/viniciussanchez/dataset-serialize
 ```
