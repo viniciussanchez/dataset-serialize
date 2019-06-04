@@ -4,11 +4,10 @@
 
 This component is a JSON serializer for the DataSet component of Delphi. Allows you to convert JSON to DataSet and DataSet in JSON.
  
-### Installation: 
-
-#### Using Boss
+### Prerequisites
  * [**Boss**](https://github.com/HashLoad/boss) - Dependency Manager for Delphi
-
+ 
+### Installation: 
 ```
 boss install github.com/viniciussanchez/dataset-serialize
 ```
