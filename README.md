@@ -1,6 +1,7 @@
 # DataSet Serialization for Delphi
 ![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..10.3%20Rio-blue.svg)
-![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
+![Platforms](https://img.shields.io/badge/Supported%20platforms-Win32%20and%20Win64-red.svg)
+![Compatibility](https://img.shields.io/badge/Compatibility-VCL,%20FireMonkey%20and%20uniGUI-brightgreen.svg)
 
 This component is a JSON serializer for the DataSet component of Delphi. Allows you to convert JSON to DataSet and DataSet in JSON.
  
