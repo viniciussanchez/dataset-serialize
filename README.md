@@ -3,7 +3,7 @@
 ![Platforms](https://img.shields.io/badge/Supported%20platforms-Win32%20and%20Win64-red.svg)
 ![Compatibility](https://img.shields.io/badge/Compatibility-VCL,%20FireMonkey%20and%20uniGUI-brightgreen.svg)
 
-This component is a JSON serializer for the DataSet component of Delphi. Allows you to convert JSON to DataSet and DataSet in JSON.
+This component is a JSON serializer for the DataSet component of Delphi. Allows you to convert JSON to DataSet, DataSet to JSON, validate JSON, and export and load the structure of DataSet fields in JSON format.
  
 ### Prerequisites
  * [**Boss**](https://github.com/HashLoad/boss) - Dependency Manager for Delphi
@@ -15,7 +15,7 @@ boss install github.com/viniciussanchez/dataset-serialize
 
 #### Or
 
-Add the following folders to your project:
+Add the following folders to your project, in Project > Options > Resource Compiler > Directories and Conditionals > Include file search path
 
 ```
 ../dataset-serialize/src
