@@ -15,7 +15,7 @@ boss install github.com/viniciussanchez/dataset-serialize
 
 #### Or
 
-Add the following folders to your project, in Project > Options > Resource Compiler > Directories and Conditionals > Include file search path
+Add the following folders to your project, in *Project > Options > Resource Compiler > Directories and Conditionals > Include file search path*
 
 ```
 ../dataset-serialize/src
