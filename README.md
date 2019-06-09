@@ -11,7 +11,7 @@ This component is a JSON serializer for the DataSet component of Delphi. Allows 
  
 ### Installation using Boss (dependency manager for Delphi applications)
 ```
-boss install github.com/viniciussanchez/dialogs4delphi
+boss install github.com/viniciussanchez/dataset-serialize
 ```
 
 ### Manual Installation
