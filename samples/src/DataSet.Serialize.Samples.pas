@@ -1,4 +1,4 @@
-unit Providers.DataSet.Serialize.Sample;
+unit DataSet.Serialize.Samples;
 
 interface
 

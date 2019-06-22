@@ -178,6 +178,10 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = 'JSON'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Splitter2: TSplitter
         Left = 481
         Top = 0
@@ -337,7 +341,6 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 0
-              ExplicitHeight = 101
             end
             object Panel6: TPanel
               Left = 0
@@ -376,7 +379,6 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 2
-              ExplicitTop = 138
             end
             object Panel12: TPanel
               Left = 0
@@ -485,9 +487,6 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 1
-              ExplicitTop = -111
-              ExplicitWidth = 479
-              ExplicitHeight = 152
             end
           end
         end
