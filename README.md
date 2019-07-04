@@ -27,12 +27,12 @@ Add the following folders to your project, in *Project > Options > Resource Comp
 
 ### Getting Started
 You need to use DataSet.Serialize.Helper
-```
+```pascal
 uses DataSet.Serialize.Helper;
 ```
 
 #### DataSet to JSON Object
-```
+```pascal
 var
   JSONObject: TJSONObject;
 begin
@@ -51,7 +51,7 @@ Returns:
 ``` 
 
 #### DataSet to JSON Array
-```
+```pascal
 var
   JSONArray: TJSONArray;
 begin
@@ -77,7 +77,7 @@ Returns:
 ``` 
 
 #### Save the field structure
-```
+```pascal
 var
   JSONArray: TJSONArray;
 begin
@@ -123,7 +123,7 @@ Returns:
 ``` 
 
 #### Load the field structure
-```
+```pascal
 const 
   STRUCTURE = 
     '[
@@ -167,7 +167,7 @@ end;
 ``` 
 
 #### Load from JSON Object
-```
+```pascal
 const 
   JSON = 
     '{
@@ -183,7 +183,7 @@ end;
 ``` 
 
 #### Load from JSON Array
-```
+```pascal
 const 
   JSON = 
     '[
@@ -205,7 +205,7 @@ end;
 ``` 
 
 #### Merge (Edit current record)
-```
+```pascal
 const 
   JSON = 
     '{
@@ -224,7 +224,7 @@ end;
 
 Scroll through all DataSet fields by checking the fields that are required. If the field is required and has not been entered in JSON, it is added in the Array.
 
-```
+```pascal
 const 
   JSON_VALIDATE = 
     '{
@@ -255,7 +255,7 @@ Returns:
 
 The default language is English (TLanguageType.enUS);
 
-``` 
+```
 mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON).ToString;
 
 Returns:
