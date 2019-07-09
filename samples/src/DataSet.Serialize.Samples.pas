@@ -65,11 +65,9 @@ type
     procedure FormShow(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
-    procedure mtJSONAfterInsert(DataSet: TDataSet);
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
   private
-    FIdJSON: Integer;
     procedure Append;
     procedure ClearFields;
     function ValidateStructure: Boolean;
@@ -163,19 +161,12 @@ end;
 
 procedure TFrmSamples.FormCreate(Sender: TObject);
 begin
-  FIdJSON := 0;
   mtDataSet.Active := True;
 end;
 
 procedure TFrmSamples.FormShow(Sender: TObject);
 begin
   pclDataSetSerialize.ActivePage := tabDataSet;
-end;
-
-procedure TFrmSamples.mtJSONAfterInsert(DataSet: TDataSet);
-begin
-  Inc(FIdJSON);
-  mtJSON.FieldByName('ID').AsInteger := FIdJSON;
 end;
 
 function TFrmSamples.ValidateStructure: Boolean;

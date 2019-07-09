@@ -2,7 +2,7 @@ unit DataSet.Serialize.JSON.Impl;
 
 interface
 
-uses DataSet.Serialize.JSON.Intf, System.JSON, Data.DB, Language.Types;
+uses DataSet.Serialize.JSON.Intf, System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize;
 
 type
   TJSONSerialize = class(TInterfacedObject, IJSONSerialize)
@@ -79,6 +79,16 @@ type
     ///   Returns a JSON with the message and field name.
     /// </returns>
     function AddFieldNotFound(const FieldName, DisplayLabel: string; const Lang: TLanguageType = enUS): TJSONObject;
+    /// <summary>
+    ///   Load field structure.
+    /// </summary>
+    /// <param name="JSONValue">
+    ///   JSON with field data.
+    /// </param>
+    /// <returns>
+    ///   Record of field structure.
+    /// </returns>
+    function LoadFieldStructure(const JSONValue: TJSONValue): TFieldStructure;
   protected
     /// <summary>
     ///   Loads fields from a DataSet based on JSON.
@@ -173,7 +183,7 @@ type
 
 implementation
 
-uses DataSetField.Types, System.Classes, System.SysUtils, System.NetEncoding, Providers.DataSet.Serialize, System.TypInfo,
+uses DataSetField.Types, System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo,
   System.DateUtils, Providers.DataSet.Serialize.Constants;
 
 { TJSONSerialize }
@@ -300,6 +310,20 @@ begin
   end;
 end;
 
+function TJSONSerialize.LoadFieldStructure(const JSONValue: TJSONValue): TFieldStructure;
+begin
+  Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), JSONValue.GetValue<string>('DataType')));
+  Result.Size := StrToIntDef(TJSONObject(JSONValue).GetValue<string>('Size'), 0);
+  Result.FieldName := JSONValue.GetValue<string>('FieldName');
+  Result.Origin := JSONValue.GetValue<string>('Origin');
+  Result.DisplayLabel := JSONValue.GetValue<string>('DisplayLabel');
+  Result.Key := JSONValue.GetValue<Boolean>('Key');
+  Result.Required := JSONValue.GetValue<Boolean>('Required');
+  Result.Visible := JSONValue.GetValue<Boolean>('Visible');
+  Result.ReadOnly := JSONValue.GetValue<Boolean>('ReadOnly');
+  Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), JSONValue.GetValue<string>('AutoGenerateValue')));
+end;
+
 procedure TJSONSerialize.LoadStructure(const DataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
@@ -388,13 +412,7 @@ begin
     raise EDataSetSerializeException.Create(PREDEFINED_FIELDS);
   try
     for JSONValue in JSONArray do
-    begin
-      TDataSetSerializeUtils.NewDataSetField(DataSet,
-        TFieldType(GetEnumValue(TypeInfo(TFieldType), JSONValue.GetValue<string>('DataType'))),
-        StrToIntDef(TJSONObject(JSONValue).GetValue<string>('Size'), 0), JSONValue.GetValue<string>('FieldName'),
-        JSONValue.GetValue<string>('Origin'), JSONValue.GetValue<string>('DisplayLabel'), JSONValue.GetValue<Boolean>('Key'),
-        JSONValue.GetValue<Boolean>('Required'), JSONValue.GetValue<Boolean>('Visible'), JSONValue.GetValue<Boolean>('ReadOnly'));
-    end;
+      TDataSetSerializeUtils.NewDataSetField(DataSet, LoadFieldStructure(JSONValue));
   finally
     JSONArray.Free;
   end;

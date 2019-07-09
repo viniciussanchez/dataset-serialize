@@ -10,13 +10,37 @@ type
   /// </summary>
   EDataSetSerializeException = class(Exception);
 
+  /// <summary>
+  ///   Record representing the structure of a dataset field.
+  /// </summary>
+  TFieldStructure = record
+    FieldType: TFieldType;
+    Size: Integer;
+    FieldName: string;
+    Origin: string;
+    DisplayLabel: string;
+    Key: Boolean;
+    Required: Boolean;
+    Visible: Boolean;
+    ReadOnly: Boolean;
+    AutoGenerateValue: TAutoRefreshFlag;
+  end;
+
   TDataSetSerializeUtils = class
   public
     /// <summary>
     ///   Creates a new field in the DataSet.
     /// </summary>
-    class function NewDataSetField(const DataSet: TDataSet; const FieldType: TFieldType; const Size: Integer;
-      const FieldName, Origin, DisplayLabel: string; const Key, Required, Visible, ReadOnly: Boolean): TField;
+    /// <param name="FieldStructure">
+    ///   Field structure to create a new field to dataset.
+    /// </param>
+    /// <param name="DataSet">
+    ///   DataSet that the field will be created.
+    /// </param>
+    /// <returns>
+    ///   Return a new field.
+    /// </returns>
+    class function NewDataSetField(const DataSet: TDataSet; const FieldStructure: TFieldStructure): TField;
     /// <summary>
     ///   Converts a boolean to a TBooleanFieldType.
     /// </summary>
@@ -111,26 +135,26 @@ begin
     Result := '_' + Result;
 end;
 
-class function TDataSetSerializeUtils.NewDataSetField(const DataSet: TDataSet; const FieldType: TFieldType; const Size: Integer;
-  const FieldName, Origin, DisplayLabel: string; const Key, Required, Visible, ReadOnly: Boolean): TField;
+class function TDataSetSerializeUtils.NewDataSetField(const DataSet: TDataSet; const FieldStructure: TFieldStructure): TField;
 begin
-  Result := DefaultFieldClasses[FieldType].Create(DataSet);
-  Result.FieldName := FieldName;
+  Result := DefaultFieldClasses[FieldStructure.FieldType].Create(DataSet);
+  Result.FieldName := FieldStructure.FieldName;
   if Result.FieldName.Trim.IsEmpty then
     Result.FieldName := 'Field' + IntToStr(DataSet.FieldCount + 1);
   Result.FieldKind := fkData;
   Result.DataSet := DataSet;
   Result.Name := CreateValidIdentifier(DataSet.Name + Result.FieldName);
-  Result.Size := Size;
-  Result.Visible := Visible;
-  Result.ReadOnly := ReadOnly;
-  Result.Required := Required;
-  Result.Origin := Origin;
-  Result.DisplayLabel := DisplayLabel;
-  if Key then
+  Result.Size := FieldStructure.Size;
+  Result.Visible := FieldStructure.Visible;
+  Result.ReadOnly := FieldStructure.ReadOnly;
+  Result.Required := FieldStructure.Required;
+  Result.Origin := FieldStructure.Origin;
+  Result.DisplayLabel := FieldStructure.DisplayLabel;
+  Result.AutoGenerateValue := FieldStructure.AutoGenerateValue;
+  if FieldStructure.Key then
     Result.ProviderFlags := [pfInKey];
-  if (FieldType in [ftString, ftWideString]) and (Size <= 0) then
-    raise EDataSetSerializeException.CreateFmt(SIZE_NOT_DEFINED_FOR_FIELD, [FieldName]);
+  if (FieldStructure.FieldType in [ftString, ftWideString]) and (FieldStructure.Size <= 0) then
+    raise EDataSetSerializeException.CreateFmt(SIZE_NOT_DEFINED_FOR_FIELD, [FieldStructure.FieldName]);
 end;
 
 class function TDataSetSerializeUtils.BooleanToJSON(const Value: Boolean): TJSONValue;

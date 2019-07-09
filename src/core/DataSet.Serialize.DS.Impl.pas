@@ -298,6 +298,7 @@ begin
     JSONObject.AddPair('Required', TJSONBool.Create(DataSet.Fields[I].Required));
     JSONObject.AddPair('Visible', TJSONBool.Create(DataSet.Fields[I].Visible));
     JSONObject.AddPair('ReadOnly', TJSONBool.Create(DataSet.Fields[I].ReadOnly));
+    JSONObject.AddPair('AutoGenerateValue', TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(DataSet.Fields[I].AutoGenerateValue))));
     Result.AddElement(JSONObject);
   end;
 end;

@@ -312,17 +312,19 @@ object FrmSamples: TFrmSamples
           BevelOuter = bvNone
           TabOrder = 4
           object Panel10: TPanel
-            Left = 193
+            Left = 209
             Top = 0
-            Width = 286
+            Width = 270
             Height = 307
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 0
+            ExplicitLeft = 193
+            ExplicitWidth = 286
             object mmJSONObject: TMemo
               Left = 0
               Top = 28
-              Width = 286
+              Width = 270
               Height = 71
               Align = alClient
               Lines.Strings = (
@@ -333,31 +335,34 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 0
+              ExplicitWidth = 286
             end
             object Panel6: TPanel
               Left = 0
               Top = 0
-              Width = 286
+              Width = 270
               Height = 28
               Align = alTop
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 1
+              ExplicitWidth = 286
               object Button6: TButton
                 Left = 0
                 Top = 0
-                Width = 286
+                Width = 270
                 Height = 28
                 Align = alClient
                 Caption = 'Load from JSON Object'
                 TabOrder = 0
                 OnClick = Button6Click
+                ExplicitWidth = 286
               end
             end
             object mmValidateJSON: TMemo
               Left = 0
               Top = 127
-              Width = 286
+              Width = 270
               Height = 58
               Align = alBottom
               Lines.Strings = (
@@ -367,42 +372,46 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 2
+              ExplicitWidth = 286
             end
             object Panel12: TPanel
               Left = 0
               Top = 99
-              Width = 286
+              Width = 270
               Height = 28
               Align = alBottom
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 3
+              ExplicitWidth = 286
               object Button9: TButton
                 Left = 0
                 Top = 0
-                Width = 286
+                Width = 270
                 Height = 28
                 Align = alClient
                 Caption = 'Validate JSON'
                 TabOrder = 0
                 OnClick = Button9Click
+                ExplicitWidth = 286
               end
             end
             object mmJSONArrayValidate: TMemo
               Left = 0
               Top = 185
-              Width = 286
+              Width = 270
               Height = 122
               Align = alBottom
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 4
+              ExplicitWidth = 286
             end
           end
           object Panel13: TPanel
             Left = 0
             Top = 0
-            Width = 193
+            Width = 209
             Height = 307
             Align = alLeft
             BevelOuter = bvNone
@@ -410,27 +419,29 @@ object FrmSamples: TFrmSamples
             object Panel7: TPanel
               Left = 0
               Top = 0
-              Width = 193
+              Width = 209
               Height = 28
               Align = alTop
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 0
+              ExplicitWidth = 193
               object Button5: TButton
                 Left = 0
                 Top = 0
-                Width = 193
+                Width = 209
                 Height = 28
                 Align = alClient
                 Caption = 'Load structure'
                 TabOrder = 0
                 OnClick = Button5Click
+                ExplicitWidth = 193
               end
             end
             object mmStructure: TMemo
               Left = 0
               Top = 28
-              Width = 193
+              Width = 209
               Height = 279
               Align = alClient
               Lines.Strings = (
@@ -442,9 +453,10 @@ object FrmSamples: TFrmSamples
                 '    "Size": 0,'
                 '    "Key": false,'
                 '    "Origin": "",'
-                '    "Required": true,'
+                '    "Required": false,'
                 '    "Visible": true,'
-                '    "ReadOnly": true'
+                '    "ReadOnly": true,'
+                '    "AutoGenerateValue": "arAutoInc"'
                 '  },'
                 '  {'
                 '    "FieldName": "NAME",'
@@ -455,7 +467,8 @@ object FrmSamples: TFrmSamples
                 '    "Origin": "",'
                 '    "Required": true,'
                 '    "Visible": true,'
-                '    "ReadOnly": false'
+                '    "ReadOnly": false,'
+                '    "AutoGenerateValue": "arNone"'
                 '  },'
                 '  {'
                 '    "FieldName": "COUNTRY",'
@@ -466,14 +479,14 @@ object FrmSamples: TFrmSamples
                 '    "Origin": "",'
                 '    "Required": false,'
                 '    "Visible": false,'
-                '    "ReadOnly": false'
+                '    "ReadOnly": false,'
+                '    "AutoGenerateValue": "arNone"'
                 '  }'
                 ']')
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 1
-              ExplicitLeft = -6
-              ExplicitTop = 34
+              ExplicitWidth = 187
             end
           end
         end
@@ -515,7 +528,6 @@ object FrmSamples: TFrmSamples
     Top = 496
   end
   object mtJSON: TFDMemTable
-    AfterInsert = mtJSONAfterInsert
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
