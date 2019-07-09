@@ -61,7 +61,6 @@ type
     procedure Button4Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
-    procedure mtDataSetAfterInsert(DataSet: TDataSet);
     procedure Button5Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Button6Click(Sender: TObject);
@@ -70,7 +69,7 @@ type
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
   private
-    FId, FIdJSON: Integer;
+    FIdJSON: Integer;
     procedure Append;
     procedure ClearFields;
     function ValidateStructure: Boolean;
@@ -164,7 +163,6 @@ end;
 
 procedure TFrmSamples.FormCreate(Sender: TObject);
 begin
-  FId := 0;
   FIdJSON := 0;
   mtDataSet.Active := True;
 end;
@@ -172,12 +170,6 @@ end;
 procedure TFrmSamples.FormShow(Sender: TObject);
 begin
   pclDataSetSerialize.ActivePage := tabDataSet;
-end;
-
-procedure TFrmSamples.mtDataSetAfterInsert(DataSet: TDataSet);
-begin
-  Inc(FId);
-  mtDataSetID.AsInteger := FId;
 end;
 
 procedure TFrmSamples.mtJSONAfterInsert(DataSet: TDataSet);

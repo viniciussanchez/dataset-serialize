@@ -297,6 +297,7 @@ begin
     JSONObject.AddPair('Origin', TJSONString.Create(DataSet.Fields[I].ORIGIN));
     JSONObject.AddPair('Required', TJSONBool.Create(DataSet.Fields[I].Required));
     JSONObject.AddPair('Visible', TJSONBool.Create(DataSet.Fields[I].Visible));
+    JSONObject.AddPair('ReadOnly', TJSONBool.Create(DataSet.Fields[I].ReadOnly));
     Result.AddElement(JSONObject);
   end;
 end;

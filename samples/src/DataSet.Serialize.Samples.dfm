@@ -178,10 +178,6 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = 'JSON'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Splitter2: TSplitter
         Left = 481
         Top = 0
@@ -261,7 +257,6 @@ object FrmSamples: TFrmSamples
           BevelOuter = bvNone
           ParentBackground = False
           TabOrder = 1
-          ExplicitTop = 273
           object Button7: TButton
             Left = 0
             Top = 0
@@ -324,9 +319,6 @@ object FrmSamples: TFrmSamples
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 0
-            ExplicitLeft = 0
-            ExplicitWidth = 144
-            ExplicitHeight = 272
             object mmJSONObject: TMemo
               Left = 0
               Top = 28
@@ -351,9 +343,6 @@ object FrmSamples: TFrmSamples
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 1
-              ExplicitLeft = 2
-              ExplicitTop = 9
-              ExplicitWidth = 183
               object Button6: TButton
                 Left = 0
                 Top = 0
@@ -363,7 +352,6 @@ object FrmSamples: TFrmSamples
                 Caption = 'Load from JSON Object'
                 TabOrder = 0
                 OnClick = Button6Click
-                ExplicitWidth = 183
               end
             end
             object mmValidateJSON: TMemo
@@ -389,7 +377,6 @@ object FrmSamples: TFrmSamples
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 3
-              ExplicitTop = 8
               object Button9: TButton
                 Left = 0
                 Top = 0
@@ -410,7 +397,6 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 4
-              ExplicitTop = 184
             end
           end
           object Panel13: TPanel
@@ -421,7 +407,6 @@ object FrmSamples: TFrmSamples
             Align = alLeft
             BevelOuter = bvNone
             TabOrder = 1
-            ExplicitHeight = 272
             object Panel7: TPanel
               Left = 0
               Top = 0
@@ -431,8 +416,6 @@ object FrmSamples: TFrmSamples
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 0
-              ExplicitTop = 8
-              ExplicitWidth = 479
               object Button5: TButton
                 Left = 0
                 Top = 0
@@ -442,7 +425,6 @@ object FrmSamples: TFrmSamples
                 Caption = 'Load structure'
                 TabOrder = 0
                 OnClick = Button5Click
-                ExplicitWidth = 479
               end
             end
             object mmStructure: TMemo
@@ -461,7 +443,8 @@ object FrmSamples: TFrmSamples
                 '    "Key": false,'
                 '    "Origin": "",'
                 '    "Required": true,'
-                '    "Visible": true'
+                '    "Visible": true,'
+                '    "ReadOnly": true'
                 '  },'
                 '  {'
                 '    "FieldName": "NAME",'
@@ -471,7 +454,8 @@ object FrmSamples: TFrmSamples
                 '    "Key": false,'
                 '    "Origin": "",'
                 '    "Required": true,'
-                '    "Visible": true'
+                '    "Visible": true,'
+                '    "ReadOnly": false'
                 '  },'
                 '  {'
                 '    "FieldName": "COUNTRY",'
@@ -481,12 +465,15 @@ object FrmSamples: TFrmSamples
                 '    "Key": false,'
                 '    "Origin": "",'
                 '    "Required": false,'
-                '    "Visible": false'
+                '    "Visible": false,'
+                '    "ReadOnly": false'
                 '  }'
                 ']')
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 1
+              ExplicitLeft = -6
+              ExplicitTop = 34
             end
           end
         end
@@ -494,7 +481,6 @@ object FrmSamples: TFrmSamples
     end
   end
   object mtDataSet: TFDMemTable
-    AfterInsert = mtDataSetAfterInsert
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -505,9 +491,10 @@ object FrmSamples: TFrmSamples
     Left = 912
     Top = 496
     object mtDataSetID: TIntegerField
+      AutoGenerateValue = arAutoInc
       DisplayLabel = 'Id'
       FieldName = 'ID'
-      Required = True
+      ReadOnly = True
     end
     object mtDataSetNAME: TStringField
       DisplayLabel = 'Name'

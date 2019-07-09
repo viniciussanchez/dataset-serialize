@@ -16,7 +16,7 @@ type
     ///   Creates a new field in the DataSet.
     /// </summary>
     class function NewDataSetField(const DataSet: TDataSet; const FieldType: TFieldType; const Size: Integer;
-      const FieldName, Origin, DisplayLabel: string; const Key, Required, Visible: Boolean): TField;
+      const FieldName, Origin, DisplayLabel: string; const Key, Required, Visible, ReadOnly: Boolean): TField;
     /// <summary>
     ///   Converts a boolean to a TBooleanFieldType.
     /// </summary>
@@ -112,7 +112,7 @@ begin
 end;
 
 class function TDataSetSerializeUtils.NewDataSetField(const DataSet: TDataSet; const FieldType: TFieldType; const Size: Integer;
-  const FieldName, Origin, DisplayLabel: string; const Key, Required, Visible: Boolean): TField;
+  const FieldName, Origin, DisplayLabel: string; const Key, Required, Visible, ReadOnly: Boolean): TField;
 begin
   Result := DefaultFieldClasses[FieldType].Create(DataSet);
   Result.FieldName := FieldName;
@@ -123,6 +123,7 @@ begin
   Result.Name := CreateValidIdentifier(DataSet.Name + Result.FieldName);
   Result.Size := Size;
   Result.Visible := Visible;
+  Result.ReadOnly := ReadOnly;
   Result.Required := Required;
   Result.Origin := Origin;
   Result.DisplayLabel := DisplayLabel;

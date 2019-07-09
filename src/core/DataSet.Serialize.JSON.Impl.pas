@@ -393,7 +393,7 @@ begin
         TFieldType(GetEnumValue(TypeInfo(TFieldType), JSONValue.GetValue<string>('DataType'))),
         StrToIntDef(TJSONObject(JSONValue).GetValue<string>('Size'), 0), JSONValue.GetValue<string>('FieldName'),
         JSONValue.GetValue<string>('Origin'), JSONValue.GetValue<string>('DisplayLabel'), JSONValue.GetValue<Boolean>('Key'),
-        JSONValue.GetValue<Boolean>('Required'), JSONValue.GetValue<Boolean>('Visible'));
+        JSONValue.GetValue<Boolean>('Required'), JSONValue.GetValue<Boolean>('Visible'), JSONValue.GetValue<Boolean>('ReadOnly'));
     end;
   finally
     JSONArray.Free;
