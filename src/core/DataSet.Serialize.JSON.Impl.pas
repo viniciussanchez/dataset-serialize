@@ -162,7 +162,7 @@ type
     function SetJSONArray(const JSONArray: TJSONArray; const Owns: Boolean = False): IJSONSerialize;
   public
     /// <summary>
-    ///   Responsible for creating a new isnt‚ncia of TDataSetSerialize class.
+    ///   Responsible for creating a new isnt√¢ncia of TDataSetSerialize class.
     /// </summary>
     constructor Create;
     /// <summary>
@@ -206,9 +206,12 @@ begin
   begin
     if Field.ReadOnly then
       Continue;
-    if not Assigned(JSON.Get(Field.FieldName)) then
+    if Assigned(JSON.Get(Field.FieldName)) then
+      JSONValue := JSON.Get(Field.FieldName).JSONValue
+    else if Assigned(JSON.Get(Field.FieldName.ToLower)) then
+      JSONValue := JSON.Get(Field.FieldName.ToLower).JSONValue
+    else
       Continue;
-    JSONValue := JSON.Get(Field.FieldName).JSONValue;
     if JSONValue is TJSONNull then
     begin
       Field.Clear;
@@ -340,7 +343,7 @@ begin
   Result.AddPair(TJSONPair.Create('field', FieldName));
   case Lang of
     ptBR:
-      Result.AddPair(TJSONPair.Create('error', DisplayLabel + ' n„o foi informado(a)'));
+      Result.AddPair(TJSONPair.Create('error', DisplayLabel + ' n√£o foi informado(a)'));
     else
       Result.AddPair(TJSONPair.Create('error', DisplayLabel + ' not informed'));
   end;
