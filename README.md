@@ -279,3 +279,13 @@ Returns:
 ### Samples - JSON
 
 ![dataset-serialize](img/Screenshot_1.png)
+
+### JSON Nested Object
+
+Load JSON Nested Object in a simple way:
+* In the main dataset, create a field of type `TDataSetField` and set the Origin property to "`JSONObject`" or "`JSONArray`".
+* Binds the field created in the master dataset in the `DataSetField` property of the secondary dataset.
+
+See the sample:
+
+![dataset-serialize](img/Screenshot_3.png)
