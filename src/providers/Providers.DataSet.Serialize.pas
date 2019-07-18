@@ -92,24 +92,20 @@ uses Providers.DataSet.Serialize.Constants;
 class function TDataSetSerializeUtils.BooleanFieldToType(const BooleanField: TBooleanField): TBooleanFieldType;
 var
   I: Integer;
-  Origin: string;
 begin
   Result := bfUnknown;
-  Origin := Trim(BooleanField.Origin);
   for I := Ord(low(TBooleanFieldType)) to Ord(high(TBooleanFieldType)) do
-    if TBooleanFieldType(I).ToString.ToLower.Equals(Origin.ToLower) then
+    if LowerCase(TBooleanFieldType(I).ToString).Equals(LowerCase(BooleanField.Origin.Trim)) then
       Exit(TBooleanFieldType(I));
 end;
 
 class function TDataSetSerializeUtils.DataSetFieldToType(const DataSetField: TDataSetField): TDataSetFieldType;
 var
   I: Integer;
-  Origin: string;
 begin
   Result := dfUnknown;
-  Origin := Trim(DataSetField.Origin);
   for I := Ord(low(TDataSetFieldType)) to Ord(high(TDataSetFieldType)) do
-    if TDataSetFieldType(I).ToString.ToLower.Equals(Origin.ToLower) then
+    if LowerCase(TDataSetFieldType(I).ToString).Equals(LowerCase(DataSetField.Origin.Trim)) then
       Exit(TDataSetFieldType(I));
 end;
 

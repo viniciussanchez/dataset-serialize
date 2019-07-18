@@ -319,8 +319,6 @@ object FrmSamples: TFrmSamples
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 0
-            ExplicitLeft = 193
-            ExplicitWidth = 286
             object mmJSONObject: TMemo
               Left = 0
               Top = 28
@@ -335,7 +333,6 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 0
-              ExplicitWidth = 286
             end
             object Panel6: TPanel
               Left = 0
@@ -346,7 +343,6 @@ object FrmSamples: TFrmSamples
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 1
-              ExplicitWidth = 286
               object Button6: TButton
                 Left = 0
                 Top = 0
@@ -356,7 +352,6 @@ object FrmSamples: TFrmSamples
                 Caption = 'Load from JSON Object'
                 TabOrder = 0
                 OnClick = Button6Click
-                ExplicitWidth = 286
               end
             end
             object mmValidateJSON: TMemo
@@ -372,7 +367,6 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 2
-              ExplicitWidth = 286
             end
             object Panel12: TPanel
               Left = 0
@@ -383,7 +377,6 @@ object FrmSamples: TFrmSamples
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 3
-              ExplicitWidth = 286
               object Button9: TButton
                 Left = 0
                 Top = 0
@@ -393,7 +386,6 @@ object FrmSamples: TFrmSamples
                 Caption = 'Validate JSON'
                 TabOrder = 0
                 OnClick = Button9Click
-                ExplicitWidth = 286
               end
             end
             object mmJSONArrayValidate: TMemo
@@ -405,7 +397,6 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 4
-              ExplicitWidth = 286
             end
           end
           object Panel13: TPanel
@@ -425,7 +416,6 @@ object FrmSamples: TFrmSamples
               BevelOuter = bvNone
               ParentBackground = False
               TabOrder = 0
-              ExplicitWidth = 193
               object Button5: TButton
                 Left = 0
                 Top = 0
@@ -435,7 +425,6 @@ object FrmSamples: TFrmSamples
                 Caption = 'Load structure'
                 TabOrder = 0
                 OnClick = Button5Click
-                ExplicitWidth = 193
               end
             end
             object mmStructure: TMemo
@@ -486,9 +475,154 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 1
-              ExplicitWidth = 187
             end
           end
+        end
+      end
+    end
+    object tabJSONNested: TTabSheet
+      Caption = 'JSON Nested Object'
+      ImageIndex = 2
+      object Panel11: TPanel
+        Left = 216
+        Top = 0
+        Width = 770
+        Height = 543
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 0
+        ExplicitLeft = 400
+        ExplicitTop = 248
+        ExplicitWidth = 185
+        ExplicitHeight = 41
+        object DBGrid2: TDBGrid
+          Left = 0
+          Top = 0
+          Width = 770
+          Height = 256
+          Align = alClient
+          DataSource = dsJSONNested
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'Tahoma'
+          TitleFont.Style = []
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'ESTADO'
+              Width = 673
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'SIGLA'
+              Width = 50
+              Visible = True
+            end>
+        end
+        object DBGrid3: TDBGrid
+          Left = 0
+          Top = 256
+          Width = 770
+          Height = 287
+          Align = alBottom
+          DataSource = dsJSONNestedObject
+          TabOrder = 1
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'Tahoma'
+          TitleFont.Style = []
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'NOME'
+              Width = 596
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'CEP'
+              Visible = True
+            end>
+        end
+      end
+      object Panel14: TPanel
+        Left = 0
+        Top = 0
+        Width = 216
+        Height = 543
+        Align = alLeft
+        BevelOuter = bvNone
+        TabOrder = 1
+        ExplicitLeft = 209
+        object mmJSONNested: TMemo
+          Left = 0
+          Top = 33
+          Width = 216
+          Height = 510
+          Align = alClient
+          Lines.Strings = (
+            '['
+            '  {'
+            '    "estado": "S'#227'o Paulo",'
+            '    "sigla": "SP",'
+            '    "cidades": ['
+            '      {'
+            '        "nome": "Fernand'#243'polis",'
+            '        "cep": "15600-000"'
+            '      },'
+            '      {'
+            '        "nome": "Votuporanga",'
+            '        "cep": "12600-100"'
+            '      },'
+            '      {'
+            '        "nome": "Jales",'
+            '        "cep": "14859-000"'
+            '      },'
+            '      {'
+            '        "nome": "S'#227'o Jos'#233' do Rio Preto",'
+            '        "cep": "18450-450"'
+            '      },'
+            '      {'
+            '        "nome": "B'#225'lsamo",'
+            '        "cep": "15140-000"'
+            '      }'
+            '    ]'
+            '  },'
+            '  {'
+            '    "estado": "Paran'#225'",'
+            '    "sigla": "PR",'
+            '    "cidades": ['
+            '      {'
+            '        "nome": "Maring'#225'",'
+            '        "cep": "87050-000"'
+            '      },'
+            '      {'
+            '        "nome": "Londrina",'
+            '        "cep": "86010-190"'
+            '      }'
+            '    ]'
+            '  }'
+            ']')
+          ScrollBars = ssVertical
+          TabOrder = 0
+          ExplicitLeft = 7
+          ExplicitTop = 0
+          ExplicitWidth = 209
+          ExplicitHeight = 543
+        end
+        object Button10: TButton
+          Left = 0
+          Top = 0
+          Width = 216
+          Height = 33
+          Align = alTop
+          Caption = 'Load from JSON Array'
+          TabOrder = 1
+          OnClick = Button10Click
         end
       end
     end
@@ -541,6 +675,58 @@ object FrmSamples: TFrmSamples
   object dsJSON: TDataSource
     DataSet = mtJSON
     Left = 784
+    Top = 496
+  end
+  object mtJSONNested: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 600
+    Top = 496
+    object mtJSONNestedESTADO: TStringField
+      FieldName = 'ESTADO'
+      Size = 100
+    end
+    object mtJSONNestedSIGLA: TStringField
+      FieldName = 'SIGLA'
+      Size = 2
+    end
+    object mtJSONNestedCIDADES: TDataSetField
+      FieldName = 'CIDADES'
+      Origin = 'JSONArray'
+    end
+  end
+  object mtJSONNestedObject: TFDMemTable
+    DataSetField = mtJSONNestedCIDADES
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 712
+    Top = 496
+    object mtJSONNestedObjectNOME: TStringField
+      FieldName = 'NOME'
+      Size = 100
+    end
+    object mtJSONNestedObjectCEP: TStringField
+      FieldName = 'CEP'
+    end
+  end
+  object dsJSONNested: TDataSource
+    DataSet = mtJSONNested
+    Left = 568
+    Top = 496
+  end
+  object dsJSONNestedObject: TDataSource
+    DataSet = mtJSONNestedObject
+    Left = 680
     Top = 496
   end
 end

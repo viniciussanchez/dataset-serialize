@@ -55,6 +55,22 @@ type
     Panel12: TPanel;
     Button9: TButton;
     mmJSONArrayValidate: TMemo;
+    tabJSONNested: TTabSheet;
+    mtJSONNested: TFDMemTable;
+    mtJSONNestedObject: TFDMemTable;
+    Panel11: TPanel;
+    DBGrid2: TDBGrid;
+    DBGrid3: TDBGrid;
+    mtJSONNestedESTADO: TStringField;
+    mtJSONNestedSIGLA: TStringField;
+    mtJSONNestedObjectNOME: TStringField;
+    mtJSONNestedObjectCEP: TStringField;
+    dsJSONNested: TDataSource;
+    dsJSONNestedObject: TDataSource;
+    Panel14: TPanel;
+    mmJSONNested: TMemo;
+    Button10: TButton;
+    mtJSONNestedCIDADES: TDataSetField;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -67,6 +83,7 @@ type
     procedure Button7Click(Sender: TObject);
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
+    procedure Button10Click(Sender: TObject);
   private
     procedure Append;
     procedure ClearFields;
@@ -88,6 +105,11 @@ begin
   mtDataSetNAME.AsString := edtName.Text;
   mtDataSetCOUNTRY.AsString := edtCountry.Text;
   mtDataSet.Post;
+end;
+
+procedure TFrmSamples.Button10Click(Sender: TObject);
+begin
+  mtJSONNested.LoadFromJSONArray(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONNested.Lines.Text),0) as TJSONArray);
 end;
 
 procedure TFrmSamples.Button1Click(Sender: TObject);
@@ -162,6 +184,8 @@ end;
 procedure TFrmSamples.FormCreate(Sender: TObject);
 begin
   mtDataSet.Active := True;
+  mtJSONNested.Active := True;
+  mtJSONNestedObject.Active := True;
 end;
 
 procedure TFrmSamples.FormShow(Sender: TObject);

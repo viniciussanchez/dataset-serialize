@@ -1,4 +1,4 @@
-unit DataSet.Serialize.JSON.Impl;
+﻿unit DataSet.Serialize.JSON.Impl;
 
 interface
 
@@ -208,8 +208,8 @@ begin
       Continue;
     if Assigned(JSON.Get(Field.FieldName)) then
       JSONValue := JSON.Get(Field.FieldName).JSONValue
-    else if Assigned(JSON.Get(Field.FieldName.ToLower)) then
-      JSONValue := JSON.Get(Field.FieldName.ToLower).JSONValue
+    else if Assigned(JSON.Get(LowerCase(Field.FieldName))) then
+      JSONValue := JSON.Get(LowerCase(Field.FieldName)).JSONValue
     else
       Continue;
     if JSONValue is TJSONNull then
