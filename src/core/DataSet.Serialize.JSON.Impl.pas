@@ -206,12 +206,10 @@ begin
   begin
     if Field.ReadOnly then
       Continue;
-    if Assigned(JSON.Get(Field.FieldName)) then
-      JSONValue := JSON.Get(Field.FieldName).JSONValue
-    else if Assigned(JSON.Get(LowerCase(Field.FieldName))) then
-      JSONValue := JSON.Get(LowerCase(Field.FieldName)).JSONValue
-    else
+
+    if not (JSON.TryGetValue(Field.FieldName, JSONValue) or JSON.TryGetValue(LowerCase(Field.FieldName), JSONValue)) then
       Continue;
+
     if JSONValue is TJSONNull then
     begin
       Field.Clear;

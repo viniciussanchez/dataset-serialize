@@ -71,6 +71,7 @@ type
     mmJSONNested: TMemo;
     Button10: TButton;
     mtJSONNestedCIDADES: TDataSetField;
+    mtJSONNestedPAISNOME: TStringField;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);

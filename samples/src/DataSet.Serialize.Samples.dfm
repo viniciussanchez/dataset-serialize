@@ -24,7 +24,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 994
     Height = 571
-    ActivePage = tabDataSet
+    ActivePage = tabJSONNested
     Align = alClient
     TabOrder = 0
     object tabDataSet: TTabSheet
@@ -484,21 +484,19 @@ object FrmSamples: TFrmSamples
       Caption = 'JSON Nested Object'
       ImageIndex = 2
       object Panel11: TPanel
-        Left = 216
+        Left = 313
         Top = 0
-        Width = 770
+        Width = 673
         Height = 543
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 400
-        ExplicitTop = 248
-        ExplicitWidth = 185
-        ExplicitHeight = 41
+        ExplicitLeft = 216
+        ExplicitWidth = 770
         object DBGrid2: TDBGrid
           Left = 0
           Top = 0
-          Width = 770
+          Width = 673
           Height = 256
           Align = alClient
           DataSource = dsJSONNested
@@ -512,7 +510,7 @@ object FrmSamples: TFrmSamples
             item
               Expanded = False
               FieldName = 'ESTADO'
-              Width = 673
+              Width = 300
               Visible = True
             end
             item
@@ -520,12 +518,18 @@ object FrmSamples: TFrmSamples
               FieldName = 'SIGLA'
               Width = 50
               Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'PAIS.NOME'
+              Width = 300
+              Visible = True
             end>
         end
         object DBGrid3: TDBGrid
           Left = 0
           Top = 256
-          Width = 770
+          Width = 673
           Height = 287
           Align = alBottom
           DataSource = dsJSONNestedObject
@@ -552,77 +556,73 @@ object FrmSamples: TFrmSamples
       object Panel14: TPanel
         Left = 0
         Top = 0
-        Width = 216
+        Width = 313
         Height = 543
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitLeft = 209
         object mmJSONNested: TMemo
           Left = 0
           Top = 33
-          Width = 216
+          Width = 313
           Height = 510
           Align = alClient
           Lines.Strings = (
-            '['
-            '  {'
-            '    "estado": "S'#227'o Paulo",'
-            '    "sigla": "SP",'
-            '    "cidades": ['
-            '      {'
-            '        "nome": "Fernand'#243'polis",'
-            '        "cep": "15600-000"'
-            '      },'
-            '      {'
-            '        "nome": "Votuporanga",'
-            '        "cep": "12600-100"'
-            '      },'
-            '      {'
-            '        "nome": "Jales",'
-            '        "cep": "14859-000"'
-            '      },'
-            '      {'
-            '        "nome": "S'#227'o Jos'#233' do Rio Preto",'
-            '        "cep": "18450-450"'
-            '      },'
-            '      {'
-            '        "nome": "B'#225'lsamo",'
-            '        "cep": "15140-000"'
-            '      }'
-            '    ]'
-            '  },'
-            '  {'
-            '    "estado": "Paran'#225'",'
-            '    "sigla": "PR",'
-            '    "cidades": ['
-            '      {'
-            '        "nome": "Maring'#225'",'
-            '        "cep": "87050-000"'
-            '      },'
-            '      {'
-            '        "nome": "Londrina",'
-            '        "cep": "86010-190"'
-            '      }'
-            '    ]'
-            '  }'
+            '[{'
+            '        "estado": "S'#227'o Paulo",'
+            '        "sigla": "SP",'
+            '        "pais": {'
+            '            "nome": "Brasil",'
+            '            "sigla": "BRL"'
+            '        },'
+            '        "cidades": [{'
+            '                "nome": "Fernand'#243'polis",'
+            '                "cep": "15600-000"'
+            '            }, {'
+            '                "nome": "Votuporanga",'
+            '                "cep": "12600-100"'
+            '            }, {'
+            '                "nome": "Jales",'
+            '                "cep": "14859-000"'
+            '            }, {'
+            '                "nome": "S'#227'o Jos'#233' do Rio Preto",'
+            '                "cep": "18450-450"'
+            '            }, {'
+            '                "nome": "B'#225'lsamo",'
+            '                "cep": "15140-000"'
+            '            }'
+            '        ]'
+            '    }, {'
+            '        "estado": "Paran'#225'",'
+            '        "sigla": "PR",'
+            '        "pais": {'
+            '            "nome": "Brasil",'
+            '            "sigla": "BRL"'
+            '        },'
+            '        "cidades": [{'
+            '                "nome": "Maring'#225'",'
+            '                "cep": "87050-000"'
+            '            }, {'
+            '                "nome": "Londrina",'
+            '                "cep": "86010-190"'
+            '            }'
+            '        ]'
+            '    }'
             ']')
           ScrollBars = ssVertical
           TabOrder = 0
-          ExplicitLeft = 7
-          ExplicitTop = 0
-          ExplicitWidth = 209
-          ExplicitHeight = 543
+          ExplicitWidth = 217
         end
         object Button10: TButton
           Left = 0
           Top = 0
-          Width = 216
+          Width = 313
           Height = 33
           Align = alTop
           Caption = 'Load from JSON Array'
           TabOrder = 1
           OnClick = Button10Click
+          ExplicitWidth = 216
         end
       end
     end
@@ -698,6 +698,10 @@ object FrmSamples: TFrmSamples
     object mtJSONNestedCIDADES: TDataSetField
       FieldName = 'CIDADES'
       Origin = 'JSONArray'
+    end
+    object mtJSONNestedPAISNOME: TStringField
+      FieldName = 'PAIS.NOME'
+      Size = 100
     end
   end
   object mtJSONNestedObject: TFDMemTable
