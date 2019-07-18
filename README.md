@@ -168,10 +168,7 @@ Scroll through all DataSet fields by checking the fields that are required. If t
 
 ```pascal
 const 
-  JSON_VALIDATE = 
-    '{
-       "COUNTRY": "Brazil"
-    }';
+  JSON_VALIDATE = '{"COUNTRY":"Brazil"}';
 var
   JSON: TJSONObject;
 begin
@@ -207,7 +204,7 @@ See the sample:
 
 ![dataset-serialize](img/Screenshot_3.png)
 
-## Samples
+## Another samples
 
 ![dataset-serialize](img/Screenshot_2.png)
 
