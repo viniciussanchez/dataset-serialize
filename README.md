@@ -5,16 +5,15 @@
 
 This component is a JSON serializer for the DataSet component of Delphi. Allows you to convert JSON to DataSet, DataSet to JSON, validate JSON, and export and load the structure of DataSet fields in JSON format.
  
-### Prerequisites
- * `[Optional]` For ease I recommend using the Boss for installation
-   * [**Boss**](https://github.com/HashLoad/boss) - Dependency Manager for Delphi
+## Prerequisites
+ * `[Optional]` For ease I recommend using the [**Boss**](https://github.com/HashLoad/boss) (Dependency Manager for Delphi) for installation
  
-### Installation using Boss (dependency manager for Delphi applications)
+## Installation using Boss (dependency manager for Delphi applications)
 ```
 boss install github.com/viniciussanchez/dataset-serialize
 ```
 
-### Manual Installation
+## Manual Installation
 Add the following folders to your project, in *Project > Options > Resource Compiler > Directories and Conditionals > Include file search path*
 ```
 ../dataset-serialize/src
@@ -25,7 +24,7 @@ Add the following folders to your project, in *Project > Options > Resource Comp
 ../dataset-serialize/src/types
 ```
 
-### Getting Started
+## Getting Started
 You need to use DataSet.Serialize.Helper
 ```pascal
 uses DataSet.Serialize.Helper;
@@ -38,17 +37,7 @@ var
 begin
   JSONObject := qrySample.ToJSONObject;
 end;
-``` 
-
-Returns:
-
-``` 
-{
-  "ID": 1,
-  "NAME": "Vinicius Sanchez",
-  "COUNTRY": "Brazil"
-}
-``` 
+```  
 
 #### DataSet to JSON Array
 ```pascal
@@ -57,23 +46,6 @@ var
 begin
   JSONArray := qrySample.ToJSONArray;
 end;
-``` 
-
-Returns:
-
-``` 
-[
-  {
-    "ID": 1,
-    "NAME": "Vinicius Sanchez",
-    "COUNTRY": "Brazil"
-  },
-  {
-    "ID": 2,
-    "NAME": "Vinicius Sanchez",
-    "COUNTRY": "Brazil"
-  }
-]
 ``` 
 
 #### Save the field structure
@@ -96,8 +68,10 @@ Returns:
     "Size": 0,
     "Key": false,
     "Origin": "",
-    "Required": true,
-    "Visible": true
+    "Required": false,
+    "Visible": true,
+    "ReadOnly": true,
+    "AutoGenerateValue": "arAutoInc"
   },
   {
     "FieldName": "NAME",
@@ -107,17 +81,9 @@ Returns:
     "Key": false,
     "Origin": "",
     "Required": true,
-    "Visible": true
-  },
-  {
-    "FieldName": "COUNTRY",
-    "DisplayLabel": "Country",
-    "DataType": "ftString",
-    "Size": 60,
-    "Key": false,
-    "Origin": "",
-    "Required": false,
-    "Visible": false
+    "Visible": true,
+    "ReadOnly": false,
+    "AutoGenerateValue": "arNone"
   }
 ]
 ``` 
@@ -135,7 +101,9 @@ const
         "Key": false,
         "Origin": "",
         "Required": true,
-        "Visible": true
+        "Visible": true,
+        "ReadOnly": true,
+        "AutoGenerateValue": "arAutoInc"
       },
       {
         "FieldName": "NAME",
@@ -145,17 +113,9 @@ const
         "Key": false,
         "Origin": "",
         "Required": true,
-        "Visible": true
-      },
-      {
-        "FieldName": "COUNTRY",
-        "DisplayLabel": "Country",
-        "DataType": "ftString",
-        "Size": 60,
-        "Key": false,
-        "Origin": "",
-        "Required": false,
-        "Visible": false
+        "Visible": true,
+        "ReadOnly": false,
+        "AutoGenerateValue": "arNone"
       }
     ]';
 var
@@ -169,11 +129,7 @@ end;
 #### Load from JSON Object
 ```pascal
 const 
-  JSON = 
-    '{
-       "NAME": "Vinicius Sanchez",
-       "COUNTRY": "Brazil"
-    }';
+  JSON = '{"NAME":"Vinicius Sanchez","COUNTRY":"Brazil"}';
 var
   JSONObject: TJSONObject;
 begin
@@ -185,17 +141,7 @@ end;
 #### Load from JSON Array
 ```pascal
 const 
-  JSON = 
-    '[
-       {
-         "NAME": "Vinicius Sanchez",
-         "COUNTRY": "Brazil"
-       },
-       {
-         "NAME": "Mateus Vicente",
-         "COUNTRY": "Brazil"
-       }
-    ]';
+  JSON = '[{"NAME":"Vinicius Sanchez","COUNTRY":"Brazil"},{"NAME":"Mateus Vicente","COUNTRY":"Brazil"}]';
 var
   JSONArray: TJSONArray;
 begin
@@ -207,11 +153,7 @@ end;
 #### Merge (Edit current record)
 ```pascal
 const 
-  JSON = 
-    '{
-       "NAME": "Vinicius",
-       "COUNTRY": "United States"
-    }';
+  JSON = '{"NAME":"Vinicius","COUNTRY":"United States"}';
 var
   JSONObject: TJSONObject;
 begin
@@ -253,34 +195,9 @@ Returns:
 ]
 ``` 
 
-The default language is English (TLanguageType.enUS);
+###### The default language is English (TLanguageType.enUS);
 
-```
-mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON).ToString;
-
-Returns:
-
-[
-  {
-    "field": "ID",
-    "error": "Id not defined"
-  },
-  {
-    "field": "NAME",
-    "error": "Name not defined"
-  }
-]
-``` 
-
-### Samples - DataSet
-
-![dataset-serialize](img/Screenshot_2.png)
-
-### Samples - JSON
-
-![dataset-serialize](img/Screenshot_1.png)
-
-### JSON Nested Object
+## JSON Nested Object
 
 Load JSON Nested Object in a simple way:
 * In the main dataset, create a field of type `TDataSetField` and set the Origin property to "`JSONObject`" or "`JSONArray`".
@@ -289,3 +206,9 @@ Load JSON Nested Object in a simple way:
 See the sample:
 
 ![dataset-serialize](img/Screenshot_3.png)
+
+## Samples
+
+![dataset-serialize](img/Screenshot_2.png)
+
+![dataset-serialize](img/Screenshot_1.png)
