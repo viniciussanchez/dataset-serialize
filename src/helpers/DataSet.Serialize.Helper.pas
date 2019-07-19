@@ -54,7 +54,7 @@ type
     ///   Only the keys that make up the DataSet field list will be loaded. The JSON keys must have the same name as the
     ///   DataSet fields. It's not case-sensitive.
     /// </remarks>
-    procedure LoadFromJSONObject(const JSONObject: TJSONObject);
+    procedure LoadFromJSON(const JSONObject: TJSONObject); overload;
     /// <summary>
     ///   Loads the DataSet with data from a JSON array.
     /// </summary>
@@ -65,7 +65,7 @@ type
     ///   Only the keys that make up the DataSet field list will be loaded. The JSON keys must have the same name as the
     ///   DataSet fields. It's not case-sensitive.
     /// </remarks>
-    procedure LoadFromJSONArray(const JSONArray: TJSONArray);
+    procedure LoadFromJSON(const JSONArray: TJSONArray); overload;
     /// <summary>
     ///   Updates the DataSet data with JSON object data.
     /// </summary>
@@ -116,12 +116,12 @@ begin
   Result := TSerialize.New.SetDataSet(Self).SaveStructure;
 end;
 
-procedure TDataSetSerializeHelper.LoadFromJSONArray(const JSONArray: TJSONArray);
+procedure TDataSetSerializeHelper.LoadFromJSON(const JSONArray: TJSONArray);
 begin
   TSerialize.New.SetJSONArray(JSONArray).ToDataSet(Self);
 end;
 
-procedure TDataSetSerializeHelper.LoadFromJSONObject(const JSONObject: TJSONObject);
+procedure TDataSetSerializeHelper.LoadFromJSON(const JSONObject: TJSONObject);
 begin
   TSerialize.New.SetJSONObject(JSONObject).ToDataSet(Self);
 end;

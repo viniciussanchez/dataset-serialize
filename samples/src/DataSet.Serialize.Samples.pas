@@ -110,7 +110,7 @@ end;
 
 procedure TFrmSamples.Button10Click(Sender: TObject);
 begin
-  mtJSONNested.LoadFromJSONArray(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONNested.Lines.Text),0) as TJSONArray);
+  mtJSONNested.LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONNested.Lines.Text),0) as TJSONArray);
 end;
 
 procedure TFrmSamples.Button1Click(Sender: TObject);
@@ -147,13 +147,13 @@ end;
 procedure TFrmSamples.Button6Click(Sender: TObject);
 begin
   if ValidateStructure then
-    mtJSON.LoadFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONObject.Lines.Text),0) as TJSONObject);
+    mtJSON.LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONObject.Lines.Text),0) as TJSONObject);
 end;
 
 procedure TFrmSamples.Button7Click(Sender: TObject);
 begin
   if ValidateStructure then
-    mtJSON.LoadFromJSONArray(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONArray.Lines.Text),0) as TJSONArray);
+    mtJSON.LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONArray.Lines.Text),0) as TJSONArray);
 end;
 
 procedure TFrmSamples.Button8Click(Sender: TObject);

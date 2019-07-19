@@ -24,7 +24,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 994
     Height = 571
-    ActivePage = tabJSONNested
+    ActivePage = tabDataSet
     Align = alClient
     TabOrder = 0
     object tabDataSet: TTabSheet
@@ -178,6 +178,10 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = 'JSON'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Splitter2: TSplitter
         Left = 481
         Top = 0
@@ -491,8 +495,6 @@ object FrmSamples: TFrmSamples
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 216
-        ExplicitWidth = 770
         object DBGrid2: TDBGrid
           Left = 0
           Top = 0
@@ -611,7 +613,6 @@ object FrmSamples: TFrmSamples
             ']')
           ScrollBars = ssVertical
           TabOrder = 0
-          ExplicitWidth = 217
         end
         object Button10: TButton
           Left = 0
@@ -622,7 +623,6 @@ object FrmSamples: TFrmSamples
           Caption = 'Load from JSON Array'
           TabOrder = 1
           OnClick = Button10Click
-          ExplicitWidth = 216
         end
       end
     end
