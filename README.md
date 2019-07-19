@@ -126,7 +126,7 @@ begin
 end;
 ``` 
 
-#### Load from JSON Object
+#### Load from JSON
 ```pascal
 const 
   JSON = '{"NAME":"Vinicius Sanchez","COUNTRY":"Brazil"}';
@@ -134,19 +134,7 @@ var
   JSONObject: TJSONObject;
 begin
   JSONObject := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSON),0) as TJSONObject;
-  qrySample.LoadFromJSONObject(JSONObject);
-end;
-``` 
-
-#### Load from JSON Array
-```pascal
-const 
-  JSON = '[{"NAME":"Vinicius Sanchez","COUNTRY":"Brazil"},{"NAME":"Mateus Vicente","COUNTRY":"Brazil"}]';
-var
-  JSONArray: TJSONArray;
-begin
-  JSONArray := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSON),0) as TJSONArray;
-  qrySample.LoadFromJSONArray(JSONArray);
+  qrySample.LoadFromJSON(JSONObject); // or JSONArray
 end;
 ``` 
 
