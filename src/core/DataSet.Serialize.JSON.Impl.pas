@@ -373,6 +373,7 @@ begin
     else
       JSONObjectToDataSet(JSONValue as TJSONObject, DataSet, False);
   end;
+  DataSet.First;
 end;
 
 function TJSONSerialize.SetJSONObject(const JSONObject: TJSONObject; const Owns: Boolean = False): IJSONSerialize;
