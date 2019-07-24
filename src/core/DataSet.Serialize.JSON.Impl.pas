@@ -237,7 +237,7 @@ begin
           NestedDataSet := TDataSetField(Field).NestedDataSet;
           case DataSetFieldType of
             dfJSONObject:
-              JSONObjectToDataSet(JSONValue as TJSONObject, NestedDataSet, True);
+              JSONObjectToDataSet(JSONValue as TJSONObject, NestedDataSet, False);
             dfJSONArray:
               begin
                 NestedDataSet.First;
