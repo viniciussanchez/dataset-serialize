@@ -185,6 +185,7 @@ Returns:
 ## JSON Nested Object
 
 Load JSON Nested Object in a simple way:
+* In the main dataset, create a field of type `TDataSetField`.
 * Binds the field created in the master dataset in the `DataSetField` property of the secondary dataset.
 
 See the sample:
