@@ -126,7 +126,7 @@ type
 
 implementation
 
-uses DataSetField.Types, BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize,
+uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize,
   Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.TypInfo;
 
 { TDataSetSerialize }
@@ -163,7 +163,6 @@ var
   I: Integer;
   Key: string;
   NestedDataSet: TDataSet;
-  DataSetFieldType: TDataSetFieldType;
   BooleanFieldType: TBooleanFieldType;
 begin
   Result := TJSONObject.Create;
@@ -203,14 +202,11 @@ begin
         Result.AddPair(Key, TJSONNumber.Create(BcdToDouble(DataSet.Fields[I].AsBcd)));
       TFieldType.ftDataSet:
         begin
-          DataSetFieldType := TDataSetSerializeUtils.DataSetFieldToType(TDataSetField(DataSet.Fields[I]));
           NestedDataSet := TDataSetField(DataSet.Fields[I]).NestedDataSet;
-          case DataSetFieldType of
-            dfJSONObject:
-              Result.AddPair(Key, DataSetToJSONObject(NestedDataSet));
-            dfJSONArray:
-              Result.AddPair(Key, DataSetToJSONArray(NestedDataSet));
-          end;
+          if Trim(DataSet.Fields[I].AsString).StartsWith('{') then
+            Result.AddPair(Key, DataSetToJSONObject(NestedDataSet))
+          else if Trim(DataSet.Fields[I].AsString).StartsWith('[') then
+            Result.AddPair(Key, DataSetToJSONArray(NestedDataSet));
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
         Result.AddPair(Key, TJSONString.Create(EncodingBlobField(DataSet.Fields[I])));

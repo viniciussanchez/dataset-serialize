@@ -2,7 +2,7 @@ unit Providers.DataSet.Serialize;
 
 interface
 
-uses System.DateUtils, System.JSON, Data.DB, BooleanField.Types, DataSetField.Types, System.SysUtils;
+uses System.DateUtils, System.JSON, Data.DB, BooleanField.Types, System.SysUtils;
 
 type
   /// <summary>
@@ -52,16 +52,6 @@ type
     /// </returns>
     class function BooleanFieldToType(const BooleanField: TBooleanField): TBooleanFieldType;
     /// <summary>
-    ///   Converts a DataSet field to a TDataSetFieldType.
-    /// </summary>
-    /// <param name="DataSetField">
-    ///   DataSet field type.
-    /// </param>
-    /// <returns>
-    ///   Returns a valid field.
-    /// </returns>
-    class function DataSetFieldToType(const DataSetField: TDataSetField): TDataSetFieldType;
-    /// <summary>
     ///   Creates a valid name for the field added to the DataSet.
     /// </summary>
     /// <param name="Name">
@@ -97,16 +87,6 @@ begin
   for I := Ord(low(TBooleanFieldType)) to Ord(high(TBooleanFieldType)) do
     if LowerCase(TBooleanFieldType(I).ToString).Equals(LowerCase(BooleanField.Origin.Trim)) then
       Exit(TBooleanFieldType(I));
-end;
-
-class function TDataSetSerializeUtils.DataSetFieldToType(const DataSetField: TDataSetField): TDataSetFieldType;
-var
-  I: Integer;
-begin
-  Result := dfUnknown;
-  for I := Ord(low(TDataSetFieldType)) to Ord(high(TDataSetFieldType)) do
-    if LowerCase(TDataSetFieldType(I).ToString).Equals(LowerCase(DataSetField.Origin.Trim)) then
-      Exit(TDataSetFieldType(I));
 end;
 
 class function TDataSetSerializeUtils.CreateValidIdentifier(const Name: string): string;

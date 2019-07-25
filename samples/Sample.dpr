@@ -4,7 +4,6 @@ uses
   Vcl.Forms,
   DataSet.Serialize.Helper in '..\src\helpers\DataSet.Serialize.Helper.pas',
   BooleanField.Types in '..\src\types\BooleanField.Types.pas',
-  DataSetField.Types in '..\src\types\DataSetField.Types.pas',
   DataSet.Serialize.Intf in '..\src\interfaces\DataSet.Serialize.Intf.pas',
   DataSet.Serialize.DS.Intf in '..\src\interfaces\DataSet.Serialize.DS.Intf.pas',
   DataSet.Serialize.JSON.Intf in '..\src\interfaces\DataSet.Serialize.JSON.Intf.pas',
