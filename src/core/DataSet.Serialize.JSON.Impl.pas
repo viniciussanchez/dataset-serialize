@@ -183,7 +183,7 @@ type
 
 implementation
 
-uses DataSetField.Types, System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo,
+uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo,
   System.DateUtils, Providers.DataSet.Serialize.Constants;
 
 { TJSONSerialize }
@@ -192,7 +192,6 @@ procedure TJSONSerialize.JSONObjectToDataSet(const JSON: TJSONObject; const Data
 var
   Field: TField;
   JSONValue: TJSONValue;
-  DataSetFieldType: TDataSetFieldType;
   NestedDataSet: TDataSet;
   BooleanValue: Boolean;
 begin
@@ -233,18 +232,15 @@ begin
         Field.AsDateTime := ISO8601ToDate(JSONValue.Value);
       TFieldType.ftDataSet:
         begin
-          DataSetFieldType := TDataSetSerializeUtils.DataSetFieldToType(TDataSetField(Field));
           NestedDataSet := TDataSetField(Field).NestedDataSet;
-          case DataSetFieldType of
-            dfJSONObject:
-              JSONObjectToDataSet(JSONValue as TJSONObject, NestedDataSet, False);
-            dfJSONArray:
-              begin
-                NestedDataSet.First;
-                while not NestedDataSet.Eof do
-                  NestedDataSet.Delete;
-                JSONArrayToDataSet(JSONValue as TJSONArray, NestedDataSet);
-              end;
+          if JSONValue is TJSONObject then
+            JSONObjectToDataSet(JSONValue as TJSONObject, NestedDataSet, False)
+          else if JSONValue is TJSONArray then
+          begin
+            NestedDataSet.First;
+            while not NestedDataSet.Eof do
+              NestedDataSet.Delete;
+            JSONArrayToDataSet(JSONValue as TJSONArray, NestedDataSet);
           end;
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:

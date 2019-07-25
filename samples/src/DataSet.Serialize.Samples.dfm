@@ -24,7 +24,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 994
     Height = 571
-    ActivePage = tabDataSet
+    ActivePage = tabJSONNested
     Align = alClient
     TabOrder = 0
     object tabDataSet: TTabSheet
@@ -178,10 +178,6 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = 'JSON'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Splitter2: TSplitter
         Left = 481
         Top = 0
@@ -697,7 +693,6 @@ object FrmSamples: TFrmSamples
     end
     object mtJSONNestedCIDADES: TDataSetField
       FieldName = 'CIDADES'
-      Origin = 'JSONArray'
     end
     object mtJSONNestedPAISNOME: TStringField
       FieldName = 'PAIS.NOME'
