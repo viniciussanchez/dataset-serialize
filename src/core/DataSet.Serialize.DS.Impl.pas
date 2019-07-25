@@ -126,8 +126,8 @@ type
 
 implementation
 
-uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize,
-  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.TypInfo;
+uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize, System.TypInfo,
+  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding;
 
 { TDataSetSerialize }
 

@@ -183,8 +183,7 @@ type
 
 implementation
 
-uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo,
-  System.DateUtils, Providers.DataSet.Serialize.Constants;
+uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants;
 
 { TJSONSerialize }
 

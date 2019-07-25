@@ -67,6 +67,17 @@ type
     /// </remarks>
     procedure LoadFromJSON(const JSONArray: TJSONArray); overload;
     /// <summary>
+    ///   Loads the DataSet with data from a JSON (string format).
+    /// </summary>
+    /// <param name="JSONString">
+    ///   Refers to JSON that you want to load.
+    /// </param>
+    /// <remarks>
+    ///   Only the keys that make up the DataSet field list will be loaded. The JSON keys must have the same name as the
+    ///   DataSet fields. It's not case-sensitive.
+    /// </remarks>
+    procedure LoadFromJSON(const JSONString: string); overload;
+    /// <summary>
     ///   Updates the DataSet data with JSON object data.
     /// </summary>
     /// <param name="JSONObject">
@@ -94,7 +105,7 @@ type
 
 implementation
 
-uses DataSet.Serialize.Impl;
+uses DataSet.Serialize.Impl, System.SysUtils;
 
 function TDataSetSerializeHelper.ToJSONArray: TJSONArray;
 begin
@@ -124,6 +135,14 @@ end;
 procedure TDataSetSerializeHelper.LoadFromJSON(const JSONObject: TJSONObject);
 begin
   TSerialize.New.SetJSONObject(JSONObject).ToDataSet(Self);
+end;
+
+procedure TDataSetSerializeHelper.LoadFromJSON(const JSONString: string);
+begin
+  if Trim(JSONString).StartsWith('{') then
+    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSONString),0) as TJSONObject)
+  else if Trim(JSONString).StartsWith('[') then
+    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSONString),0) as TJSONArray);
 end;
 
 procedure TDataSetSerializeHelper.LoadStructure(const JSONArray: TJSONArray);

@@ -24,7 +24,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 994
     Height = 571
-    ActivePage = tabJSONNested
+    ActivePage = tabJSON
     Align = alClient
     TabOrder = 0
     object tabDataSet: TTabSheet
