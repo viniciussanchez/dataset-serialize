@@ -170,7 +170,7 @@ begin
     Exit;
   for I := 0 to Pred(DataSet.FieldCount) do
   begin
-    if (not DataSet.Fields[I].Visible) or DataSet.Fields[I].IsNull then
+    if (not DataSet.Fields[I].Visible) or DataSet.Fields[I].IsNull or DataSet.Fields[I].AsString.Trim.IsEmpty then
       Continue;
     LKey := DataSet.Fields[I].FieldName;
     case DataSet.Fields[I].DataType of
