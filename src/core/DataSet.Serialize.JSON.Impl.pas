@@ -189,10 +189,10 @@ uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System
 
 procedure TJSONSerialize.JSONObjectToDataSet(const JSON: TJSONObject; const DataSet: TDataSet; const Merging: Boolean);
 var
-  Field: TField;
-  JSONValue: TJSONValue;
-  NestedDataSet: TDataSet;
-  BooleanValue: Boolean;
+  LField: TField;
+  LJSONValue: TJSONValue;
+  LNestedDataSet: TDataSet;
+  LBooleanValue: Boolean;
 begin
   if (not Assigned(JSON)) or (not Assigned(DataSet)) then
     Exit;
@@ -200,52 +200,52 @@ begin
     DataSet.Edit
   else
     DataSet.Append;
-  for Field in DataSet.Fields do
+  for LField in DataSet.Fields do
   begin
-    if Field.ReadOnly then
+    if LField.ReadOnly then
       Continue;
 
-    if not (JSON.TryGetValue(Field.FieldName, JSONValue) or JSON.TryGetValue(LowerCase(Field.FieldName), JSONValue)) then
+    if not (JSON.TryGetValue(LField.FieldName, LJSONValue) or JSON.TryGetValue(LowerCase(LField.FieldName), LJSONValue)) then
       Continue;
 
-    if JSONValue is TJSONNull then
+    if LJSONValue is TJSONNull then
     begin
-      Field.Clear;
+      LField.Clear;
       Continue;
     end;
-    case Field.DataType of
+    case LField.DataType of
       TFieldType.ftBoolean:
-        if JSONValue.TryGetValue<Boolean>(BooleanValue) then
-          Field.AsBoolean := BooleanValue;
+        if LJSONValue.TryGetValue<Boolean>(LBooleanValue) then
+          LField.AsBoolean := LBooleanValue;
       TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint, TFieldType.ftLongWord:
-        Field.AsInteger := StrToIntDef(JSONValue.Value, 0);
+        LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
       TFieldType.ftLargeint, TFieldType.ftAutoInc:
-        Field.AsLargeInt := StrToInt64Def(JSONValue.Value, 0);
+        LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
       TFieldType.ftCurrency:
-        Field.AsCurrency := StrToCurr(JSONValue.Value);
+        LField.AsCurrency := StrToCurr(LJSONValue.Value);
       TFieldType.ftFloat, TFieldType.ftFMTBcd, TFieldType.ftBCD, TFieldType.ftSingle:
-        Field.AsFloat := StrToFloat(JSONValue.Value);
+        LField.AsFloat := StrToFloat(LJSONValue.Value);
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
-        Field.AsString := JSONValue.Value;
+        LField.AsString := LJSONValue.Value;
       TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-        Field.AsDateTime := ISO8601ToDate(JSONValue.Value);
+        LField.AsDateTime := ISO8601ToDate(LJSONValue.Value);
       TFieldType.ftDataSet:
         begin
-          NestedDataSet := TDataSetField(Field).NestedDataSet;
-          if JSONValue is TJSONObject then
-            JSONObjectToDataSet(JSONValue as TJSONObject, NestedDataSet, False)
-          else if JSONValue is TJSONArray then
+          LNestedDataSet := TDataSetField(LField).NestedDataSet;
+          if LJSONValue is TJSONObject then
+            JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, False)
+          else if LJSONValue is TJSONArray then
           begin
-            NestedDataSet.First;
-            while not NestedDataSet.Eof do
-              NestedDataSet.Delete;
-            JSONArrayToDataSet(JSONValue as TJSONArray, NestedDataSet);
+            LNestedDataSet.First;
+            while not LNestedDataSet.Eof do
+              LNestedDataSet.Delete;
+            JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
           end;
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
-        LoadBlobFieldFromStream(Field, JSONValue);
+        LoadBlobFieldFromStream(LField, LJSONValue);
       else
-        raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [Field.FieldName]);
+        raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
     end;
   end;
   DataSet.Post;
@@ -264,7 +264,7 @@ end;
 function TJSONSerialize.Validate(const DataSet: TDataSet; const Lang: TLanguageType = enUS): TJSONArray;
 var
   I: Integer;
-  JSONValue: string;
+  LJSONValue: string;
 begin
   if not Assigned(FJSONObject) then
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
@@ -276,9 +276,9 @@ begin
   for I := 0 to Pred(DataSet.Fields.Count) do
     if DataSet.Fields.Fields[I].Required then
     begin
-      if FJSONObject.TryGetValue(DataSet.Fields.Fields[I].FieldName, JSONValue) then
+      if FJSONObject.TryGetValue(DataSet.Fields.Fields[I].FieldName, LJSONValue) then
       begin
-        if JSONValue.Trim.IsEmpty then
+        if LJSONValue.Trim.IsEmpty then
           Result.AddElement(AddFieldNotFound(DataSet.Fields.Fields[I].FieldName, DataSet.Fields.Fields[I].DisplayLabel, Lang));
       end
       else
@@ -288,21 +288,21 @@ end;
 
 procedure TJSONSerialize.LoadBlobFieldFromStream(const Field: TField; const JSONValue: TJSONValue);
 var
-  StringStream: TStringStream;
-  MemoryStream: TMemoryStream;
+  LStringStream: TStringStream;
+  LMemoryStream: TMemoryStream;
 begin
-  StringStream := TStringStream.Create((JSONValue as TJSONString).Value);
+  LStringStream := TStringStream.Create((JSONValue as TJSONString).Value);
   try
-    StringStream.Position := 0;
-    MemoryStream := TMemoryStream.Create;
+    LStringStream.Position := 0;
+    LMemoryStream := TMemoryStream.Create;
     try
-      TNetEncoding.Base64.Decode(StringStream, MemoryStream);
-      TBlobField(Field).LoadFromStream(MemoryStream);
+      TNetEncoding.Base64.Decode(LStringStream, LMemoryStream);
+      TBlobField(Field).LoadFromStream(LMemoryStream);
     finally
-      MemoryStream.Free;
+      LMemoryStream.Free;
     end;
   finally
-    StringStream.Free;
+    LStringStream.Free;
   end;
 end;
 
@@ -357,16 +357,16 @@ end;
 
 procedure TJSONSerialize.JSONArrayToDataSet(const JSON: TJSONArray; const DataSet: TDataSet);
 var
-  JSONValue: TJSONValue;
+  LJSONValue: TJSONValue;
 begin
   if (not Assigned(JSON)) or (not Assigned(DataSet)) then
     Exit;
-  for JSONValue in JSON do
+  for LJSONValue in JSON do
   begin
-    if (JSONValue is TJSONArray) then
-      JSONArrayToDataSet(JSONValue as TJSONArray, DataSet)
+    if (LJSONValue is TJSONArray) then
+      JSONArrayToDataSet(LJSONValue as TJSONArray, DataSet)
     else
-      JSONObjectToDataSet(JSONValue as TJSONObject, DataSet, False);
+      JSONObjectToDataSet(LJSONValue as TJSONObject, DataSet, False);
   end;
   DataSet.First;
 end;
@@ -399,7 +399,7 @@ end;
 
 procedure TJSONSerialize.JSONArrayToStructure(const JSONArray: TJSONArray; const DataSet: TDataSet);
 var
-  JSONValue: TJSONValue;
+  LJSONValue: TJSONValue;
 begin
   if not Assigned(DataSet) then
     raise EDataSetSerializeException.Create(DATASET_NOT_DIFINED);
@@ -408,8 +408,8 @@ begin
   if DataSet.FieldCount > 0 then
     raise EDataSetSerializeException.Create(PREDEFINED_FIELDS);
   try
-    for JSONValue in JSONArray do
-      TDataSetSerializeUtils.NewDataSetField(DataSet, LoadFieldStructure(JSONValue));
+    for LJSONValue in JSONArray do
+      TDataSetSerializeUtils.NewDataSetField(DataSet, LoadFieldStructure(LJSONValue));
   finally
     JSONArray.Free;
   end;

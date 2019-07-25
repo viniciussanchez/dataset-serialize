@@ -92,16 +92,16 @@ end;
 class function TDataSetSerializeUtils.CreateValidIdentifier(const Name: string): string;
 var
   I: Integer;
-  Character: Char;
+  LCharacter: Char;
 begin
   I := 0;
   SetLength(Result, Length(name));
-  for Character in name do
+  for LCharacter in name do
   begin
-    if CharInSet(Character, ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '_']) then
+    if CharInSet(LCharacter, ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '_']) then
     begin
       Inc(I);
-      Result[I] := Character;
+      Result[I] := LCharacter;
     end;
   end;
   SetLength(Result, I);
