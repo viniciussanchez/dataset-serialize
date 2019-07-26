@@ -24,7 +24,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 994
     Height = 571
-    ActivePage = tabJSON
+    ActivePage = tabDataSet
     Align = alClient
     TabOrder = 0
     object tabDataSet: TTabSheet
@@ -178,6 +178,10 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = 'JSON'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Splitter2: TSplitter
         Left = 481
         Top = 0
@@ -483,6 +487,10 @@ object FrmSamples: TFrmSamples
     object tabJSONNested: TTabSheet
       Caption = 'JSON Nested Object'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel11: TPanel
         Left = 313
         Top = 0

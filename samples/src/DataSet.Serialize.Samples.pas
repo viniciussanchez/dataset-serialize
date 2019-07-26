@@ -136,7 +136,7 @@ end;
 
 procedure TFrmSamples.Button5Click(Sender: TObject);
 begin
-  mtJSON.LoadStructure(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmStructure.Lines.Text),0) as TJSONArray);
+  mtJSON.LoadStructure(mmStructure.Lines.Text);
   DBGridStructure.Columns.RebuildColumns;
   DBGridStructure.Columns.Items[0].Width := 64;
   DBGridStructure.Columns.Items[1].Width := 250;
@@ -160,7 +160,7 @@ procedure TFrmSamples.Button8Click(Sender: TObject);
 begin
   if ValidateStructure then
     if mtJSON.RecordCount > 0 then
-      mtJSON.MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmMerge.Lines.Text),0) as TJSONObject);
+      mtJSON.MergeFromJSONObject(mmMerge.Lines.Text);
 end;
 
 procedure TFrmSamples.Button9Click(Sender: TObject);

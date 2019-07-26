@@ -43,7 +43,14 @@ type
     /// <param name="JSONArray">
     ///   Refers to JSON with field specifications.
     /// </param>
-    procedure LoadStructure(const JSONArray: TJSONArray);
+    procedure LoadStructure(const JSONArray: TJSONArray); overload;
+    /// <summary>
+    ///   Loads fields from a DataSet based on a JSON (string format).
+    /// </summary>
+    /// <param name="JSONString">
+    ///   Refers to JSON with field specifications.
+    /// </param>
+    procedure LoadStructure(const JSONString: string); overload;
     /// <summary>
     ///   Loads the DataSet with data from a JSON object.
     /// </summary>
@@ -83,7 +90,14 @@ type
     /// <param name="JSONObject">
     ///   Refers to JSON that you want to merge.
     /// </param>
-    procedure MergeFromJSONObject(const JSONObject: TJSONObject);
+    procedure MergeFromJSONObject(const JSONObject: TJSONObject); overload;
+    /// <summary>
+    ///   Updates the DataSet data with JSON object data (string format).
+    /// </summary>
+    /// <param name="JSONString">
+    ///   Refers to JSON that you want to merge.
+    /// </param>
+    procedure MergeFromJSONObject(const JSONString: string); overload;
     /// <summary>
     ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
     /// </summary>
@@ -143,6 +157,18 @@ begin
     LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSONString),0) as TJSONObject)
   else if Trim(JSONString).StartsWith('[') then
     LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSONString),0) as TJSONArray);
+end;
+
+procedure TDataSetSerializeHelper.LoadStructure(const JSONString: string);
+begin
+  if Trim(JSONString).StartsWith('[') then
+    LoadStructure(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSONString),0) as TJSONArray);
+end;
+
+procedure TDataSetSerializeHelper.MergeFromJSONObject(const JSONString: string);
+begin
+  if Trim(JSONString).StartsWith('{') then
+    MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSONString),0) as TJSONObject)
 end;
 
 procedure TDataSetSerializeHelper.LoadStructure(const JSONArray: TJSONArray);
