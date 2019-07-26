@@ -118,11 +118,8 @@ const
         "AutoGenerateValue": "arNone"
       }
     ]';
-var
-  JSONArray: TJSONArray;
 begin
-  JSONArray := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(STRUCTURE),0) as TJSONArray;
-  qrySample.LoadStructure(JSONArray);
+  qrySample.LoadStructure(STRUCTURE);
 end;
 ``` 
 
@@ -139,11 +136,8 @@ end;
 ```pascal
 const 
   JSON = '{"NAME":"Vinicius","COUNTRY":"United States"}';
-var
-  JSONObject: TJSONObject;
 begin
-  JSONObject := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSON),0) as TJSONObject;
-  qrySample.MergeFromJSONObject(JSONObject);
+  qrySample.MergeFromJSONObject(JSON);
 end;
 ``` 
 
