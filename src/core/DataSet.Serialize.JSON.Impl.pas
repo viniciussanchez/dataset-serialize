@@ -18,20 +18,20 @@ type
     /// <summary>
     ///   Load a field of type blob with the value of a JSON.
     /// </summary>
-    /// <param name="Field">
+    /// <param name="AField">
     ///   It refers to the field that you want to be loaded with the JSONValue.
     /// </param>
-    /// <param name="JSONValue">
+    /// <param name="AJSONValue">
     ///   It refers to the value that is assigned to the field.
     /// </param>
-    procedure LoadBlobFieldFromStream(const Field: TField; const JSONValue: TJSONValue);
+    procedure LoadBlobFieldFromStream(const AField: TField; const AJSONValue: TJSONValue);
     /// <summary>
     ///   Loads the fields of a DataSet based on a JSONArray.
     /// </summary>
-    /// <param name="JSONArray">
+    /// <param name="AJSONArray">
     ///   JSONArray with the DataSet structure.
     /// </param>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet that will be configured.
     /// </param>
     /// <remarks>
@@ -39,85 +39,85 @@ type
     ///   The DataSet can not be active.
     ///   To convert a structure only JSONArray is allowed.
     /// </remarks>
-    procedure JSONArrayToStructure(const JSONArray: TJSONArray; const DataSet: TDataSet);
+    procedure JSONArrayToStructure(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
     /// <summary>
     ///   Loads a DataSet with a JSONObject.
     /// </summary>
-    /// <param name="JSON">
+    /// <param name="AJSONObject">
     ///   Refers to the JSON in with the data that must be loaded in the DataSet.
     /// </param>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
-    /// <param name="Merging">
+    /// <param name="AMerging">
     ///   Indicates whether to include or change the DataSet record.
     /// </param>
-    procedure JSONObjectToDataSet(const JSON: TJSONObject; const DataSet: TDataSet; const Merging: Boolean);
+    procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const AMerging: Boolean);
     /// <summary>
     ///   Loads a DataSet with a JSONArray.
     /// </summary>
-    /// <param name="JSON">
+    /// <param name="AJSONArray">
     ///   Refers to the JSON in with the data that must be loaded in the DataSet.
     /// </param>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
-    procedure JSONArrayToDataSet(const JSON: TJSONArray; const DataSet: TDataSet);
+    procedure JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
     /// <summary>
     ///   Creates a JSON informing the required field.
     /// </summary>
-    /// <param name="FieldName">
+    /// <param name="AFieldName">
     ///   Field name in the DataSet.
     /// </param>
-    /// <param name="DisplayLabel">
+    /// <param name="ADisplayLabel">
     ///   Formatted field name.
     /// </param>
-    /// <param name="Lang">
+    /// <param name="ALang">
     ///   Language used to mount messages.
     /// </param>
     /// <returns>
     ///   Returns a JSON with the message and field name.
     /// </returns>
-    function AddFieldNotFound(const FieldName, DisplayLabel: string; const Lang: TLanguageType = enUS): TJSONObject;
+    function AddFieldNotFound(const AFieldName, ADisplayLabel: string; const ALang: TLanguageType = enUS): TJSONObject;
     /// <summary>
     ///   Load field structure.
     /// </summary>
-    /// <param name="JSONValue">
+    /// <param name="AJSONValue">
     ///   JSON with field data.
     /// </param>
     /// <returns>
     ///   Record of field structure.
     /// </returns>
-    function LoadFieldStructure(const JSONValue: TJSONValue): TFieldStructure;
+    function LoadFieldStructure(const AJSONValue: TJSONValue): TFieldStructure;
   protected
     /// <summary>
     ///   Loads fields from a DataSet based on JSON.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet to which you want to load the structure.
     /// </param>
-    procedure LoadStructure(const DataSet: TDataSet);
+    procedure LoadStructure(const ADataSet: TDataSet);
     /// <summary>
     ///   Runs the merge between the record of DataSet and JSONObject.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet that you want to merge with the JSON object.
     /// </param>
-    procedure Merge(const DataSet: TDataSet);
+    procedure Merge(const ADataSet: TDataSet);
     /// <summary>
     ///   Loads the DataSet with JSON content.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet you want to load.
     /// </param>
-    procedure ToDataSet(const DataSet: TDataSet);
+    procedure ToDataSet(const ADataSet: TDataSet);
     /// <summary>
     ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet that will be loaded with JSON.
     /// </param>
-    /// <param name="Lang">
+    /// <param name="ALang">
     ///   Language used to mount messages.
     /// </param>
     /// <returns>
@@ -127,14 +127,14 @@ type
     ///   Walk the DataSet fields by checking the required property.
     ///   Uses the DisplayLabel property to mount the message.
     /// </remarks>
-    function Validate(const DataSet: TDataSet; const Lang: TLanguageType = enUS): TJSONArray;
+    function Validate(const ADataSet: TDataSet; const ALang: TLanguageType = enUS): TJSONArray;
     /// <summary>
     ///   Defines what the JSONObject.
     /// </summary>
-    /// <param name="JSONObject">
+    /// <param name="AJSONObject">
     ///   Refers to JSON itself.
     /// </param>
-    /// <param name="Owns">
+    /// <param name="AOwns">
     ///   Indicates the owner of the JSON.
     /// </param>
     /// <returns>
@@ -143,14 +143,14 @@ type
     /// <remarks>
     ///   If it's the owner destroys the same of the memory when finalizing.
     /// </remarks>
-    function SetJSONObject(const JSONObject: TJSONObject; const Owns: Boolean = False): IJSONSerialize;
+    function SetJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = False): IJSONSerialize;
     /// <summary>
     ///   Defines what the JSONArray.
     /// </summary>
-    /// <param name="JSONObject">
+    /// <param name="AJSONObject">
     ///   Refers to JSON itself.
     /// </param>
-    /// <param name="Owns">
+    /// <param name="AOwns">
     ///   Indicates the owner of the JSON.
     /// </param>
     /// <returns>
@@ -159,7 +159,7 @@ type
     /// <remarks>
     ///   If it's the owner destroys the same of the memory when finalizing.
     /// </remarks>
-    function SetJSONArray(const JSONArray: TJSONArray; const Owns: Boolean = False): IJSONSerialize;
+    function SetJSONArray(const AJSONArray: TJSONArray; const AOwns: Boolean = False): IJSONSerialize;
   public
     /// <summary>
     ///   Responsible for creating a new isntância of TDataSetSerialize class.
@@ -187,25 +187,25 @@ uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System
 
 { TJSONSerialize }
 
-procedure TJSONSerialize.JSONObjectToDataSet(const JSON: TJSONObject; const DataSet: TDataSet; const Merging: Boolean);
+procedure TJSONSerialize.JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const AMerging: Boolean);
 var
   LField: TField;
   LJSONValue: TJSONValue;
   LNestedDataSet: TDataSet;
   LBooleanValue: Boolean;
 begin
-  if (not Assigned(JSON)) or (not Assigned(DataSet)) then
+  if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) then
     Exit;
-  if Merging then
-    DataSet.Edit
+  if AMerging then
+    ADataSet.Edit
   else
-    DataSet.Append;
-  for LField in DataSet.Fields do
+    ADataSet.Append;
+  for LField in ADataSet.Fields do
   begin
     if LField.ReadOnly then
       Continue;
 
-    if not (JSON.TryGetValue(LField.FieldName, LJSONValue) or JSON.TryGetValue(LowerCase(LField.FieldName), LJSONValue)) then
+    if not (AJSONObject.TryGetValue(LField.FieldName, LJSONValue) or AJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue)) then
       Continue;
 
     if LJSONValue is TJSONNull then
@@ -248,56 +248,56 @@ begin
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
     end;
   end;
-  DataSet.Post;
+  ADataSet.Post;
 end;
 
-procedure TJSONSerialize.ToDataSet(const DataSet: TDataSet);
+procedure TJSONSerialize.ToDataSet(const ADataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
-    JSONObjectToDataSet(FJSONObject, DataSet, FMerging)
+    JSONObjectToDataSet(FJSONObject, ADataSet, FMerging)
   else if Assigned(FJSONArray) then
-    JSONArrayToDataSet(FJSONArray, DataSet)
+    JSONArrayToDataSet(FJSONArray, ADataSet)
   else
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
 end;
 
-function TJSONSerialize.Validate(const DataSet: TDataSet; const Lang: TLanguageType = enUS): TJSONArray;
+function TJSONSerialize.Validate(const ADataSet: TDataSet; const ALang: TLanguageType = enUS): TJSONArray;
 var
   I: Integer;
   LJSONValue: string;
 begin
   if not Assigned(FJSONObject) then
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
-  if not Assigned(DataSet) then
+  if not Assigned(ADataSet) then
     raise EDataSetSerializeException.Create(DATASET_NOT_CREATED);
-  if DataSet.Fields.Count = 0 then
+  if ADataSet.Fields.Count = 0 then
     raise EDataSetSerializeException.Create(DATASET_HAS_NO_DEFINED_FIELDS);
   Result := TJSONArray.Create();
-  for I := 0 to Pred(DataSet.Fields.Count) do
-    if DataSet.Fields.Fields[I].Required then
+  for I := 0 to Pred(ADataSet.Fields.Count) do
+    if ADataSet.Fields.Fields[I].Required then
     begin
-      if FJSONObject.TryGetValue(DataSet.Fields.Fields[I].FieldName, LJSONValue) then
+      if FJSONObject.TryGetValue(ADataSet.Fields.Fields[I].FieldName, LJSONValue) then
       begin
         if LJSONValue.Trim.IsEmpty then
-          Result.AddElement(AddFieldNotFound(DataSet.Fields.Fields[I].FieldName, DataSet.Fields.Fields[I].DisplayLabel, Lang));
+          Result.AddElement(AddFieldNotFound(ADataSet.Fields.Fields[I].FieldName, ADataSet.Fields.Fields[I].DisplayLabel, ALang));
       end
       else
-        Result.AddElement(AddFieldNotFound(DataSet.Fields.Fields[I].FieldName, DataSet.Fields.Fields[I].DisplayLabel, Lang));
+        Result.AddElement(AddFieldNotFound(ADataSet.Fields.Fields[I].FieldName, ADataSet.Fields.Fields[I].DisplayLabel, ALang));
     end;
 end;
 
-procedure TJSONSerialize.LoadBlobFieldFromStream(const Field: TField; const JSONValue: TJSONValue);
+procedure TJSONSerialize.LoadBlobFieldFromStream(const AField: TField; const AJSONValue: TJSONValue);
 var
   LStringStream: TStringStream;
   LMemoryStream: TMemoryStream;
 begin
-  LStringStream := TStringStream.Create((JSONValue as TJSONString).Value);
+  LStringStream := TStringStream.Create((AJSONValue as TJSONString).Value);
   try
     LStringStream.Position := 0;
     LMemoryStream := TMemoryStream.Create;
     try
       TNetEncoding.Base64.Decode(LStringStream, LMemoryStream);
-      TBlobField(Field).LoadFromStream(LMemoryStream);
+      TBlobField(AField).LoadFromStream(LMemoryStream);
     finally
       LMemoryStream.Free;
     end;
@@ -306,39 +306,39 @@ begin
   end;
 end;
 
-function TJSONSerialize.LoadFieldStructure(const JSONValue: TJSONValue): TFieldStructure;
+function TJSONSerialize.LoadFieldStructure(const AJSONValue: TJSONValue): TFieldStructure;
 begin
-  Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), JSONValue.GetValue<string>('DataType')));
-  Result.Size := StrToIntDef(TJSONObject(JSONValue).GetValue<string>('Size'), 0);
-  Result.FieldName := JSONValue.GetValue<string>('FieldName');
-  Result.Origin := JSONValue.GetValue<string>('Origin');
-  Result.DisplayLabel := JSONValue.GetValue<string>('DisplayLabel');
-  Result.Key := JSONValue.GetValue<Boolean>('Key');
-  Result.Required := JSONValue.GetValue<Boolean>('Required');
-  Result.Visible := JSONValue.GetValue<Boolean>('Visible');
-  Result.ReadOnly := JSONValue.GetValue<Boolean>('ReadOnly');
-  Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), JSONValue.GetValue<string>('AutoGenerateValue')));
+  Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), AJSONValue.GetValue<string>('DataType')));
+  Result.Size := StrToIntDef(TJSONObject(AJSONValue).GetValue<string>('Size'), 0);
+  Result.FieldName := AJSONValue.GetValue<string>('FieldName');
+  Result.Origin := AJSONValue.GetValue<string>('Origin');
+  Result.DisplayLabel := AJSONValue.GetValue<string>('DisplayLabel');
+  Result.Key := AJSONValue.GetValue<Boolean>('Key');
+  Result.Required := AJSONValue.GetValue<Boolean>('Required');
+  Result.Visible := AJSONValue.GetValue<Boolean>('Visible');
+  Result.ReadOnly := AJSONValue.GetValue<Boolean>('ReadOnly');
+  Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), AJSONValue.GetValue<string>('AutoGenerateValue')));
 end;
 
-procedure TJSONSerialize.LoadStructure(const DataSet: TDataSet);
+procedure TJSONSerialize.LoadStructure(const ADataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
     raise EDataSetSerializeException.Create(TO_CONVERT_STRUCTURE_ONLY_JSON_ARRAY_ALLOWED)
   else if Assigned(FJSONArray) then
-    JSONArrayToStructure(FJSONArray, DataSet)
+    JSONArrayToStructure(FJSONArray, ADataSet)
   else
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
 end;
 
-function TJSONSerialize.AddFieldNotFound(const FieldName, DisplayLabel: string; const Lang: TLanguageType = enUS): TJSONObject;
+function TJSONSerialize.AddFieldNotFound(const AFieldName, ADisplayLabel: string; const ALang: TLanguageType = enUS): TJSONObject;
 begin
   Result := TJSONObject.Create;
-  Result.AddPair(TJSONPair.Create('field', FieldName));
-  case Lang of
+  Result.AddPair(TJSONPair.Create('field', AFieldName));
+  case ALang of
     ptBR:
-      Result.AddPair(TJSONPair.Create('error', DisplayLabel + ' não foi informado(a)'));
+      Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' não foi informado(a)'));
     else
-      Result.AddPair(TJSONPair.Create('error', DisplayLabel + ' not informed'));
+      Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' not informed'));
   end;
 end;
 
@@ -355,63 +355,63 @@ begin
   FJSONArray := nil;
 end;
 
-procedure TJSONSerialize.JSONArrayToDataSet(const JSON: TJSONArray; const DataSet: TDataSet);
+procedure TJSONSerialize.JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
 var
   LJSONValue: TJSONValue;
 begin
-  if (not Assigned(JSON)) or (not Assigned(DataSet)) then
+  if (not Assigned(AJSONArray)) or (not Assigned(ADataSet)) then
     Exit;
-  for LJSONValue in JSON do
+  for LJSONValue in AJSONArray do
   begin
     if (LJSONValue is TJSONArray) then
-      JSONArrayToDataSet(LJSONValue as TJSONArray, DataSet)
+      JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet)
     else
-      JSONObjectToDataSet(LJSONValue as TJSONObject, DataSet, False);
+      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False);
   end;
-  DataSet.First;
+  ADataSet.First;
 end;
 
-function TJSONSerialize.SetJSONObject(const JSONObject: TJSONObject; const Owns: Boolean = False): IJSONSerialize;
+function TJSONSerialize.SetJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = False): IJSONSerialize;
 begin
   Result := Self;
   ClearJSON;
-  FJSONObject := JSONObject;
-  FOwns := Owns;
+  FJSONObject := AJSONObject;
+  FOwns := AOwns;
 end;
 
-function TJSONSerialize.SetJSONArray(const JSONArray: TJSONArray; const Owns: Boolean = False): IJSONSerialize;
+function TJSONSerialize.SetJSONArray(const AJSONArray: TJSONArray; const AOwns: Boolean = False): IJSONSerialize;
 begin
   Result := Self;
   ClearJSON;
-  FJSONArray := JSONArray;
-  FOwns := Owns;
+  FJSONArray := AJSONArray;
+  FOwns := AOwns;
 end;
 
-procedure TJSONSerialize.Merge(const DataSet: TDataSet);
+procedure TJSONSerialize.Merge(const ADataSet: TDataSet);
 begin
   FMerging := True;
   try
-    ToDataSet(DataSet);
+    ToDataSet(ADataSet);
   finally
     FMerging := False;
   end;
 end;
 
-procedure TJSONSerialize.JSONArrayToStructure(const JSONArray: TJSONArray; const DataSet: TDataSet);
+procedure TJSONSerialize.JSONArrayToStructure(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
 var
   LJSONValue: TJSONValue;
 begin
-  if not Assigned(DataSet) then
+  if not Assigned(ADataSet) then
     raise EDataSetSerializeException.Create(DATASET_NOT_DIFINED);
-  if DataSet.Active then
+  if ADataSet.Active then
     raise EDataSetSerializeException.Create(DATASET_ACTIVATED);
-  if DataSet.FieldCount > 0 then
+  if ADataSet.FieldCount > 0 then
     raise EDataSetSerializeException.Create(PREDEFINED_FIELDS);
   try
-    for LJSONValue in JSONArray do
-      TDataSetSerializeUtils.NewDataSetField(DataSet, LoadFieldStructure(LJSONValue));
+    for LJSONValue in AJSONArray do
+      TDataSetSerializeUtils.NewDataSetField(ADataSet, LoadFieldStructure(LJSONValue));
   finally
-    JSONArray.Free;
+    AJSONArray.Free;
   end;
 end;
 

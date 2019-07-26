@@ -24,42 +24,42 @@ type
     /// <summary>
     ///   Responsible for defining the DataSet and its owner.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   It refers to the DataSet itself.
     /// </param>
-    /// <param name="Owns">
+    /// <param name="AOwns">
     ///   Parameter responsible for indicating whether it's responsible for the destruction of the DataSet or not.
     /// </param>
     /// <returns>
     ///   Returns the IDataSetSerialize interface instance itself.
     /// </returns>
-    function SetDataSet(const DataSet: TDataSet; const Owns: Boolean = False): IDataSetSerialize;
+    function SetDataSet(const ADataSet: TDataSet; const AOwns: Boolean = False): IDataSetSerialize;
     /// <summary>
     ///   Responsible for defining the JSONObject and its owner.
     /// </summary>
-    /// <param name="JSONObject">
+    /// <param name="AJSONObject">
     ///   It refers to the JSON itself.
     /// </param>
-    /// <param name="Owns">
+    /// <param name="AOwns">
     ///   Parameter responsible for indicating whether it's responsible for the destruction of the JSON or not.
     /// </param>
     /// <returns>
     ///   Returns the IJSONSerialize interface instance itself.
     /// </returns>
-    function SetJSONObject(const JSONObject: TJSONObject; const Owns: Boolean = False): IJSONSerialize;
+    function SetJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = False): IJSONSerialize;
     /// <summary>
     ///   Responsible for defining the JSONArray and its owner.
     /// </summary>
-    /// <param name="JSONArray">
+    /// <param name="AJSONArray">
     ///   It refers to the JSON itself.
     /// </param>
-    /// <param name="Owns">
+    /// <param name="AOwns">
     ///   Parameter responsible for indicating whether it's responsible for the destruction of the JSON or not.
     /// </param>
     /// <returns>
     ///   Returns the IJSONSerialize interface instance itself.
     /// </returns>
-    function SetJSONArray(const JSONArray: TJSONArray; const Owns: Boolean = False): IJSONSerialize;
+    function SetJSONArray(const AJSONArray: TJSONArray; const AOwns: Boolean = False): IJSONSerialize;
   public
     /// <summary>
     ///   Creates a new instance of ISerialize interface.
@@ -76,19 +76,19 @@ uses DataSet.Serialize.DS.Impl, DataSet.Serialize.JSON.Impl;
 
 { TSerialize }
 
-function TSerialize.SetDataSet(const DataSet: TDataSet; const Owns: Boolean = False): IDataSetSerialize;
+function TSerialize.SetDataSet(const ADataSet: TDataSet; const AOwns: Boolean = False): IDataSetSerialize;
 begin
-  Result := Self.DataSet.SetDataSet(DataSet, Owns);
+  Result := Self.DataSet.SetDataSet(ADataSet, AOwns);
 end;
 
-function TSerialize.SetJSONObject(const JSONObject: TJSONObject; const Owns: Boolean = False): IJSONSerialize;
+function TSerialize.SetJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = False): IJSONSerialize;
 begin
-  Result := Self.JSON.SetJSONObject(JSONObject, Owns);
+  Result := Self.JSON.SetJSONObject(AJSONObject, AOwns);
 end;
 
-function TSerialize.SetJSONArray(const JSONArray: TJSONArray; const Owns: Boolean = False): IJSONSerialize;
+function TSerialize.SetJSONArray(const AJSONArray: TJSONArray; const AOwns: Boolean = False): IJSONSerialize;
 begin
-  Result := Self.JSON.SetJSONArray(JSONArray, Owns);
+  Result := Self.JSON.SetJSONArray(AJSONArray, AOwns);
 end;
 
 function TSerialize.DataSet: IDataSetSerialize;

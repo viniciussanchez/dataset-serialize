@@ -31,46 +31,46 @@ type
     /// <summary>
     ///   Creates a new field in the DataSet.
     /// </summary>
-    /// <param name="FieldStructure">
+    /// <param name="AFieldStructure">
     ///   Field structure to create a new field to dataset.
     /// </param>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   DataSet that the field will be created.
     /// </param>
     /// <returns>
     ///   Return a new field.
     /// </returns>
-    class function NewDataSetField(const DataSet: TDataSet; const FieldStructure: TFieldStructure): TField;
+    class function NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;
     /// <summary>
     ///   Converts a boolean to a TBooleanFieldType.
     /// </summary>
-    /// <param name="BooleanField">
+    /// <param name="ABooleanField">
     ///   Boolean field type.
     /// </param>
     /// <returns>
     ///   Returns a valid boolean field type.
     /// </returns>
-    class function BooleanFieldToType(const BooleanField: TBooleanField): TBooleanFieldType;
+    class function BooleanFieldToType(const ABooleanField: TBooleanField): TBooleanFieldType;
     /// <summary>
     ///   Creates a valid name for the field added to the DataSet.
     /// </summary>
-    /// <param name="Name">
+    /// <param name="AName">
     ///   Field name.
     /// </param>
     /// <returns>
     ///   Returns a valid name.
     /// </returns>
-    class function CreateValidIdentifier(const Name: string): string;
+    class function CreateValidIdentifier(const AName: string): string;
     /// <summary>
     ///   Converts a Boolean value to a JSONValue.
     /// </summary>
-    /// <param name="Value">
+    /// <param name="AValue">
     ///   Refers to the Boolean value (True or False).
     /// </param>
     /// <returns>
     ///   Returns a JSONValue.
     /// </returns>
-    class function BooleanToJSON(const Value: Boolean): TJSONValue;
+    class function BooleanToJSON(const AValue: Boolean): TJSONValue;
   end;
 
 implementation
@@ -79,24 +79,24 @@ uses Providers.DataSet.Serialize.Constants;
 
 { TDataSetSerializeUtils }
 
-class function TDataSetSerializeUtils.BooleanFieldToType(const BooleanField: TBooleanField): TBooleanFieldType;
+class function TDataSetSerializeUtils.BooleanFieldToType(const ABooleanField: TBooleanField): TBooleanFieldType;
 var
   I: Integer;
 begin
   Result := bfUnknown;
   for I := Ord(low(TBooleanFieldType)) to Ord(high(TBooleanFieldType)) do
-    if LowerCase(TBooleanFieldType(I).ToString).Equals(LowerCase(BooleanField.Origin.Trim)) then
+    if LowerCase(TBooleanFieldType(I).ToString).Equals(LowerCase(ABooleanField.Origin.Trim)) then
       Exit(TBooleanFieldType(I));
 end;
 
-class function TDataSetSerializeUtils.CreateValidIdentifier(const Name: string): string;
+class function TDataSetSerializeUtils.CreateValidIdentifier(const AName: string): string;
 var
   I: Integer;
   LCharacter: Char;
 begin
   I := 0;
-  SetLength(Result, Length(name));
-  for LCharacter in name do
+  SetLength(Result, Length(AName));
+  for LCharacter in AName do
   begin
     if CharInSet(LCharacter, ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '_']) then
     begin
@@ -111,31 +111,31 @@ begin
     Result := '_' + Result;
 end;
 
-class function TDataSetSerializeUtils.NewDataSetField(const DataSet: TDataSet; const FieldStructure: TFieldStructure): TField;
+class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;
 begin
-  Result := DefaultFieldClasses[FieldStructure.FieldType].Create(DataSet);
-  Result.FieldName := FieldStructure.FieldName;
+  Result := DefaultFieldClasses[AFieldStructure.FieldType].Create(ADataSet);
+  Result.FieldName := AFieldStructure.FieldName;
   if Result.FieldName.Trim.IsEmpty then
-    Result.FieldName := 'Field' + IntToStr(DataSet.FieldCount + 1);
+    Result.FieldName := 'Field' + IntToStr(ADataSet.FieldCount + 1);
   Result.FieldKind := fkData;
-  Result.DataSet := DataSet;
-  Result.Name := CreateValidIdentifier(DataSet.Name + Result.FieldName);
-  Result.Size := FieldStructure.Size;
-  Result.Visible := FieldStructure.Visible;
-  Result.ReadOnly := FieldStructure.ReadOnly;
-  Result.Required := FieldStructure.Required;
-  Result.Origin := FieldStructure.Origin;
-  Result.DisplayLabel := FieldStructure.DisplayLabel;
-  Result.AutoGenerateValue := FieldStructure.AutoGenerateValue;
-  if FieldStructure.Key then
+  Result.DataSet := ADataSet;
+  Result.Name := CreateValidIdentifier(ADataSet.Name + Result.FieldName);
+  Result.Size := AFieldStructure.Size;
+  Result.Visible := AFieldStructure.Visible;
+  Result.ReadOnly := AFieldStructure.ReadOnly;
+  Result.Required := AFieldStructure.Required;
+  Result.Origin := AFieldStructure.Origin;
+  Result.DisplayLabel := AFieldStructure.DisplayLabel;
+  Result.AutoGenerateValue := AFieldStructure.AutoGenerateValue;
+  if AFieldStructure.Key then
     Result.ProviderFlags := [pfInKey];
-  if (FieldStructure.FieldType in [ftString, ftWideString]) and (FieldStructure.Size <= 0) then
-    raise EDataSetSerializeException.CreateFmt(SIZE_NOT_DEFINED_FOR_FIELD, [FieldStructure.FieldName]);
+  if (AFieldStructure.FieldType in [ftString, ftWideString]) and (AFieldStructure.Size <= 0) then
+    raise EDataSetSerializeException.CreateFmt(SIZE_NOT_DEFINED_FOR_FIELD, [AFieldStructure.FieldName]);
 end;
 
-class function TDataSetSerializeUtils.BooleanToJSON(const Value: Boolean): TJSONValue;
+class function TDataSetSerializeUtils.BooleanToJSON(const AValue: Boolean): TJSONValue;
 begin
-  if Value then
+  if AValue then
     Result := TJSONTrue.Create
   else
     Result := TJSONFalse.Create;

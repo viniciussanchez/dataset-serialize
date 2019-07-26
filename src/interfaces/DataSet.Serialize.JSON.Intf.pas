@@ -10,31 +10,31 @@ type
     /// <summary>
     ///   Loads fields from a DataSet based on JSON.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet to which you want to load the structure.
     /// </param>
-    procedure LoadStructure(const DataSet: TDataSet);
+    procedure LoadStructure(const ADataSet: TDataSet);
     /// <summary>
     ///   Runs the merge between the record of DataSet and JSONObject.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet that you want to merge with the JSON object.
     /// </param>
-    procedure Merge(const DataSet: TDataSet);
+    procedure Merge(const ADataSet: TDataSet);
     /// <summary>
     ///   Loads the DataSet with JSON content.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet you want to load.
     /// </param>
-    procedure ToDataSet(const DataSet: TDataSet);
+    procedure ToDataSet(const ADataSet: TDataSet);
     /// <summary>
     ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet that will be loaded with JSON.
     /// </param>
-    /// <param name="Lang">
+    /// <param name="ALang">
     ///   Language used to mount messages.
     /// </param>
     /// <returns>
@@ -44,14 +44,14 @@ type
     ///   Walk the DataSet fields by checking the required property.
     ///   Uses the DisplayLabel property to mount the message.
     /// </remarks>
-    function Validate(const DataSet: TDataSet; const Lang: TLanguageType = enUS): TJSONArray;
+    function Validate(const ADataSet: TDataSet; const ALang: TLanguageType = enUS): TJSONArray;
     /// <summary>
     ///   Defines what the JSONObject.
     /// </summary>
-    /// <param name="JSONObject">
+    /// <param name="AJSONObject">
     ///   Refers to JSON itself.
     /// </param>
-    /// <param name="Owns">
+    /// <param name="AOwns">
     ///   Indicates the owner of the JSON.
     /// </param>
     /// <returns>
@@ -60,14 +60,14 @@ type
     /// <remarks>
     ///   If it's the owner destroys the same of the memory when finalizing.
     /// </remarks>
-    function SetJSONObject(const JSONObject: TJSONObject; const Owns: Boolean = False): IJSONSerialize;
+    function SetJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = False): IJSONSerialize;
     /// <summary>
     ///   Defines what the JSONArray.
     /// </summary>
-    /// <param name="JSONObject">
+    /// <param name="AJSONArray">
     ///   Refers to JSON itself.
     /// </param>
-    /// <param name="Owns">
+    /// <param name="AOwns">
     ///   Indicates the owner of the JSON.
     /// </param>
     /// <returns>
@@ -76,7 +76,7 @@ type
     /// <remarks>
     ///   If it's the owner destroys the same of the memory when finalizing.
     /// </remarks>
-    function SetJSONArray(const JSONArray: TJSONArray; const Owns: Boolean = False): IJSONSerialize;
+    function SetJSONArray(const AJSONArray: TJSONArray; const AOwns: Boolean = False): IJSONSerialize;
   end;
 
 implementation
