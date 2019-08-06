@@ -57,21 +57,29 @@ type
     mmJSONArrayValidate: TMemo;
     tabJSONNested: TTabSheet;
     mtJSONNested: TFDMemTable;
-    mtJSONNestedObject: TFDMemTable;
+    mtJSONNestedUF: TFDMemTable;
     Panel11: TPanel;
     DBGrid2: TDBGrid;
     DBGrid3: TDBGrid;
-    mtJSONNestedESTADO: TStringField;
+    mtJSONNestedPAIS: TStringField;
     mtJSONNestedSIGLA: TStringField;
-    mtJSONNestedObjectNOME: TStringField;
-    mtJSONNestedObjectCEP: TStringField;
+    mtJSONNestedUFNOME: TStringField;
+    mtJSONNestedUFCEP: TStringField;
     dsJSONNested: TDataSource;
-    dsJSONNestedObject: TDataSource;
+    dsJSONNestedUF: TDataSource;
     Panel14: TPanel;
     mmJSONNested: TMemo;
     Button10: TButton;
-    mtJSONNestedCIDADES: TDataSetField;
-    mtJSONNestedPAISNOME: TStringField;
+    mtJSONNestedESTADOS: TDataSetField;
+    Panel15: TPanel;
+    mmExportDataSetNested: TMemo;
+    Button11: TButton;
+    mtJSONNestedCity: TFDMemTable;
+    dsJSONNEstedCity: TDataSource;
+    DBGrid4: TDBGrid;
+    mtJSONNestedUFCIDADES: TDataSetField;
+    mtJSONNestedCityNOME: TStringField;
+    mtJSONNestedCityCEP: TStringField;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -85,6 +93,7 @@ type
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
+    procedure Button11Click(Sender: TObject);
   private
     procedure Append;
     procedure ClearFields;
@@ -111,6 +120,12 @@ end;
 procedure TFrmSamples.Button10Click(Sender: TObject);
 begin
   mtJSONNested.LoadFromJSON(mmJSONNested.Lines.Text);
+end;
+
+procedure TFrmSamples.Button11Click(Sender: TObject);
+begin
+  if not mtJSONNested.IsEmpty then
+    mmExportDataSetNested.Lines.Text := mtJSONNested.ToJSONObject.ToString;
 end;
 
 procedure TFrmSamples.Button1Click(Sender: TObject);
@@ -186,7 +201,8 @@ procedure TFrmSamples.FormCreate(Sender: TObject);
 begin
   mtDataSet.Active := True;
   mtJSONNested.Active := True;
-  mtJSONNestedObject.Active := True;
+  mtJSONNestedUF.Active := True;
+  mtJSONNestedCity.Active := True;
 end;
 
 procedure TFrmSamples.FormShow(Sender: TObject);

@@ -203,9 +203,9 @@ begin
       TFieldType.ftDataSet:
         begin
           LNestedDataSet := TDataSetField(ADataSet.Fields[I]).NestedDataSet;
-          if Trim(ADataSet.Fields[I].AsString).StartsWith('{') then
+          if LNestedDataSet.RecordCount = 1 then
             Result.AddPair(LKey, DataSetToJSONObject(LNestedDataSet))
-          else if Trim(ADataSet.Fields[I].AsString).StartsWith('[') then
+          else if LNestedDataSet.RecordCount > 1 then
             Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
