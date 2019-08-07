@@ -114,7 +114,24 @@ type
     ///   Walk the DataSet fields by checking the required property.
     ///   Uses the DisplayLabel property to mount the message.
     /// </remarks>
-    function ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS): TJSONArray;
+    function ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS): TJSONArray; overload;
+    /// <summary>
+    ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
+    /// </summary>
+    /// <param name="AJSONString">
+    ///   Refers to JSON that must be validated.
+    /// </param>
+    /// <param name="ALang">
+    ///   Language used to mount messages.
+    /// </param>
+    /// <returns>
+    ///   Returns a JSONArray with the fields that were not informed.
+    /// </returns>
+    /// <remarks>
+    ///   Walk the DataSet fields by checking the required property.
+    ///   Uses the DisplayLabel property to mount the message.
+    /// </remarks>
+    function ValidateJSON(const AJSONString: string; const ALang: TLanguageType = enUS): TJSONArray; overload;
   end;
 
 implementation
@@ -129,6 +146,14 @@ end;
 function TDataSetSerializeHelper.ToJSONObject: TJSONObject;
 begin
   Result := TSerialize.New.SetDataSet(Self).ToJSONObject;
+end;
+
+function TDataSetSerializeHelper.ValidateJSON(const AJSONString: string; const ALang: TLanguageType): TJSONArray;
+begin
+  if Trim(AJSONString).StartsWith('{') then
+    Result := ValidateJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString),0) as TJSONObject, ALang)
+  else
+    Result := TJSONArray.Create();
 end;
 
 function TDataSetSerializeHelper.ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS): TJSONArray;

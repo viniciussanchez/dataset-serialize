@@ -491,8 +491,6 @@ object FrmSamples: TFrmSamples
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 313
-        ExplicitWidth = 673
         object DBGrid2: TDBGrid
           Left = 0
           Top = 0
@@ -643,9 +641,6 @@ object FrmSamples: TFrmSamples
             '}')
           ScrollBars = ssVertical
           TabOrder = 0
-          ExplicitLeft = -6
-          ExplicitTop = 39
-          ExplicitWidth = 313
         end
         object Button10: TButton
           Left = 0
@@ -656,7 +651,6 @@ object FrmSamples: TFrmSamples
           Caption = 'Load from JSON Array'
           TabOrder = 1
           OnClick = Button10Click
-          ExplicitWidth = 313
         end
       end
       object Panel15: TPanel
@@ -667,7 +661,6 @@ object FrmSamples: TFrmSamples
         Align = alRight
         BevelOuter = bvNone
         TabOrder = 2
-        ExplicitLeft = 8
         object mmExportDataSetNested: TMemo
           Left = 0
           Top = 33

@@ -179,11 +179,8 @@ begin
 end;
 
 procedure TFrmSamples.Button9Click(Sender: TObject);
-var
-  LJSONObject: TJSONObject;
 begin
-  LJSONObject := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmValidateJSON.Lines.Text),0) as TJSONObject;
-  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(LJSONObject, TLanguageType.ptBR).ToString;
+  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(mmValidateJSON.Lines.Text).ToString;
 end;
 
 procedure TFrmSamples.ClearFields;
