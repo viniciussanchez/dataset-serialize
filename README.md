@@ -148,11 +148,8 @@ Scroll through all DataSet fields by checking the fields that are required. If t
 ```pascal
 const 
   JSON_VALIDATE = '{"COUNTRY":"Brazil"}';
-var
-  JSON: TJSONObject;
 begin
-  JSON := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(JSON_VALIDATE),0) as TJSONObject;
-  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON, TLanguageType.ptBR).ToString;
+  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON_VALIDATE).ToString;
 end;
 ``` 
 
