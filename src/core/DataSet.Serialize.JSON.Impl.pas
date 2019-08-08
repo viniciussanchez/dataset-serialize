@@ -254,6 +254,7 @@ begin
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
     end;
   end;
+  ADataSet.Post;  
   LDataSetDetails := TList<TDataSet>.Create;
   try
     ADataSet.GetDetailDataSets(LDataSetDetails);
@@ -274,7 +275,6 @@ begin
   finally
     LDataSetDetails.Free;
   end;
-  ADataSet.Post;
 end;
 
 procedure TJSONSerialize.ToDataSet(const ADataSet: TDataSet);
