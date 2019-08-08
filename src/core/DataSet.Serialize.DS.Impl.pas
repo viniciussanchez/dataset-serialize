@@ -127,7 +127,7 @@ type
 implementation
 
 uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize, System.TypInfo,
-  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding;
+  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.Generics.Collections;
 
 { TDataSetSerialize }
 
@@ -164,6 +164,7 @@ var
   LKey: string;
   LNestedDataSet: TDataSet;
   LBooleanFieldType: TBooleanFieldType;
+  LDataSetDetails: TList<TDataSet>;
 begin
   Result := TJSONObject.Create;
   if not Assigned(ADataSet) or ADataSet.IsEmpty then
@@ -172,7 +173,7 @@ begin
   begin
     if (not ADataSet.Fields[I].Visible) or ADataSet.Fields[I].IsNull or ADataSet.Fields[I].AsString.Trim.IsEmpty then
       Continue;
-    LKey := ADataSet.Fields[I].FieldName;
+    LKey := LowerCase(ADataSet.Fields[I].FieldName);
     case ADataSet.Fields[I].DataType of
       TFieldType.ftBoolean:
         begin
@@ -213,6 +214,19 @@ begin
       else
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LKey]);
     end;
+  end;
+  LDataSetDetails := TList<TDataSet>.Create;
+  try
+    ADataSet.GetDetailDataSets(LDataSetDetails);
+    for I := 0 to Pred(LDataSetDetails.Count) do
+    begin
+      if LDataSetDetails.Items[I].RecordCount = 1 then
+        Result.AddPair(LowerCase(LDataSetDetails.Items[I].Name), DataSetToJSONObject(LDataSetDetails.Items[I]))
+      else if LDataSetDetails.Items[I].RecordCount > 1 then
+        Result.AddPair(LowerCase(LDataSetDetails.Items[I].Name), DataSetToJSONArray(LDataSetDetails.Items[I]));
+    end;
+  finally
+    LDataSetDetails.Free;
   end;
 end;
 

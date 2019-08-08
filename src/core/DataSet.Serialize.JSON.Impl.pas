@@ -16,6 +16,13 @@ type
     /// </summary>
     procedure ClearJSON;
     /// <summary>
+    ///   Delete all records from dataset.
+    /// </summary>
+    /// <param name="ADataSet">
+    ///   DataSet that will be cleared.
+    /// </param>
+    procedure ClearDataSet(const ADataSet: TDataSet);
+    /// <summary>
     ///   Load a field of type blob with the value of a JSON.
     /// </summary>
     /// <param name="AField">
@@ -183,7 +190,8 @@ type
 
 implementation
 
-uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants;
+uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
+  System.Generics.Collections;
 
 { TJSONSerialize }
 
@@ -193,6 +201,8 @@ var
   LJSONValue: TJSONValue;
   LNestedDataSet: TDataSet;
   LBooleanValue: Boolean;
+  LDataSetDetails: TList<TDataSet>;
+  I: Integer;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) then
     Exit;
@@ -204,10 +214,8 @@ begin
   begin
     if LField.ReadOnly then
       Continue;
-
     if not (AJSONObject.TryGetValue(LField.FieldName, LJSONValue) or AJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue)) then
       Continue;
-
     if LJSONValue is TJSONNull then
     begin
       LField.Clear;
@@ -236,9 +244,7 @@ begin
             JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, False)
           else if LJSONValue is TJSONArray then
           begin
-            LNestedDataSet.First;
-            while not LNestedDataSet.Eof do
-              LNestedDataSet.Delete;
+            ClearDataSet(LNestedDataSet);
             JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
           end;
         end;
@@ -247,6 +253,26 @@ begin
       else
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
     end;
+  end;
+  LDataSetDetails := TList<TDataSet>.Create;
+  try
+    ADataSet.GetDetailDataSets(LDataSetDetails);
+    for I := 0 to Pred(LDataSetDetails.Count) do
+    begin
+      if not AJSONObject.TryGetValue(LowerCase(LDataSetDetails.Items[I].Name), LJSONValue) then
+        Continue;
+      if LJSONValue is TJSONNull then
+        Continue;
+      if LJSONValue is TJSONObject then
+        JSONObjectToDataSet(LJSONValue as TJSONObject, LDataSetDetails.Items[I], False)
+      else if LJSONValue is TJSONArray then
+      begin
+        ClearDataSet(LDataSetDetails.Items[I]);
+        JSONArrayToDataSet(LJSONValue as TJSONArray, LDataSetDetails.Items[I]);
+      end;
+    end;
+  finally
+    LDataSetDetails.Free;
   end;
   ADataSet.Post;
 end;
@@ -340,6 +366,13 @@ begin
     else
       Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' not informed'));
   end;
+end;
+
+procedure TJSONSerialize.ClearDataSet(const ADataSet: TDataSet);
+begin
+  ADataSet.First;
+  while not ADataSet.Eof do
+    ADataSet.Delete;
 end;
 
 procedure TJSONSerialize.ClearJSON;
