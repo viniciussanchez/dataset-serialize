@@ -119,57 +119,57 @@ end;
 
 function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet): TJSONObject;
 var
-  I: Integer;
   LKey: string;
   LNestedDataSet: TDataSet;
   LBooleanFieldType: TBooleanFieldType;
   LDataSetDetails: TList<TDataSet>;
+  LField: TField;
 begin
   Result := TJSONObject.Create;
   if not Assigned(ADataSet) or ADataSet.IsEmpty then
     Exit;
-  for I := 0 to Pred(ADataSet.FieldCount) do
+  for LField in ADataSet.Fields do
   begin
-    if (not ADataSet.Fields[I].Visible) or ADataSet.Fields[I].IsNull or ADataSet.Fields[I].AsString.Trim.IsEmpty then
+    if (not LField.Visible) or LField.IsNull or LField.AsString.Trim.IsEmpty then
       Continue;
-    LKey := LowerCase(ADataSet.Fields[I].FieldName);
-    case ADataSet.Fields[I].DataType of
+    LKey := LowerCase(LField.FieldName);
+    case LField.DataType of
       TFieldType.ftBoolean:
         begin
-          LBooleanFieldType := TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(ADataSet.Fields[I]));
+          LBooleanFieldType := TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(LField));
           case LBooleanFieldType of
             bfUnknown, bfBoolean:
-              Result.AddPair(LKey, TDataSetSerializeUtils.BooleanToJSON(ADataSet.Fields[I].AsBoolean));
+              Result.AddPair(LKey, TDataSetSerializeUtils.BooleanToJSON(LField.AsBoolean));
             else
-              Result.AddPair(LKey, TJSONNumber.Create(ADataSet.Fields[I].AsInteger));
+              Result.AddPair(LKey, TJSONNumber.Create(LField.AsInteger));
           end;
         end;
       TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint:
-        Result.AddPair(LKey, TJSONNumber.Create(ADataSet.Fields[I].AsInteger));
+        Result.AddPair(LKey, TJSONNumber.Create(LField.AsInteger));
       TFieldType.ftLongWord, TFieldType.ftAutoInc:
-        Result.AddPair(LKey, TJSONNumber.Create(ADataSet.Fields[I].AsWideString));
+        Result.AddPair(LKey, TJSONNumber.Create(LField.AsWideString));
       TFieldType.ftLargeint:
-        Result.AddPair(LKey, TJSONNumber.Create(ADataSet.Fields[I].AsLargeInt));
+        Result.AddPair(LKey, TJSONNumber.Create(LField.AsLargeInt));
       TFieldType.ftSingle, TFieldType.ftFloat:
-        Result.AddPair(LKey, TJSONNumber.Create(ADataSet.Fields[I].AsFloat));
+        Result.AddPair(LKey, TJSONNumber.Create(LField.AsFloat));
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
-        Result.AddPair(LKey, TJSONString.Create(ADataSet.Fields[I].AsWideString));
+        Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(ADataSet.Fields[I].AsDateTime)));
+        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime)));
       TFieldType.ftCurrency:
-        Result.AddPair(LKey, TJSONString.Create(FormatCurr('0.00##', ADataSet.Fields[I].AsCurrency)));
+        Result.AddPair(LKey, TJSONString.Create(FormatCurr('0.00##', LField.AsCurrency)));
       TFieldType.ftFMTBcd, TFieldType.ftBCD:
-        Result.AddPair(LKey, TJSONNumber.Create(BcdToDouble(ADataSet.Fields[I].AsBcd)));
+        Result.AddPair(LKey, TJSONNumber.Create(BcdToDouble(LField.AsBcd)));
       TFieldType.ftDataSet:
         begin
-          LNestedDataSet := TDataSetField(ADataSet.Fields[I]).NestedDataSet;
+          LNestedDataSet := TDataSetField(LField).NestedDataSet;
           if LNestedDataSet.RecordCount = 1 then
             Result.AddPair(LKey, DataSetToJSONObject(LNestedDataSet))
           else if LNestedDataSet.RecordCount > 1 then
             Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
-        Result.AddPair(LKey, TJSONString.Create(EncodingBlobField(ADataSet.Fields[I])));
+        Result.AddPair(LKey, TJSONString.Create(EncodingBlobField(LField)));
       else
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LKey]);
     end;
@@ -177,12 +177,12 @@ begin
   LDataSetDetails := TList<TDataSet>.Create;
   try
     ADataSet.GetDetailDataSets(LDataSetDetails);
-    for I := 0 to Pred(LDataSetDetails.Count) do
+    for LNestedDataSet in LDataSetDetails do
     begin
-      if LDataSetDetails.Items[I].RecordCount = 1 then
-        Result.AddPair(LowerCase(LDataSetDetails.Items[I].Name), DataSetToJSONObject(LDataSetDetails.Items[I]))
-      else if LDataSetDetails.Items[I].RecordCount > 1 then
-        Result.AddPair(LowerCase(LDataSetDetails.Items[I].Name), DataSetToJSONArray(LDataSetDetails.Items[I]));
+      if LNestedDataSet.RecordCount = 1 then
+        Result.AddPair(LowerCase(LNestedDataSet.Name), DataSetToJSONObject(LNestedDataSet))
+      else if LNestedDataSet.RecordCount > 1 then
+        Result.AddPair(LowerCase(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet));
     end;
   finally
     LDataSetDetails.Free;
@@ -212,7 +212,7 @@ end;
 
 function TDataSetSerialize.SaveStructure: TJSONArray;
 var
-  I: Integer;
+  LField: TField;
   LJSONObject: TJSONObject;
   LDataSet: TDataSet;
 begin
@@ -221,19 +221,19 @@ begin
   if LDataSet.FieldCount <= 0 then
     Exit;
   Result := TJSONArray.Create;
-  for I := 0 to Pred(LDataSet.FieldCount) do
+  for LField in LDataSet.Fields do
   begin
     LJSONObject := TJSONObject.Create;
-    LJSONObject.AddPair('FieldName', TJSONString.Create(LDataSet.Fields[I].FieldName));
-    LJSONObject.AddPair('DisplayLabel', TJSONString.Create(LDataSet.Fields[I].DisplayLabel));
-    LJSONObject.AddPair('DataType', TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LDataSet.Fields[I].DataType))));
-    LJSONObject.AddPair('Size', TJSONNumber.Create(LDataSet.Fields[I].SIZE));
-    LJSONObject.AddPair('Key', TJSONBool.Create(pfInKey in LDataSet.Fields[I].ProviderFlags));
-    LJSONObject.AddPair('Origin', TJSONString.Create(LDataSet.Fields[I].ORIGIN));
-    LJSONObject.AddPair('Required', TJSONBool.Create(LDataSet.Fields[I].Required));
-    LJSONObject.AddPair('Visible', TJSONBool.Create(LDataSet.Fields[I].Visible));
-    LJSONObject.AddPair('ReadOnly', TJSONBool.Create(LDataSet.Fields[I].ReadOnly));
-    LJSONObject.AddPair('AutoGenerateValue', TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(LDataSet.Fields[I].AutoGenerateValue))));
+    LJSONObject.AddPair('FieldName', TJSONString.Create(LField.FieldName));
+    LJSONObject.AddPair('DisplayLabel', TJSONString.Create(LField.DisplayLabel));
+    LJSONObject.AddPair('DataType', TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LField.DataType))));
+    LJSONObject.AddPair('Size', TJSONNumber.Create(LField.SIZE));
+    LJSONObject.AddPair('Key', TJSONBool.Create(pfInKey in LField.ProviderFlags));
+    LJSONObject.AddPair('Origin', TJSONString.Create(LField.ORIGIN));
+    LJSONObject.AddPair('Required', TJSONBool.Create(LField.Required));
+    LJSONObject.AddPair('Visible', TJSONBool.Create(LField.Visible));
+    LJSONObject.AddPair('ReadOnly', TJSONBool.Create(LField.ReadOnly));
+    LJSONObject.AddPair('AutoGenerateValue', TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(LField.AutoGenerateValue))));
     Result.AddElement(LJSONObject);
   end;
 end;

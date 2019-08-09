@@ -253,7 +253,7 @@ end;
 
 function TJSONSerialize.Validate(const ADataSet: TDataSet; const ALang: TLanguageType = enUS): TJSONArray;
 var
-  I: Integer;
+  LField: TField;
   LJSONValue: string;
 begin
   if not Assigned(FJSONObject) then
@@ -261,16 +261,16 @@ begin
   if ADataSet.Fields.Count = 0 then
     raise EDataSetSerializeException.Create(DATASET_HAS_NO_DEFINED_FIELDS);
   Result := TJSONArray.Create();
-  for I := 0 to Pred(ADataSet.Fields.Count) do
-    if ADataSet.Fields.Fields[I].Required then
+  for LField in ADataSet.Fields do
+    if LField.Required then
     begin
-      if FJSONObject.TryGetValue(ADataSet.Fields.Fields[I].FieldName, LJSONValue) then
+      if FJSONObject.TryGetValue(LField.FieldName, LJSONValue) then
       begin
         if LJSONValue.Trim.IsEmpty then
-          Result.AddElement(AddFieldNotFound(ADataSet.Fields.Fields[I].FieldName, ADataSet.Fields.Fields[I].DisplayLabel, ALang));
+          Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
       end
       else
-        Result.AddElement(AddFieldNotFound(ADataSet.Fields.Fields[I].FieldName, ADataSet.Fields.Fields[I].DisplayLabel, ALang));
+        Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
     end;
 end;
 
