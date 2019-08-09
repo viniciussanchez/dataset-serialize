@@ -19,7 +19,6 @@ Add the following folders to your project, in *Project > Options > Resource Comp
 ../dataset-serialize/src
 ../dataset-serialize/src/core
 ../dataset-serialize/src/helpers
-../dataset-serialize/src/interfaces
 ../dataset-serialize/src/providers
 ../dataset-serialize/src/types
 ```
@@ -173,8 +172,8 @@ Returns:
 ## JSON Nested Object
 
 Load JSON Nested Object in a simple way:
-* In the main dataset, create a field of type `TDataSetField`.
-* Binds the field created in the master dataset in the `DataSetField` property of the secondary dataset.
+* `[Recommended]`: Implement the detail master (TDataSet native feature) and call the function to load or export JSON using the main query.
+* `[Alternative]`: In the main dataset, create a field of type `TDataSetField` and binds the field created in the master dataset in the `DataSetField` property of the secondary dataset.
 
 See the sample:
 
