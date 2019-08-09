@@ -136,74 +136,130 @@ type
 
 implementation
 
-uses DataSet.Serialize.Impl, System.SysUtils;
+uses System.SysUtils, DataSet.Serialize.DS.Impl, DataSet.Serialize.JSON.Impl;
 
 function TDataSetSerializeHelper.ToJSONArray: TJSONArray;
+var
+  LDataSetSerialize: TDataSetSerialize;
 begin
-  Result := TSerialize.New.SetDataSet(Self).ToJSONArray;
+  LDataSetSerialize := TDataSetSerialize.Create(Self);
+  try
+    Result := LDataSetSerialize.ToJSONArray;
+  finally
+    LDataSetSerialize.Free;
+  end;
 end;
 
 function TDataSetSerializeHelper.ToJSONObject: TJSONObject;
+var
+  LDataSetSerialize: TDataSetSerialize;
 begin
-  Result := TSerialize.New.SetDataSet(Self).ToJSONObject;
+  LDataSetSerialize := TDataSetSerialize.Create(Self);
+  try
+    Result := LDataSetSerialize.ToJSONObject;
+  finally
+    LDataSetSerialize.Free;
+  end;
+end;
+
+function TDataSetSerializeHelper.SaveStructure: TJSONArray;
+var
+  LDataSetSerialize: TDataSetSerialize;
+begin
+  LDataSetSerialize := TDataSetSerialize.Create(Self);
+  try
+    Result := LDataSetSerialize.SaveStructure;
+  finally
+    LDataSetSerialize.Free;
+  end;
+end;
+
+function TDataSetSerializeHelper.ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS): TJSONArray;
+var
+  LJSONSerialize: TJSONSerialize;
+begin
+  LJSONSerialize := TJSONSerialize.Create(AJSONObject);
+  try
+    Result := LJSONSerialize.Validate(Self, ALang);
+  finally
+    LJSONSerialize.Free;
+  end;
+end;
+
+procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONArray: TJSONArray);
+var
+  LJSONSerialize: TJSONSerialize;
+begin
+  LJSONSerialize := TJSONSerialize.Create(AJSONArray);
+  try
+    LJSONSerialize.ToDataSet(Self);
+  finally
+    LJSONSerialize.Free;
+  end;
+end;
+
+procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject);
+var
+  LJSONSerialize: TJSONSerialize;
+begin
+  LJSONSerialize := TJSONSerialize.Create(AJSONObject);
+  try
+    LJSONSerialize.ToDataSet(Self);
+  finally
+    LJSONSerialize.Free;
+  end;
+end;
+
+procedure TDataSetSerializeHelper.LoadStructure(const AJSONArray: TJSONArray);
+var
+  LJSONSerialize: TJSONSerialize;
+begin
+  LJSONSerialize := TJSONSerialize.Create(AJSONArray);
+  try
+    LJSONSerialize.LoadStructure(Self);
+  finally
+    LJSONSerialize.Free;
+  end;
+end;
+
+procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONObject: TJSONObject);
+var
+  LJSONSerialize: TJSONSerialize;
+begin
+  LJSONSerialize := TJSONSerialize.Create(AJSONObject);
+  try
+    LJSONSerialize.Merge(Self);
+  finally
+    LJSONSerialize.Free;
+  end;
 end;
 
 function TDataSetSerializeHelper.ValidateJSON(const AJSONString: string; const ALang: TLanguageType): TJSONArray;
 begin
   if Trim(AJSONString).StartsWith('{') then
-    Result := ValidateJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString),0) as TJSONObject, ALang)
+    Result := ValidateJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONObject, ALang)
   else
     Result := TJSONArray.Create();
-end;
-
-function TDataSetSerializeHelper.ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS): TJSONArray;
-begin
-  Result := TSerialize.New.SetJSONObject(AJSONObject).Validate(Self, ALang);
-end;
-
-function TDataSetSerializeHelper.SaveStructure: TJSONArray;
-begin
-  Result := TSerialize.New.SetDataSet(Self).SaveStructure;
-end;
-
-procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONArray: TJSONArray);
-begin
-  TSerialize.New.SetJSONArray(AJSONArray).ToDataSet(Self);
-end;
-
-procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject);
-begin
-  TSerialize.New.SetJSONObject(AJSONObject).ToDataSet(Self);
 end;
 
 procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('{') then
-    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString),0) as TJSONObject)
+    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONObject)
   else if Trim(AJSONString).StartsWith('[') then
-    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString),0) as TJSONArray);
+    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONArray);
 end;
 
 procedure TDataSetSerializeHelper.LoadStructure(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('[') then
-    LoadStructure(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString),0) as TJSONArray);
+    LoadStructure(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONArray);
 end;
 
 procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('{') then
-    MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString),0) as TJSONObject)
-end;
-
-procedure TDataSetSerializeHelper.LoadStructure(const AJSONArray: TJSONArray);
-begin
-  TSerialize.New.SetJSONArray(AJSONArray).LoadStructure(Self);
-end;
-
-procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONObject: TJSONObject);
-begin
-  TSerialize.New.SetJSONObject(AJSONObject).Merge(Self);
+    MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONObject)
 end;
 
 end.

@@ -2,27 +2,12 @@ unit DataSet.Serialize.DS.Impl;
 
 interface
 
-uses DataSet.Serialize.DS.Intf, Data.DB, System.JSON;
+uses Data.DB, System.JSON;
 
 type
-  TDataSetSerialize = class(TInterfacedObject, IDataSetSerialize)
+  TDataSetSerialize = class
   private
-    FOwns: Boolean;
     FDataSet: TDataSet;
-    /// <summary>
-    ///   Clears the DataSet pointer and destroys it if it's the owner.
-    /// </summary>
-    procedure ClearDataSet;
-    /// <summary>
-    ///   Returns the same DataSet that was defined.
-    /// </summary>
-    /// <returns>
-    ///   Returns the DataSet.
-    /// </returns>
-    /// <remarks>
-    ///   Creates an exception if the DataSet has not been set.
-    /// </remarks>
-    function GetDataSet: TDataSet;
     /// <summary>
     ///   Creates a JSON object with the data from the current record of DataSet.
     /// </summary>
@@ -59,30 +44,11 @@ type
     ///   Returns a string with the cryptogrammed content in Base64.
     /// </returns>
     function EncodingBlobField(const AField: TField): string;
-  protected
+  public
     /// <summary>
-    ///   Responsible for defining the DataSet and its owner.
+    ///   Responsible for creating a new isntância of TDataSetSerialize class.
     /// </summary>
-    /// <param name="ADataSet">
-    ///   It refers to the DataSet itself.
-    /// </param>
-    /// <param name="AOwns">
-    ///   Parameter responsible for indicating whether it's responsible for the destruction of the DataSet or not.
-    /// </param>
-    /// <returns>
-    ///   Returns the IDataSetSerialize interface instance itself.
-    /// </returns>
-    function SetDataSet(const ADataSet: TDataSet; const AOwns: Boolean = False): IDataSetSerialize;
-    /// <summary>
-    ///   Creates a JSON object with the data from the current record of DataSet.
-    /// </summary>
-    /// <returns>
-    ///   Returns a JSON object containing the record data.
-    /// </returns>
-    /// <remarks>
-    ///   Invisible or null fields will not be generated.
-    /// </remarks>
-    function ToJSONObject: TJSONObject;
+    constructor Create(const ADataSet: TDataSet);
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -94,6 +60,16 @@ type
     /// </remarks>
     function ToJSONArray: TJSONArray;
     /// <summary>
+    ///   Creates a JSON object with the data from the current record of DataSet.
+    /// </summary>
+    /// <returns>
+    ///   Returns a JSON object containing the record data.
+    /// </returns>
+    /// <remarks>
+    ///   Invisible or null fields will not be generated.
+    /// </remarks>
+    function ToJSONObject: TJSONObject;
+    /// <summary>
     ///   Responsible for exporting the structure of a DataSet in JSON Array format.
     /// </summary>
     /// <returns>
@@ -103,25 +79,6 @@ type
     ///   Invisible fields will not be generated.
     /// </remarks>
     function SaveStructure: TJSONArray;
-  public
-    /// <summary>
-    ///   Responsible for creating a new isntância of TDataSetSerialize class.
-    /// </summary>
-    constructor Create;
-    /// <summary>
-    ///   Creates a new instance of IDataSetSerialize interface.
-    /// </summary>
-    /// <returns>
-    ///   Returns an instance of IDataSetSerialize interface.
-    /// </returns>
-    class function New: IDataSetSerialize; static;
-    /// <summary>
-    ///   Responsible for destroying the TDataSetSerialize class instance.
-    /// </summary>
-    /// <remarks>
-    ///   If owner of the DataSet, destroys the same.
-    /// </remarks>
-    destructor Destroy; override;
   end;
 
 implementation
@@ -133,7 +90,7 @@ uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Provide
 
 function TDataSetSerialize.ToJSONObject: TJSONObject;
 begin
-  Result := DataSetToJSONObject(GetDataSet);
+  Result := DataSetToJSONObject(FDataSet);
 end;
 
 function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet): TJSONArray;
@@ -230,12 +187,6 @@ begin
   end;
 end;
 
-destructor TDataSetSerialize.Destroy;
-begin
-  ClearDataSet;
-  inherited Destroy;
-end;
-
 function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
 var
   LMemoryStream: TMemoryStream;
@@ -257,34 +208,6 @@ begin
   end;
 end;
 
-procedure TDataSetSerialize.ClearDataSet;
-begin
-  if FOwns then
-    if Assigned(FDataSet) then
-      FDataSet.Free;
-  FDataSet := nil;
-end;
-
-function TDataSetSerialize.GetDataSet: TDataSet;
-begin
-  if not Assigned(FDataSet) then
-    raise EDataSetSerializeException.Create(DATASET_NOT_DIFINED);
-  Result := FDataSet;
-end;
-
-class function TDataSetSerialize.New: IDataSetSerialize;
-begin
-  Result := TDataSetSerialize.Create;
-end;
-
-function TDataSetSerialize.SetDataSet(const ADataSet: TDataSet; const AOwns: Boolean = False): IDataSetSerialize;
-begin
-  Result := Self;
-  ClearDataSet;
-  FDataSet := ADataSet;
-  FOwns := AOwns;
-end;
-
 function TDataSetSerialize.SaveStructure: TJSONArray;
 var
   I: Integer;
@@ -292,7 +215,7 @@ var
   LDataSet: TDataSet;
 begin
   Result := nil;
-  LDataSet := GetDataSet;
+  LDataSet := FDataSet;
   if LDataSet.FieldCount <= 0 then
     Exit;
   Result := TJSONArray.Create;
@@ -313,15 +236,14 @@ begin
   end;
 end;
 
-constructor TDataSetSerialize.Create;
+constructor TDataSetSerialize.Create(const ADataSet: TDataSet);
 begin
-  FDataSet := nil;
-  FOwns := False;
+  FDataSet := ADataSet;
 end;
 
 function TDataSetSerialize.ToJSONArray: TJSONArray;
 begin
-  Result := DataSetToJSONArray(GetDataSet);
+  Result := DataSetToJSONArray(FDataSet);
 end;
 
 end.

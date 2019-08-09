@@ -2,10 +2,10 @@
 
 interface
 
-uses DataSet.Serialize.JSON.Intf, System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize;
+uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize;
 
 type
-  TJSONSerialize = class(TInterfacedObject, IJSONSerialize)
+  TJSONSerialize = class
   private
     FOwns: Boolean;
     FMerging: Boolean;
@@ -96,7 +96,21 @@ type
     ///   Record of field structure.
     /// </returns>
     function LoadFieldStructure(const AJSONValue: TJSONValue): TFieldStructure;
-  protected
+  public
+    /// <summary>
+    ///   Responsible for creating a new isntância of TDataSetSerialize class.
+    /// </summary>
+    /// <param name="AJSONArray">
+    ///   Refers to the JSON in with the data that must be loaded in the DataSet.
+    /// </param>
+    constructor Create(const AJSONArray: TJSONArray); overload;
+    /// <summary>
+    ///   Responsible for creating a new isntância of TDataSetSerialize class.
+    /// </summary>
+    /// <param name="AJSONObject">
+    ///   Refers to the JSON in with the data that must be loaded in the DataSet.
+    /// </param>
+    constructor Create(const AJSONObject: TJSONObject); overload;
     /// <summary>
     ///   Loads fields from a DataSet based on JSON.
     /// </summary>
@@ -104,20 +118,6 @@ type
     ///   Refers to the DataSet to which you want to load the structure.
     /// </param>
     procedure LoadStructure(const ADataSet: TDataSet);
-    /// <summary>
-    ///   Runs the merge between the record of DataSet and JSONObject.
-    /// </summary>
-    /// <param name="ADataSet">
-    ///   Refers to the DataSet that you want to merge with the JSON object.
-    /// </param>
-    procedure Merge(const ADataSet: TDataSet);
-    /// <summary>
-    ///   Loads the DataSet with JSON content.
-    /// </summary>
-    /// <param name="ADataSet">
-    ///   Refers to the DataSet you want to load.
-    /// </param>
-    procedure ToDataSet(const ADataSet: TDataSet);
     /// <summary>
     ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
     /// </summary>
@@ -136,49 +136,19 @@ type
     /// </remarks>
     function Validate(const ADataSet: TDataSet; const ALang: TLanguageType = enUS): TJSONArray;
     /// <summary>
-    ///   Defines what the JSONObject.
+    ///   Runs the merge between the record of DataSet and JSONObject.
     /// </summary>
-    /// <param name="AJSONObject">
-    ///   Refers to JSON itself.
+    /// <param name="ADataSet">
+    ///   Refers to the DataSet that you want to merge with the JSON object.
     /// </param>
-    /// <param name="AOwns">
-    ///   Indicates the owner of the JSON.
-    /// </param>
-    /// <returns>
-    ///   Returns the implementation of IJSONSerialize interface.
-    /// </returns>
-    /// <remarks>
-    ///   If it's the owner destroys the same of the memory when finalizing.
-    /// </remarks>
-    function SetJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = False): IJSONSerialize;
+    procedure Merge(const ADataSet: TDataSet);
     /// <summary>
-    ///   Defines what the JSONArray.
+    ///   Loads the DataSet with JSON content.
     /// </summary>
-    /// <param name="AJSONObject">
-    ///   Refers to JSON itself.
+    /// <param name="ADataSet">
+    ///   Refers to the DataSet you want to load.
     /// </param>
-    /// <param name="AOwns">
-    ///   Indicates the owner of the JSON.
-    /// </param>
-    /// <returns>
-    ///   Returns the implementation of IJSONSerialize interface.
-    /// </returns>
-    /// <remarks>
-    ///   If it's the owner destroys the same of the memory when finalizing.
-    /// </remarks>
-    function SetJSONArray(const AJSONArray: TJSONArray; const AOwns: Boolean = False): IJSONSerialize;
-  public
-    /// <summary>
-    ///   Responsible for creating a new isntância of TDataSetSerialize class.
-    /// </summary>
-    constructor Create;
-    /// <summary>
-    ///   Creates a new instance of IJSONSerialize interface.
-    /// </summary>
-    /// <returns>
-    ///   Returns an instance of IJSONSerialize interface.
-    /// </returns>
-    class function New: IJSONSerialize; static;
+    procedure ToDataSet(const ADataSet: TDataSet);
     /// <summary>
     ///   Responsible for destroying the TJSONSerialize class instance.
     /// </summary>
@@ -388,6 +358,18 @@ begin
   FJSONArray := nil;
 end;
 
+constructor TJSONSerialize.Create(const AJSONObject: TJSONObject);
+begin
+  ClearJSON;
+  FJSONObject := AJSONObject;
+end;
+
+constructor TJSONSerialize.Create(const AJSONArray: TJSONArray);
+begin
+  ClearJSON;
+  FJSONArray := AJSONArray;
+end;
+
 procedure TJSONSerialize.JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
 var
   LJSONValue: TJSONValue;
@@ -402,22 +384,6 @@ begin
       JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False);
   end;
   ADataSet.First;
-end;
-
-function TJSONSerialize.SetJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = False): IJSONSerialize;
-begin
-  Result := Self;
-  ClearJSON;
-  FJSONObject := AJSONObject;
-  FOwns := AOwns;
-end;
-
-function TJSONSerialize.SetJSONArray(const AJSONArray: TJSONArray; const AOwns: Boolean = False): IJSONSerialize;
-begin
-  Result := Self;
-  ClearJSON;
-  FJSONArray := AJSONArray;
-  FOwns := AOwns;
 end;
 
 procedure TJSONSerialize.Merge(const ADataSet: TDataSet);
@@ -446,19 +412,6 @@ begin
   finally
     AJSONArray.Free;
   end;
-end;
-
-class function TJSONSerialize.New: IJSONSerialize;
-begin
-  Result := TJSONSerialize.Create;
-end;
-
-constructor TJSONSerialize.Create;
-begin
-  FJSONObject := nil;
-  FJSONArray := nil;
-  FOwns := False;
-  FMerging := False;
 end;
 
 destructor TJSONSerialize.Destroy;

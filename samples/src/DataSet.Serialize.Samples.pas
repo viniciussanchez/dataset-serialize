@@ -219,4 +219,7 @@ begin
   end;
 end;
 
+initialization
+  ReportMemoryLeaksOnShutdown := True;
+
 end.
