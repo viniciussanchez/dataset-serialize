@@ -7,14 +7,9 @@ uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize;
 type
   TJSONSerialize = class
   private
-    FOwns: Boolean;
     FMerging: Boolean;
     FJSONObject: TJSONObject;
     FJSONArray: TJSONArray;
-    /// <summary>
-    ///   Clears the JSON pointer and destroys it if it's the owner.
-    /// </summary>
-    procedure ClearJSON;
     /// <summary>
     ///   Delete all records from dataset.
     /// </summary>
@@ -172,7 +167,6 @@ var
   LNestedDataSet: TDataSet;
   LBooleanValue: Boolean;
   LDataSetDetails: TList<TDataSet>;
-  I: Integer;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) then
     Exit;
@@ -228,18 +222,18 @@ begin
   LDataSetDetails := TList<TDataSet>.Create;
   try
     ADataSet.GetDetailDataSets(LDataSetDetails);
-    for I := 0 to Pred(LDataSetDetails.Count) do
+    for LNestedDataSet in LDataSetDetails do
     begin
-      if not AJSONObject.TryGetValue(LowerCase(LDataSetDetails.Items[I].Name), LJSONValue) then
+      if not AJSONObject.TryGetValue(LowerCase(LNestedDataSet.Name), LJSONValue) then
         Continue;
       if LJSONValue is TJSONNull then
         Continue;
       if LJSONValue is TJSONObject then
-        JSONObjectToDataSet(LJSONValue as TJSONObject, LDataSetDetails.Items[I], False)
+        JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, False)
       else if LJSONValue is TJSONArray then
       begin
-        ClearDataSet(LDataSetDetails.Items[I]);
-        JSONArrayToDataSet(LJSONValue as TJSONArray, LDataSetDetails.Items[I]);
+        ClearDataSet(LNestedDataSet);
+        JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
       end;
     end;
   finally
@@ -264,8 +258,6 @@ var
 begin
   if not Assigned(FJSONObject) then
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
-  if not Assigned(ADataSet) then
-    raise EDataSetSerializeException.Create(DATASET_NOT_CREATED);
   if ADataSet.Fields.Count = 0 then
     raise EDataSetSerializeException.Create(DATASET_HAS_NO_DEFINED_FIELDS);
   Result := TJSONArray.Create();
@@ -345,28 +337,13 @@ begin
     ADataSet.Delete;
 end;
 
-procedure TJSONSerialize.ClearJSON;
-begin
-  if FOwns then
-  begin
-    if Assigned(FJSONObject) then
-      FJSONObject.Free;
-    if Assigned(FJSONArray) then
-      FJSONArray.Free;
-  end;
-  FJSONObject := nil;
-  FJSONArray := nil;
-end;
-
 constructor TJSONSerialize.Create(const AJSONObject: TJSONObject);
 begin
-  ClearJSON;
   FJSONObject := AJSONObject;
 end;
 
 constructor TJSONSerialize.Create(const AJSONArray: TJSONArray);
 begin
-  ClearJSON;
   FJSONArray := AJSONArray;
 end;
 
@@ -400,23 +377,22 @@ procedure TJSONSerialize.JSONArrayToStructure(const AJSONArray: TJSONArray; cons
 var
   LJSONValue: TJSONValue;
 begin
-  if not Assigned(ADataSet) then
-    raise EDataSetSerializeException.Create(DATASET_NOT_DIFINED);
   if ADataSet.Active then
     raise EDataSetSerializeException.Create(DATASET_ACTIVATED);
   if ADataSet.FieldCount > 0 then
     raise EDataSetSerializeException.Create(PREDEFINED_FIELDS);
-  try
-    for LJSONValue in AJSONArray do
-      TDataSetSerializeUtils.NewDataSetField(ADataSet, LoadFieldStructure(LJSONValue));
-  finally
-    AJSONArray.Free;
-  end;
+  for LJSONValue in AJSONArray do
+    TDataSetSerializeUtils.NewDataSetField(ADataSet, LoadFieldStructure(LJSONValue));
 end;
 
 destructor TJSONSerialize.Destroy;
 begin
-  ClearJSON;
+  if Assigned(FJSONObject) then
+    FJSONObject.Free;
+  if Assigned(FJSONArray) then
+    FJSONArray.Free;
+  FJSONObject := nil;
+  FJSONArray := nil;
   inherited Destroy;
 end;
 

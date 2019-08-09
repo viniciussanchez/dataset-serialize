@@ -123,14 +123,30 @@ begin
 end;
 
 procedure TFrmSamples.Button11Click(Sender: TObject);
+var
+  LJSONObject: TJSONObject;
 begin
   if not mtJSONNested.IsEmpty then
-    mmExportDataSetNested.Lines.Text := mtJSONNested.ToJSONObject.ToString;
+  begin
+    LJSONObject := mtJSONNested.ToJSONObject;
+    try
+      mmExportDataSetNested.Lines.Text := LJSONObject.ToString;
+    finally
+      LJSONObject.Free;
+    end;
+  end;
 end;
 
 procedure TFrmSamples.Button1Click(Sender: TObject);
+var
+  LJSONArray: TJSONArray;
 begin
-  mmDataSet.Lines.Text := mtDataSet.ToJSONArray.ToString;
+  LJSONArray := mtDataSet.ToJSONArray;
+  try
+    mmDataSet.Lines.Text := LJSONArray.ToString;
+  finally
+    LJSONArray.Free;
+  end;
 end;
 
 procedure TFrmSamples.Button2Click(Sender: TObject);
@@ -140,13 +156,27 @@ begin
 end;
 
 procedure TFrmSamples.Button3Click(Sender: TObject);
+var
+  LJSONArray: TJSONArray;
 begin
-  mmDataSet.Lines.Text := mtDataSet.SaveStructure.ToString;
+  LJSONArray := mtDataSet.SaveStructure;
+  try
+    mmDataSet.Lines.Text := LJSONArray.ToString;
+  finally
+    LJSONArray.Free;
+  end;
 end;
 
 procedure TFrmSamples.Button4Click(Sender: TObject);
+var
+  LJSONObject: TJSONObject;
 begin
-  mmDataSet.Lines.Text := mtDataSet.ToJSONObject.ToString;
+  LJSONObject := mtDataSet.ToJSONObject;
+  try
+    mmDataSet.Lines.Text := LJSONObject.ToString;
+  finally
+    LJSONObject.Free;
+  end;
 end;
 
 procedure TFrmSamples.Button5Click(Sender: TObject);
@@ -179,8 +209,15 @@ begin
 end;
 
 procedure TFrmSamples.Button9Click(Sender: TObject);
+var
+  LJSONArray: TJSONArray;
 begin
-  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(mmValidateJSON.Lines.Text).ToString;
+  LJSONArray := mtJSON.ValidateJSON(mmValidateJSON.Lines.Text);
+  try
+    mmJSONArrayValidate.Lines.Text := LJSONArray.ToString;
+  finally
+    LJSONArray.Free;
+  end;
 end;
 
 procedure TFrmSamples.ClearFields;
