@@ -99,6 +99,7 @@ var
 begin
   if ADataSet.IsEmpty then
     Exit(TJSONArray.Create);
+  ADataSet.DisableControls;
   try
     Result := TJSONArray.Create;
     LBookMark := ADataSet.BookMark;
@@ -112,6 +113,7 @@ begin
     if ADataSet.BookmarkValid(LBookMark) then
       ADataSet.GotoBookmark(LBookMark);
     ADataSet.FreeBookmark(LBookMark);
+    ADataSet.EnableControls;
   end;
 end;
 
