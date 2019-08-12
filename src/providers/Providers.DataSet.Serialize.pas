@@ -11,6 +11,11 @@ type
   EDataSetSerializeException = class(Exception);
 
   /// <summary>
+  ///   Type to get key values of an dataset.
+  /// </summary>
+  TKeyValues = array of Variant;
+
+  /// <summary>
   ///   Record representing the structure of a dataset field.
   /// </summary>
   TFieldStructure = record
@@ -71,6 +76,10 @@ type
     ///   Returns a JSONValue.
     /// </returns>
     class function BooleanToJSON(const AValue: Boolean): TJSONValue;
+    /// <summary>
+    ///   Remove the prefix "mt" or "qry" of an child dataset.
+    /// </summary>
+    class function FormatDataSetName(const ADataSetName: string): string;
   end;
 
 implementation
@@ -109,6 +118,15 @@ begin
     Result := '_'
   else if CharInSet(Result[1], ['0' .. '9']) then
     Result := '_' + Result;
+end;
+
+class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;
+begin
+  Result := ADataSetName;
+  if ADataSetName.StartsWith('mt') then
+    Result := Copy(ADataSetName, 03, ADataSetName.Length - 2)
+  else if ADataSetName.StartsWith('qry') then
+    Result := Copy(ADataSetName, 04, ADataSetName.Length - 3);
 end;
 
 class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;

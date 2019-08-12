@@ -10,6 +10,7 @@ const
   JSON_NOT_DIFINED = 'JSON not defined';
   SIZE_NOT_DEFINED_FOR_FIELD = 'Size not defined for field "%s".';
   TO_CONVERT_STRUCTURE_ONLY_JSON_ARRAY_ALLOWED = 'To convert a structure only JSONArray is allowed';
+  OBJECT_STATE = 'object_state';
 
 implementation
 
