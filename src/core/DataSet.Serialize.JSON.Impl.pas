@@ -2,7 +2,7 @@
 
 interface
 
-uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize;
+uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils;
 
 type
   TJSONSerialize = class
@@ -91,7 +91,15 @@ type
     ///   Record of field structure.
     /// </returns>
     function LoadFieldStructure(const AJSONValue: TJSONValue): TFieldStructure;
-  public
+    /// <returns>
+    ///   The key fields name of the ADataSet parameter.
+    /// </returns>
+    function GetKeyFieldsDataSet(const ADataSet: TDataSet): string;
+    /// <returns>
+    ///   The key values of the ADataSet parameter.
+    /// </returns>
+    function GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
+	public
     /// <summary>
     ///   Responsible for creating a new isntância of TDataSetSerialize class.
     /// </summary>
@@ -156,7 +164,7 @@ type
 implementation
 
 uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
-  System.Generics.Collections;
+  System.Generics.Collections, System.Variants;
 
 { TJSONSerialize }
 
@@ -167,10 +175,28 @@ var
   LNestedDataSet: TDataSet;
   LBooleanValue: Boolean;
   LDataSetDetails: TList<TDataSet>;
+  LObjectState: Integer;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) then
     Exit;
-  if AMerging then
+  if AJSONObject.TryGetValue<Integer>(OBJECT_STATE, LObjectState) then
+  begin
+    if TUpdateStatus(LObjectState) = usInserted then
+      ADataSet.Append
+    else
+    begin
+      if not ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
+        Exit;
+      if TUpdateStatus(LObjectState) = usModified then
+        ADataSet.Edit
+      else if TUpdateStatus(LObjectState) = usDeleted then
+      begin
+        ADataSet.Delete;
+        Exit;
+      end;
+    end;
+  end
+  else if AMerging then
     ADataSet.Edit
   else
     ADataSet.Append;
@@ -224,17 +250,14 @@ begin
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
-      if not AJSONObject.TryGetValue(LowerCase(LNestedDataSet.Name), LJSONValue) then
+      if not AJSONObject.TryGetValue(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), LJSONValue) then
         Continue;
       if LJSONValue is TJSONNull then
         Continue;
       if LJSONValue is TJSONObject then
         JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, False)
       else if LJSONValue is TJSONArray then
-      begin
-        ClearDataSet(LNestedDataSet);
         JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
-      end;
     end;
   finally
     LDataSetDetails.Free;
@@ -394,6 +417,31 @@ begin
   FJSONObject := nil;
   FJSONArray := nil;
   inherited Destroy;
+end;
+
+function TJSONSerialize.GetKeyFieldsDataSet(const ADataSet: TDataSet): string;
+var
+  LField: TField;
+begin
+  Result := EmptyStr;
+  for LField in ADataSet.Fields do
+    if pfInKey in LField.ProviderFlags then
+      Result := Result + IfThen(Result.Trim.IsEmpty, EmptyStr, ';') + LField.FieldName;
+end;
+
+function TJSONSerialize.GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
+var
+  LField: TField;
+  LKeyValue: string;
+begin
+  for LField in ADataSet.Fields do
+    if pfInKey in LField.ProviderFlags then
+    begin
+      if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
+        Continue;
+      SetLength(Result, Length(Result) + 1);
+      Result[Pred(Length(Result))] := LKeyValue;
+    end;
 end;
 
 end.

@@ -10,23 +10,29 @@ type
     /// <summary>
     ///   Creates a JSON object with the data from the current record of DataSet.
     /// </summary>
+    /// <param name="AOnlyUpdatedRecords">
+    ///   Exports only inserted, modified and deleted data from childs dataset.
+    /// </param>
     /// <returns>
     ///   Returns a JSON object containing the record data.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONObject: TJSONObject;
+    function ToJSONObject(const AOnlyUpdatedRecords: Boolean = False): TJSONObject;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
+    /// <param name="AOnlyUpdatedRecords">
+    ///   Exports only inserted, modified and deleted data from childs dataset.
+    /// </param>
     /// <returns>
     ///   Returns a JSONArray with all records from the DataSet.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONArray: TJSONArray;
+    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False): TJSONArray;
     /// <summary>
     ///   Responsible for exporting the structure of a DataSet in JSON Array format.
     /// </summary>
@@ -138,11 +144,11 @@ implementation
 
 uses System.SysUtils, DataSet.Serialize.DS.Impl, DataSet.Serialize.JSON.Impl;
 
-function TDataSetSerializeHelper.ToJSONArray: TJSONArray;
+function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False): TJSONArray;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords);
   try
     Result := LDataSetSerialize.ToJSONArray;
   finally
@@ -150,11 +156,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ToJSONObject: TJSONObject;
+function TDataSetSerializeHelper.ToJSONObject(const AOnlyUpdatedRecords: Boolean = False): TJSONObject;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords);
   try
     Result := LDataSetSerialize.ToJSONObject;
   finally

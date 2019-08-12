@@ -8,6 +8,7 @@ type
   TDataSetSerialize = class
   private
     FDataSet: TDataSet;
+    FOnlyUpdatedRecords: Boolean;
     /// <summary>
     ///   Creates a JSON object with the data from the current record of DataSet.
     /// </summary>
@@ -48,7 +49,7 @@ type
     /// <summary>
     ///   Responsible for creating a new isntância of TDataSetSerialize class.
     /// </summary>
-    constructor Create(const ADataSet: TDataSet);
+    constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False);
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -84,7 +85,7 @@ type
 implementation
 
 uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize, System.TypInfo,
-  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.Generics.Collections;
+  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet;
 
 { TDataSetSerialize }
 
@@ -174,15 +175,21 @@ begin
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LKey]);
     end;
   end;
+  if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
+    Result.AddPair(OBJECT_STATE, TJSONNumber.Create(Ord(ADataSet.UpdateStatus)));
   LDataSetDetails := TList<TDataSet>.Create;
   try
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
+      if (FOnlyUpdatedRecords) and (LNestedDataSet is TFDDataSet) then
+        TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted];
       if LNestedDataSet.RecordCount = 1 then
-        Result.AddPair(LowerCase(LNestedDataSet.Name), DataSetToJSONObject(LNestedDataSet))
+        Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONObject(LNestedDataSet))
       else if LNestedDataSet.RecordCount > 1 then
-        Result.AddPair(LowerCase(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet));
+        Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet));
+      if (FOnlyUpdatedRecords) and (LNestedDataSet is TFDDataSet) then
+        TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
     end;
   finally
     LDataSetDetails.Free;
@@ -238,9 +245,10 @@ begin
   end;
 end;
 
-constructor TDataSetSerialize.Create(const ADataSet: TDataSet);
+constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False);
 begin
   FDataSet := ADataSet;
+  FOnlyUpdatedRecords := AOnlyUpdatedRecords;
 end;
 
 function TDataSetSerialize.ToJSONArray: TJSONArray;
