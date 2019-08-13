@@ -10,6 +10,7 @@ type
     FMerging: Boolean;
     FJSONObject: TJSONObject;
     FJSONArray: TJSONArray;
+    FOwns: Boolean;
     /// <summary>
     ///   Delete all records from dataset.
     /// </summary>
@@ -106,14 +107,14 @@ type
     /// <param name="AJSONArray">
     ///   Refers to the JSON in with the data that must be loaded in the DataSet.
     /// </param>
-    constructor Create(const AJSONArray: TJSONArray); overload;
+    constructor Create(const AJSONArray: TJSONArray; const AOwns: Boolean); overload;
     /// <summary>
     ///   Responsible for creating a new isntância of TDataSetSerialize class.
     /// </summary>
     /// <param name="AJSONObject">
     ///   Refers to the JSON in with the data that must be loaded in the DataSet.
     /// </param>
-    constructor Create(const AJSONObject: TJSONObject); overload;
+    constructor Create(const AJSONObject: TJSONObject; const AOwns: Boolean); overload;
     /// <summary>
     ///   Loads fields from a DataSet based on JSON.
     /// </summary>
@@ -360,13 +361,15 @@ begin
     ADataSet.Delete;
 end;
 
-constructor TJSONSerialize.Create(const AJSONObject: TJSONObject);
+constructor TJSONSerialize.Create(const AJSONObject: TJSONObject; const AOwns: Boolean);
 begin
+  FOwns := AOwns;
   FJSONObject := AJSONObject;
 end;
 
-constructor TJSONSerialize.Create(const AJSONArray: TJSONArray);
+constructor TJSONSerialize.Create(const AJSONArray: TJSONArray; const AOwns: Boolean);
 begin
+  FOwns := AOwns;
   FJSONArray := AJSONArray;
 end;
 
@@ -410,9 +413,9 @@ end;
 
 destructor TJSONSerialize.Destroy;
 begin
-  if Assigned(FJSONObject) then
+  if Assigned(FJSONObject) and FOwns then
     FJSONObject.Free;
-  if Assigned(FJSONArray) then
+  if Assigned(FJSONArray) and FOwns then
     FJSONArray.Free;
   FJSONObject := nil;
   FJSONArray := nil;
