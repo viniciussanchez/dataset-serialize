@@ -287,7 +287,7 @@ begin
   for LField in ADataSet.Fields do
     if LField.Required then
     begin
-      if FJSONObject.TryGetValue(LField.FieldName, LJSONValue) then
+      if FJSONObject.TryGetValue(LField.FieldName, LJSONValue) or FJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue) then
       begin
         if LJSONValue.Trim.IsEmpty then
           Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
