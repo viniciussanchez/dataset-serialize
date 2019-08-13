@@ -292,7 +292,7 @@ begin
         if LJSONValue.Trim.IsEmpty then
           Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
       end
-      else
+      else if LField.IsNull then
         Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
     end;
 end;
