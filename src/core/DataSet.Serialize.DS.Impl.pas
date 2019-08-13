@@ -97,10 +97,13 @@ end;
 function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet): TJSONArray;
 var
   LBookMark: TBookmark;
+  LHandlerControlsEnabled: Boolean;
 begin
   if ADataSet.IsEmpty then
     Exit(TJSONArray.Create);
-  ADataSet.DisableControls;
+  LHandlerControlsEnabled := not ADataSet.ControlsDisabled;
+  if LHandlerControlsEnabled then
+    ADataSet.DisableControls;
   try
     Result := TJSONArray.Create;
     LBookMark := ADataSet.BookMark;
@@ -114,7 +117,8 @@ begin
     if ADataSet.BookmarkValid(LBookMark) then
       ADataSet.GotoBookmark(LBookMark);
     ADataSet.FreeBookmark(LBookMark);
-    ADataSet.EnableControls;
+    if LHandlerControlsEnabled then
+      ADataSet.EnableControls;
   end;
 end;
 

@@ -362,7 +362,8 @@ object FrmSamples: TFrmSamples
               Align = alBottom
               Lines.Strings = (
                 '{'
-                '  "COUNTRY": "Brazil"'
+                '  "NAME": "",'
+                '  "COUNTRY": ""'
                 '}')
               ReadOnly = True
               ScrollBars = ssVertical

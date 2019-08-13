@@ -49,7 +49,10 @@ type
     /// <param name="AJSONArray">
     ///   Refers to JSON with field specifications.
     /// </param>
-    procedure LoadStructure(const AJSONArray: TJSONArray); overload;
+    /// <param name="AOwns">
+    ///   Destroy JSON in the end.
+    /// </param>
+    procedure LoadStructure(const AJSONArray: TJSONArray; const AOwns: Boolean = True); overload;
     /// <summary>
     ///   Loads fields from a DataSet based on a JSON (string format).
     /// </summary>
@@ -63,22 +66,28 @@ type
     /// <param name="AJSONObject">
     ///   Refers to JSON that you want to load.
     /// </param>
+    /// <param name="AOwns">
+    ///   Destroy JSON in the end.
+    /// </param>
     /// <remarks>
     ///   Only the keys that make up the DataSet field list will be loaded. The JSON keys must have the same name as the
     ///   DataSet fields. It's not case-sensitive.
     /// </remarks>
-    procedure LoadFromJSON(const AJSONObject: TJSONObject); overload;
+    procedure LoadFromJSON(const AJSONObject: TJSONObject; const AOwns: Boolean = True); overload;
     /// <summary>
     ///   Loads the DataSet with data from a JSON array.
     /// </summary>
     /// <param name="AJSONArray">
     ///   Refers to JSON that you want to load.
     /// </param>
+    /// <param name="AOwns">
+    ///   Destroy JSON in the end.
+    /// </param>
     /// <remarks>
     ///   Only the keys that make up the DataSet field list will be loaded. The JSON keys must have the same name as the
     ///   DataSet fields. It's not case-sensitive.
     /// </remarks>
-    procedure LoadFromJSON(const AJSONArray: TJSONArray); overload;
+    procedure LoadFromJSON(const AJSONArray: TJSONArray; const AOwns: Boolean = True); overload;
     /// <summary>
     ///   Loads the DataSet with data from a JSON (string format).
     /// </summary>
@@ -96,7 +105,10 @@ type
     /// <param name="AJSONObject">
     ///   Refers to JSON that you want to merge.
     /// </param>
-    procedure MergeFromJSONObject(const AJSONObject: TJSONObject); overload;
+    /// <param name="AOwns">
+    ///   Destroy JSON in the end.
+    /// </param>
+    procedure MergeFromJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = True); overload;
     /// <summary>
     ///   Updates the DataSet data with JSON object data (string format).
     /// </summary>
@@ -113,6 +125,9 @@ type
     /// <param name="ALang">
     ///   Language used to mount messages.
     /// </param>
+    /// <param name="AOwns">
+    ///   Destroy JSON in the end.
+    /// </param>
     /// <returns>
     ///   Returns a JSONArray with the fields that were not informed.
     /// </returns>
@@ -120,7 +135,7 @@ type
     ///   Walk the DataSet fields by checking the required property.
     ///   Uses the DisplayLabel property to mount the message.
     /// </remarks>
-    function ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS): TJSONArray; overload;
+    function ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS; const AOwns: Boolean = True): TJSONArray; overload;
     /// <summary>
     ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
     /// </summary>
@@ -180,11 +195,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS): TJSONArray;
+function TDataSetSerializeHelper.ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS; const AOwns: Boolean = True): TJSONArray;
 var
   LJSONSerialize: TJSONSerialize;
 begin
-  LJSONSerialize := TJSONSerialize.Create(AJSONObject);
+  LJSONSerialize := TJSONSerialize.Create(AJSONObject, AOwns);
   try
     Result := LJSONSerialize.Validate(Self, ALang);
   finally
@@ -192,11 +207,11 @@ begin
   end;
 end;
 
-procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONArray: TJSONArray);
+procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONArray: TJSONArray; const AOwns: Boolean = True);
 var
   LJSONSerialize: TJSONSerialize;
 begin
-  LJSONSerialize := TJSONSerialize.Create(AJSONArray);
+  LJSONSerialize := TJSONSerialize.Create(AJSONArray, AOwns);
   try
     LJSONSerialize.ToDataSet(Self);
   finally
@@ -204,11 +219,11 @@ begin
   end;
 end;
 
-procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject);
+procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject; const AOwns: Boolean = True);
 var
   LJSONSerialize: TJSONSerialize;
 begin
-  LJSONSerialize := TJSONSerialize.Create(AJSONObject);
+  LJSONSerialize := TJSONSerialize.Create(AJSONObject, AOwns);
   try
     LJSONSerialize.ToDataSet(Self);
   finally
@@ -216,11 +231,11 @@ begin
   end;
 end;
 
-procedure TDataSetSerializeHelper.LoadStructure(const AJSONArray: TJSONArray);
+procedure TDataSetSerializeHelper.LoadStructure(const AJSONArray: TJSONArray; const AOwns: Boolean = True);
 var
   LJSONSerialize: TJSONSerialize;
 begin
-  LJSONSerialize := TJSONSerialize.Create(AJSONArray);
+  LJSONSerialize := TJSONSerialize.Create(AJSONArray, AOwns);
   try
     LJSONSerialize.LoadStructure(Self);
   finally
@@ -228,11 +243,11 @@ begin
   end;
 end;
 
-procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONObject: TJSONObject);
+procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONObject: TJSONObject; const AOwns: Boolean = True);
 var
   LJSONSerialize: TJSONSerialize;
 begin
-  LJSONSerialize := TJSONSerialize.Create(AJSONObject);
+  LJSONSerialize := TJSONSerialize.Create(AJSONObject, AOwns);
   try
     LJSONSerialize.Merge(Self);
   finally
