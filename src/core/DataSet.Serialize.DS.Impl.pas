@@ -85,7 +85,8 @@ type
 implementation
 
 uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize, System.TypInfo,
-  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet;
+  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet,
+  UpdatedStatus.Types;
 
 { TDataSetSerialize }
 
@@ -180,7 +181,7 @@ begin
     end;
   end;
   if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
-    Result.AddPair(OBJECT_STATE, TJSONNumber.Create(Ord(ADataSet.UpdateStatus)));
+    Result.AddPair(OBJECT_STATE, TJSONString.Create(ADataSet.UpdateStatus.ToString));
   LDataSetDetails := TList<TDataSet>.Create;
   try
     ADataSet.GetDetailDataSets(LDataSetDetails);
