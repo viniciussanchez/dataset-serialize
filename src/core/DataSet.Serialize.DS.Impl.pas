@@ -126,7 +126,6 @@ function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet): TJSONO
 var
   LKey: string;
   LNestedDataSet: TDataSet;
-  LBooleanFieldType: TBooleanFieldType;
   LDataSetDetails: TList<TDataSet>;
   LField: TField;
 begin
@@ -141,8 +140,7 @@ begin
     case LField.DataType of
       TFieldType.ftBoolean:
         begin
-          LBooleanFieldType := TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(LField));
-          case LBooleanFieldType of
+          case TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(LField)) of
             bfUnknown, bfBoolean:
               Result.AddPair(LKey, TDataSetSerializeUtils.BooleanToJSON(LField.AsBoolean));
             else
