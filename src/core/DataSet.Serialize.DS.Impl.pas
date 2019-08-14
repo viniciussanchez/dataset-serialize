@@ -98,13 +98,9 @@ end;
 function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet): TJSONArray;
 var
   LBookMark: TBookmark;
-  LHandlerControlsEnabled: Boolean;
 begin
   if ADataSet.IsEmpty then
     Exit(TJSONArray.Create);
-  LHandlerControlsEnabled := not ADataSet.ControlsDisabled;
-  if LHandlerControlsEnabled then
-    ADataSet.DisableControls;
   try
     Result := TJSONArray.Create;
     LBookMark := ADataSet.BookMark;
@@ -118,8 +114,6 @@ begin
     if ADataSet.BookmarkValid(LBookMark) then
       ADataSet.GotoBookmark(LBookMark);
     ADataSet.FreeBookmark(LBookMark);
-    if LHandlerControlsEnabled then
-      ADataSet.EnableControls;
   end;
 end;
 
@@ -127,7 +121,6 @@ function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet): TJSONO
 var
   LKey: string;
   LNestedDataSet: TDataSet;
-  LBooleanFieldType: TBooleanFieldType;
   LDataSetDetails: TList<TDataSet>;
   LField: TField;
 begin
@@ -142,8 +135,7 @@ begin
     case LField.DataType of
       TFieldType.ftBoolean:
         begin
-          LBooleanFieldType := TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(LField));
-          case LBooleanFieldType of
+          case TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(LField)) of
             bfUnknown, bfBoolean:
               Result.AddPair(LKey, TDataSetSerializeUtils.BooleanToJSON(LField.AsBoolean));
             else
@@ -187,12 +179,11 @@ begin
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
+      if not(LNestedDataSet.RecordCount > 0) then
+        Continue;
       if (FOnlyUpdatedRecords) and (LNestedDataSet is TFDDataSet) then
         TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted];
-      if LNestedDataSet.RecordCount = 1 then
-        Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONObject(LNestedDataSet))
-      else if LNestedDataSet.RecordCount > 1 then
-        Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet));
+      Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet));
       if (FOnlyUpdatedRecords) and (LNestedDataSet is TFDDataSet) then
         TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
     end;
