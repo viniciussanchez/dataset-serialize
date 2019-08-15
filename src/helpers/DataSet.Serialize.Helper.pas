@@ -13,18 +13,24 @@ type
     /// <param name="AOnlyUpdatedRecords">
     ///   Exports only inserted, modified and deleted data from childs dataset.
     /// </param>
+    /// <param name="AChildRecords">
+    ///   Exports only childs records from child datasets.
+    /// </param>
     /// <returns>
     ///   Returns a JSON object containing the record data.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONObject(const AOnlyUpdatedRecords: Boolean = False): TJSONObject;
+    function ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONObject;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
     /// <param name="AOnlyUpdatedRecords">
     ///   Exports only inserted, modified and deleted data from childs dataset.
+    /// </param>
+    /// <param name="AChildRecords">
+    ///   Exports only childs records from child datasets.
     /// </param>
     /// <returns>
     ///   Returns a JSONArray with all records from the DataSet.
@@ -32,7 +38,7 @@ type
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False): TJSONArray;
+    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONArray;
     /// <summary>
     ///   Responsible for exporting the structure of a DataSet in JSON Array format.
     /// </summary>
@@ -159,11 +165,11 @@ implementation
 
 uses System.SysUtils, DataSet.Serialize.DS.Impl, DataSet.Serialize.JSON.Impl;
 
-function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False): TJSONArray;
+function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONArray;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords);
   try
     Result := LDataSetSerialize.ToJSONArray;
   finally
@@ -171,11 +177,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ToJSONObject(const AOnlyUpdatedRecords: Boolean = False): TJSONObject;
+function TDataSetSerializeHelper.ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONObject;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords);
   try
     Result := LDataSetSerialize.ToJSONObject;
   finally
