@@ -165,7 +165,7 @@ type
 implementation
 
 uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
-  System.Generics.Collections, System.Variants;
+  System.Generics.Collections, System.Variants, UpdatedStatus.Types;
 
 { TJSONSerialize }
 
@@ -176,21 +176,21 @@ var
   LNestedDataSet: TDataSet;
   LBooleanValue: Boolean;
   LDataSetDetails: TList<TDataSet>;
-  LObjectState: Integer;
+  LObjectState: string;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) then
     Exit;
-  if AJSONObject.TryGetValue<Integer>(OBJECT_STATE, LObjectState) then
+  if AJSONObject.TryGetValue(OBJECT_STATE, LObjectState) then
   begin
-    if TUpdateStatus(LObjectState) = usInserted then
+    if TUpdateStatus.usInserted.ToString.Equals(LObjectState) then
       ADataSet.Append
     else
     begin
       if not ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
         Exit;
-      if TUpdateStatus(LObjectState) = usModified then
+      if TUpdateStatus.usModified.ToString.Equals(LObjectState) then
         ADataSet.Edit
-      else if TUpdateStatus(LObjectState) = usDeleted then
+      else if TUpdateStatus.usDeleted.ToString.Equals(LObjectState) then
       begin
         ADataSet.Delete;
         Exit;

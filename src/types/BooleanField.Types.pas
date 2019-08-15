@@ -8,15 +8,15 @@ type
   /// </summary>
   TBooleanFieldType = (bfUnknown, bfBoolean, bfInteger);
 
-  TBooleanFieldTypeHelpers = record helper for TBooleanFieldType
+  TBooleanFieldTypeHelper = record helper for TBooleanFieldType
     function ToString: string;
   end;
 
 implementation
 
-{ TBooleanFieldTypeHelpers }
+{ TBooleanFieldTypeHelper }
 
-function TBooleanFieldTypeHelpers.ToString: string;
+function TBooleanFieldTypeHelper.ToString: string;
 begin
   case Self of
     bfUnknown:
