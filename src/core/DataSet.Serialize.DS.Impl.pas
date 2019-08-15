@@ -179,11 +179,10 @@ begin
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
-      if not(LNestedDataSet.RecordCount > 0) then
-        Continue;
       if (FOnlyUpdatedRecords) and (LNestedDataSet is TFDDataSet) then
         TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted];
-      Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet));
+      if (LNestedDataSet.RecordCount > 0) then
+        Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet));
       if (FOnlyUpdatedRecords) and (LNestedDataSet is TFDDataSet) then
         TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
     end;
