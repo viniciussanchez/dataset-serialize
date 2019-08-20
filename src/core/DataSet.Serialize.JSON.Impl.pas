@@ -100,6 +100,10 @@ type
     ///   The key values of the ADataSet parameter.
     /// </returns>
     function GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
+    /// <summary>
+    ///   Load the fields into the dataset.
+    /// </summary>
+    procedure LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
 	public
     /// <summary>
     ///   Responsible for creating a new isntância of TDataSetSerialize class.
@@ -165,7 +169,8 @@ type
 implementation
 
 uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
-  System.Generics.Collections, System.Variants, UpdatedStatus.Types;
+  System.Generics.Collections, System.Variants, UpdatedStatus.Types,
+  FireDAC.Comp.Client;
 
 { TJSONSerialize }
 
@@ -180,6 +185,16 @@ var
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) then
     Exit;
+    
+  if not(ADataSet.Active) then
+  begin
+    if not(ADataSet is TFDMemTable)  then
+      Exit;
+    if ADataSet.FieldCount = 0 then
+      LoadFieldsFromJSON(ADataSet, AJSONObject);
+    ADataSet.Open;
+  end;
+
   if AJSONObject.TryGetValue(OBJECT_STATE, LObjectState) then
   begin
     if TUpdateStatus.usInserted.ToString.Equals(LObjectState) then
@@ -315,6 +330,21 @@ begin
     end;
   finally
     LStringStream.Free;
+  end;
+end;
+
+procedure TJSONSerialize.LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
+var
+  JSONPair: TJSONPair;
+begin
+  for JSONPair in AJSONObject do
+  begin
+    with ADataSet.FieldDefs.AddFieldDef do
+    begin
+      Name := JSONPair.JsonString.Value;
+      DataType := ftString;
+      Size := 4096;
+    end;
   end;
 end;
 
