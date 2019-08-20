@@ -35,7 +35,7 @@ type
     /// <remarks>
     ///   Invisible or null fields will not be exported.
     /// </remarks>
-    function DataSetToJSONArray(const ADataSet: TDataSet): TJSONArray;
+    function DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean = False): TJSONArray;
     /// <summary>
     ///   Encrypts a blob field in Base64.
     /// </summary>
@@ -46,6 +46,10 @@ type
     ///   Returns a string with the cryptogrammed content in Base64.
     /// </returns>
     function EncodingBlobField(const AField: TField): string;
+    /// <summary>
+    ///   Verifiy if a DataSet has detail dataset and if has child modification.
+    /// </summary>
+    function HasChildModification(const ADataSet: TDataSet): Boolean;    
   public
     /// <summary>
     ///   Responsible for creating a new isntância of TDataSetSerialize class.
@@ -96,7 +100,7 @@ begin
   Result := DataSetToJSONObject(FDataSet);
 end;
 
-function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet): TJSONArray;
+function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean): TJSONArray;
 var
   LBookMark: TBookmark;
 begin
@@ -108,6 +112,12 @@ begin
     ADataSet.First;
     while not ADataSet.Eof do
     begin
+      if IsChild and FOnlyUpdatedRecords then
+        if (ADataSet.UpdateStatus = TUpdateStatus.usUnmodified) and not(HasChildModification(ADataSet)) then
+        begin
+          ADataSet.Next;
+          Continue;
+        end;
       Result.AddElement(DataSetToJSONObject(ADataSet));
       ADataSet.Next;
     end;
@@ -179,16 +189,10 @@ begin
   begin
     LDataSetDetails := TList<TDataSet>.Create;
     try
-      ADataSet.GetDetailDataSets(LDataSetDetails);
+      ADataSet.GetDetailDataSets(LDataSetDetails);      
       for LNestedDataSet in LDataSetDetails do
-      begin
-        if (FOnlyUpdatedRecords) and (LNestedDataSet is TFDDataSet) then
-          TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted];
         if (LNestedDataSet.RecordCount > 0) then
-          Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet));
-        if (FOnlyUpdatedRecords) and (LNestedDataSet is TFDDataSet) then
-          TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
-      end;
+          Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet, True));
     finally
       LDataSetDetails.Free;
     end;
@@ -213,6 +217,35 @@ begin
     end;
   finally
     LMemoryStream.Free;
+  end;
+end;
+
+function TDataSetSerialize.HasChildModification(const ADataSet: TDataSet): Boolean;
+var
+  LDataSetDetails: TList<TDataSet>;
+  LNestedDataSet: TDataSet;
+begin
+  Result := False;
+  LDataSetDetails := TList<TDataSet>.Create;
+  try
+    ADataSet.GetDetailDataSets(LDataSetDetails);
+    for LNestedDataSet in LDataSetDetails do
+    begin
+      if not (LNestedDataSet is TFDDataSet) then
+        Continue;
+      try
+        TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted];
+        if (TFDDataSet(LNestedDataSet).RecordCount > 0) or HasChildModification(LNestedDataSet) then
+        begin
+          Result := True;
+          Break;
+        end;
+      finally
+        TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+      end;
+    end;
+  finally
+    LDataSetDetails.Free;
   end;
 end;
 
