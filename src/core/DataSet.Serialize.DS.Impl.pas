@@ -191,8 +191,14 @@ begin
     try
       ADataSet.GetDetailDataSets(LDataSetDetails);      
       for LNestedDataSet in LDataSetDetails do
+      begin
+        if FOnlyUpdatedRecords then
+          TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
         if (LNestedDataSet.RecordCount > 0) then
           Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet, True));
+        if FOnlyUpdatedRecords then
+          TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+      end;
     finally
       LDataSetDetails.Free;
     end;
