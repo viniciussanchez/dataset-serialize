@@ -420,7 +420,8 @@ begin
     else
       JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False);
   end;
-  ADataSet.First;
+  if ADataSet.Active then
+    ADataSet.First;
 end;
 
 procedure TJSONSerialize.Merge(const ADataSet: TDataSet);
