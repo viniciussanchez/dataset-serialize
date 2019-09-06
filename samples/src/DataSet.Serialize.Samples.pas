@@ -80,6 +80,23 @@ type
     mtJSONNestedUFCIDADES: TDataSetField;
     mtJSONNestedCityNOME: TStringField;
     mtJSONNestedCityCEP: TStringField;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel16: TPanel;
+    mmDataSetField: TMemo;
+    Button12: TButton;
+    dsChieldsArray: TDataSource;
+    mtChieldsArray: TFDMemTable;
+    mtNested: TFDMemTable;
+    dsNested: TDataSource;
+    mtNestedID: TIntegerField;
+    mtNestedNAME: TStringField;
+    mtNestedARRAY: TDataSetField;
+    Panel17: TPanel;
+    DBGrid5: TDBGrid;
+    DBGrid6: TDBGrid;
+    mtChieldsArrayVALUE: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -94,6 +111,7 @@ type
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
+    procedure Button12Click(Sender: TObject);
   private
     procedure Append;
     procedure ClearFields;
@@ -135,6 +153,11 @@ begin
       LJSONObject.Free;
     end;
   end;
+end;
+
+procedure TFrmSamples.Button12Click(Sender: TObject);
+begin
+  mtNested.LoadFromJSON(mmDataSetField.Lines.Text);
 end;
 
 procedure TFrmSamples.Button1Click(Sender: TObject);

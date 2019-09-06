@@ -484,203 +484,348 @@ object FrmSamples: TFrmSamples
     object tabJSONNested: TTabSheet
       Caption = 'JSON Nested Object'
       ImageIndex = 2
-      object Panel11: TPanel
-        Left = 241
-        Top = 0
-        Width = 504
-        Height = 543
-        Align = alClient
-        BevelOuter = bvNone
-        TabOrder = 0
-        object DBGrid2: TDBGrid
-          Left = 0
-          Top = 0
-          Width = 504
-          Height = 112
-          Align = alTop
-          DataSource = dsJSONNested
-          TabOrder = 0
-          TitleFont.Charset = DEFAULT_CHARSET
-          TitleFont.Color = clWindowText
-          TitleFont.Height = -11
-          TitleFont.Name = 'Tahoma'
-          TitleFont.Style = []
-          Columns = <
-            item
-              Expanded = False
-              FieldName = 'PAIS'
-              Title.Caption = 'Pa'#237's'
-              Width = 406
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'SIGLA'
-              Title.Caption = 'Sigla'
-              Width = 38
-              Visible = True
-            end>
-        end
-        object DBGrid3: TDBGrid
-          Left = 0
-          Top = 112
-          Width = 504
-          Height = 209
-          Align = alTop
-          DataSource = dsJSONNestedUF
-          TabOrder = 1
-          TitleFont.Charset = DEFAULT_CHARSET
-          TitleFont.Color = clWindowText
-          TitleFont.Height = -11
-          TitleFont.Name = 'Tahoma'
-          TitleFont.Style = []
-          Columns = <
-            item
-              Expanded = False
-              FieldName = 'NOME'
-              Title.Caption = 'Nome'
-              Width = 406
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'SIGLA'
-              Title.Caption = 'UF'
-              Width = 38
-              Visible = True
-            end>
-        end
-        object DBGrid4: TDBGrid
-          Left = 0
-          Top = 321
-          Width = 504
-          Height = 222
-          Align = alClient
-          DataSource = dsJSONNEstedCity
-          TabOrder = 2
-          TitleFont.Charset = DEFAULT_CHARSET
-          TitleFont.Color = clWindowText
-          TitleFont.Height = -11
-          TitleFont.Name = 'Tahoma'
-          TitleFont.Style = []
-          Columns = <
-            item
-              Expanded = False
-              FieldName = 'NOME'
-              Title.Caption = 'Nome'
-              Width = 300
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'CEP'
-              Width = 144
-              Visible = True
-            end>
-        end
-      end
-      object Panel14: TPanel
+      object PageControl1: TPageControl
         Left = 0
         Top = 0
-        Width = 241
+        Width = 986
         Height = 543
-        Align = alLeft
-        BevelOuter = bvNone
-        TabOrder = 1
-        object mmJSONNested: TMemo
-          Left = 0
-          Top = 33
-          Width = 241
-          Height = 510
-          Align = alClient
-          Lines.Strings = (
-            '{'
-            '  "pais": "Brasil",'
-            '  "sigla": "BRL",'
-            '  "estados": ['
-            '    {'
-            '      "nome": "S'#227'o Paulo",'
-            '      "sigla": "SP",'
-            '      "cidades": ['
-            '        {'
-            '          "nome": "Fernand'#243'polis",'
-            '          "cep": "15600-000"'
-            '        },'
-            '        {'
-            '          "nome": "Votuporanga",'
-            '          "cep": "12600-100"'
-            '        },'
-            '        {'
-            '          "nome": "Jales",'
-            '          "cep": "14859-000"'
-            '        },'
-            '        {'
-            '          "nome": "S'#227'o Jos'#233' do Rio Preto",'
-            '          "cep": "18450-450"'
-            '        },'
-            '        {'
-            '          "nome": "B'#225'lsamo",'
-            '          "cep": "15140-000"'
-            '        }'
-            '      ]'
-            '    },'
-            '    {'
-            '      "nome": "Paran'#225'",'
-            '      "sigla": "PR",'
-            '      "cidades": ['
-            '        {'
-            '          "nome": "Maring'#225'",'
-            '          "cep": "87050-000"'
-            '        },'
-            '        {'
-            '          "nome": "Londrina",'
-            '          "cep": "86010-190"'
-            '        }'
-            '      ]'
-            '    }'
-            '  ]'
-            '}')
-          ScrollBars = ssVertical
-          TabOrder = 0
+        ActivePage = TabSheet1
+        Align = alClient
+        TabOrder = 0
+        object TabSheet1: TTabSheet
+          Caption = 'TDataSetField - Samples 1'
+          ExplicitWidth = 281
+          ExplicitHeight = 165
+          object Panel11: TPanel
+            Left = 241
+            Top = 0
+            Width = 496
+            Height = 515
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 0
+            ExplicitWidth = 504
+            ExplicitHeight = 543
+            object DBGrid2: TDBGrid
+              Left = 0
+              Top = 0
+              Width = 496
+              Height = 112
+              Align = alTop
+              DataSource = dsJSONNested
+              TabOrder = 0
+              TitleFont.Charset = DEFAULT_CHARSET
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -11
+              TitleFont.Name = 'Tahoma'
+              TitleFont.Style = []
+              Columns = <
+                item
+                  Expanded = False
+                  FieldName = 'PAIS'
+                  Title.Caption = 'Pa'#237's'
+                  Width = 406
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'SIGLA'
+                  Title.Caption = 'Sigla'
+                  Width = 38
+                  Visible = True
+                end>
+            end
+            object DBGrid3: TDBGrid
+              Left = 0
+              Top = 112
+              Width = 496
+              Height = 209
+              Align = alTop
+              DataSource = dsJSONNestedUF
+              TabOrder = 1
+              TitleFont.Charset = DEFAULT_CHARSET
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -11
+              TitleFont.Name = 'Tahoma'
+              TitleFont.Style = []
+              Columns = <
+                item
+                  Expanded = False
+                  FieldName = 'NOME'
+                  Title.Caption = 'Nome'
+                  Width = 406
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'SIGLA'
+                  Title.Caption = 'UF'
+                  Width = 38
+                  Visible = True
+                end>
+            end
+            object DBGrid4: TDBGrid
+              Left = 0
+              Top = 321
+              Width = 496
+              Height = 194
+              Align = alClient
+              DataSource = dsJSONNEstedCity
+              TabOrder = 2
+              TitleFont.Charset = DEFAULT_CHARSET
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -11
+              TitleFont.Name = 'Tahoma'
+              TitleFont.Style = []
+              Columns = <
+                item
+                  Expanded = False
+                  FieldName = 'NOME'
+                  Title.Caption = 'Nome'
+                  Width = 300
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'CEP'
+                  Width = 144
+                  Visible = True
+                end>
+            end
+          end
+          object Panel14: TPanel
+            Left = 0
+            Top = 0
+            Width = 241
+            Height = 515
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 1
+            ExplicitHeight = 543
+            object mmJSONNested: TMemo
+              Left = 0
+              Top = 33
+              Width = 241
+              Height = 482
+              Align = alClient
+              Lines.Strings = (
+                '{'
+                '  "pais": "Brasil",'
+                '  "sigla": "BRL",'
+                '  "estados": ['
+                '    {'
+                '      "nome": "S'#227'o Paulo",'
+                '      "sigla": "SP",'
+                '      "cidades": ['
+                '        {'
+                '          "nome": "Fernand'#243'polis",'
+                '          "cep": "15600-000"'
+                '        },'
+                '        {'
+                '          "nome": "Votuporanga",'
+                '          "cep": "12600-100"'
+                '        },'
+                '        {'
+                '          "nome": "Jales",'
+                '          "cep": "14859-000"'
+                '        },'
+                '        {'
+                '          "nome": "S'#227'o Jos'#233' do Rio Preto",'
+                '          "cep": "18450-450"'
+                '        },'
+                '        {'
+                '          "nome": "B'#225'lsamo",'
+                '          "cep": "15140-000"'
+                '        }'
+                '      ]'
+                '    },'
+                '    {'
+                '      "nome": "Paran'#225'",'
+                '      "sigla": "PR",'
+                '      "cidades": ['
+                '        {'
+                '          "nome": "Maring'#225'",'
+                '          "cep": "87050-000"'
+                '        },'
+                '        {'
+                '          "nome": "Londrina",'
+                '          "cep": "86010-190"'
+                '        }'
+                '      ]'
+                '    }'
+                '  ]'
+                '}')
+              ScrollBars = ssVertical
+              TabOrder = 0
+              ExplicitHeight = 510
+            end
+            object Button10: TButton
+              Left = 0
+              Top = 0
+              Width = 241
+              Height = 33
+              Align = alTop
+              Caption = 'Load from JSON'
+              TabOrder = 1
+              OnClick = Button10Click
+            end
+          end
+          object Panel15: TPanel
+            Left = 737
+            Top = 0
+            Width = 241
+            Height = 515
+            Align = alRight
+            BevelOuter = bvNone
+            TabOrder = 2
+            ExplicitLeft = 745
+            ExplicitHeight = 543
+            object mmExportDataSetNested: TMemo
+              Left = 0
+              Top = 33
+              Width = 241
+              Height = 482
+              Align = alClient
+              ReadOnly = True
+              ScrollBars = ssVertical
+              TabOrder = 0
+              ExplicitHeight = 510
+            end
+            object Button11: TButton
+              Left = 0
+              Top = 0
+              Width = 241
+              Height = 33
+              Align = alTop
+              Caption = 'Export to JSON'
+              TabOrder = 1
+              OnClick = Button11Click
+            end
+          end
         end
-        object Button10: TButton
-          Left = 0
-          Top = 0
-          Width = 241
-          Height = 33
-          Align = alTop
-          Caption = 'Load from JSON Array'
-          TabOrder = 1
-          OnClick = Button10Click
-        end
-      end
-      object Panel15: TPanel
-        Left = 745
-        Top = 0
-        Width = 241
-        Height = 543
-        Align = alRight
-        BevelOuter = bvNone
-        TabOrder = 2
-        object mmExportDataSetNested: TMemo
-          Left = 0
-          Top = 33
-          Width = 241
-          Height = 510
-          Align = alClient
-          ReadOnly = True
-          ScrollBars = ssVertical
-          TabOrder = 0
-        end
-        object Button11: TButton
-          Left = 0
-          Top = 0
-          Width = 241
-          Height = 33
-          Align = alTop
-          Caption = 'Export to JSON'
-          TabOrder = 1
-          OnClick = Button11Click
+        object TabSheet2: TTabSheet
+          Caption = 'TDataSetField - Samples 2'
+          ImageIndex = 1
+          ExplicitLeft = 0
+          object Panel16: TPanel
+            Left = 0
+            Top = 0
+            Width = 241
+            Height = 515
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 0
+            ExplicitLeft = 8
+            object mmDataSetField: TMemo
+              Left = 0
+              Top = 33
+              Width = 241
+              Height = 482
+              Align = alClient
+              Lines.Strings = (
+                '['
+                '  {'
+                '    "id": 1,'
+                '    "name": "Vinicius Sanchez",'
+                '    "array": ['
+                '      1,'
+                '      2,'
+                '      3,'
+                '      4'
+                '    ]'
+                '  },'
+                '  {'
+                '    "id": 2,'
+                '    "name": "Julio Cesar Senha",'
+                '    "array": ['
+                '      1,'
+                '      2'
+                '    ]'
+                '  },'
+                '  {'
+                '    "id": 3,'
+                '    "name": "Mateus Vicente",'
+                '    "array": ['
+                '      1,'
+                '      2,'
+                '      3,'
+                '      4,'
+                '      5,'
+                '      6'
+                '    ]'
+                '  }'
+                ']')
+              ScrollBars = ssVertical
+              TabOrder = 0
+            end
+            object Button12: TButton
+              Left = 0
+              Top = 0
+              Width = 241
+              Height = 33
+              Align = alTop
+              Caption = 'Load from JSON'
+              TabOrder = 1
+              OnClick = Button12Click
+            end
+          end
+          object Panel17: TPanel
+            Left = 241
+            Top = 0
+            Width = 737
+            Height = 515
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 1
+            ExplicitTop = -3
+            object DBGrid5: TDBGrid
+              Left = 0
+              Top = 0
+              Width = 737
+              Height = 112
+              Align = alTop
+              DataSource = dsNested
+              TabOrder = 0
+              TitleFont.Charset = DEFAULT_CHARSET
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -11
+              TitleFont.Name = 'Tahoma'
+              TitleFont.Style = []
+              Columns = <
+                item
+                  Expanded = False
+                  FieldName = 'ID'
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'NAME'
+                  Width = 388
+                  Visible = True
+                end>
+            end
+            object DBGrid6: TDBGrid
+              Left = 0
+              Top = 112
+              Width = 737
+              Height = 403
+              Align = alClient
+              DataSource = dsChieldsArray
+              TabOrder = 1
+              TitleFont.Charset = DEFAULT_CHARSET
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -11
+              TitleFont.Name = 'Tahoma'
+              TitleFont.Style = []
+              Columns = <
+                item
+                  Expanded = False
+                  FieldName = 'VALUE'
+                  Width = 102
+                  Visible = True
+                end>
+            end
+          end
         end
       end
     end
@@ -815,5 +960,50 @@ object FrmSamples: TFrmSamples
     DataSet = mtJSONNestedCity
     Left = 568
     Top = 384
+  end
+  object dsChieldsArray: TDataSource
+    DataSet = mtChieldsArray
+    Left = 568
+    Top = 320
+  end
+  object mtChieldsArray: TFDMemTable
+    DataSetField = mtNestedARRAY
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 600
+    Top = 320
+    object mtChieldsArrayVALUE: TIntegerField
+      FieldName = 'VALUE'
+    end
+  end
+  object mtNested: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 600
+    Top = 264
+    object mtNestedID: TIntegerField
+      FieldName = 'ID'
+    end
+    object mtNestedNAME: TStringField
+      FieldName = 'NAME'
+    end
+    object mtNestedARRAY: TDataSetField
+      FieldName = 'ARRAY'
+    end
+  end
+  object dsNested: TDataSource
+    DataSet = mtNested
+    Left = 568
+    Top = 264
   end
 end

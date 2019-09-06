@@ -57,6 +57,16 @@ type
     /// </param>
     procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const AMerging: Boolean);
     /// <summary>
+    ///   Loads a DataSet with a JSONOValue.
+    /// </summary>
+    /// <param name="AJSONValue">
+    ///   Refers to the JSON value that must be loaded in the DataSet.
+    /// </param>
+    /// <param name="ADataSet">
+    ///   Refers to the DataSet which must be loaded with the JSON value.
+    /// </param>
+    procedure JSONValueToDataSet(const AJSONValue: TJSONValue; const ADataSet: TDataSet);
+    /// <summary>
     ///   Loads a DataSet with a JSONArray.
     /// </summary>
     /// <param name="AJSONArray">
@@ -284,6 +294,15 @@ begin
   end;
 end;
 
+procedure TJSONSerialize.JSONValueToDataSet(const AJSONValue: TJSONValue; const ADataSet: TDataSet);
+begin
+  if ADataSet.Fields.Count <> 1 then
+    raise EDataSetSerializeException.Create(Format(INVALID_FIELD_COUNT, [ADataSet.Name]));
+  ADataSet.Append;
+  ADataSet.Fields.Fields[0].AsString := AJSONValue.Value;
+  ADataSet.Post;
+end;
+
 procedure TJSONSerialize.ToDataSet(const ADataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
@@ -417,8 +436,10 @@ begin
   begin
     if (LJSONValue is TJSONArray) then
       JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet)
+    else if (LJSONValue is TJSONObject) then
+      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False)
     else
-      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False);
+      JSONValueToDataSet(LJSONValue, ADataSet);
   end;
   if ADataSet.Active then
     ADataSet.First;
