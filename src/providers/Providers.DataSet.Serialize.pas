@@ -1,6 +1,5 @@
 unit Providers.DataSet.Serialize;
-
-
+
 interface
 
 uses System.DateUtils, System.JSON, Data.DB, BooleanField.Types, System.SysUtils;
@@ -150,7 +149,7 @@ begin
     TSingleField(Result).Precision := AFieldStructure.Precision
   else if Result is TExtendedField then
     TExtendedField(Result).Precision := AFieldStructure.Precision;
-
+  
   Result.Visible := AFieldStructure.Visible;
   Result.ReadOnly := AFieldStructure.ReadOnly;
   Result.Required := AFieldStructure.Required;
@@ -172,4 +171,4 @@ begin
 end;
 
 end.
-
+
