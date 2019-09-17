@@ -1,5 +1,6 @@
 unit Providers.DataSet.Serialize;
-
+
+
 interface
 
 uses System.DateUtils, System.JSON, Data.DB, BooleanField.Types, System.SysUtils;
@@ -21,6 +22,7 @@ type
   TFieldStructure = record
     FieldType: TFieldType;
     Size: Integer;
+    Precision: Integer;
     FieldName: string;
     Origin: string;
     DisplayLabel: string;
@@ -139,6 +141,16 @@ begin
   Result.DataSet := ADataSet;
   Result.Name := CreateValidIdentifier(ADataSet.Name + Result.FieldName);
   Result.Size := AFieldStructure.Size;
+
+  if Result is TBCDField then
+    TBCDField(Result).Precision := AFieldStructure.Precision
+  else if Result is TFloatField then
+    TFloatField(Result).Precision := AFieldStructure.Precision
+  else if Result is TSingleField then
+    TSingleField(Result).Precision := AFieldStructure.Precision
+  else if Result is TExtendedField then
+    TExtendedField(Result).Precision := AFieldStructure.Precision;
+
   Result.Visible := AFieldStructure.Visible;
   Result.ReadOnly := AFieldStructure.ReadOnly;
   Result.Required := AFieldStructure.Required;
@@ -160,4 +172,4 @@ begin
 end;
 
 end.
-
+

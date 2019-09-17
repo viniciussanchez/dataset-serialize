@@ -2,9 +2,12 @@
 
 interface
 
-uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils;
+uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils,
+  System.SysUtils;
 
 type
+  ELoadFieldStructureException = class(Exception);
+
   TJSONSerialize = class
   private
     FMerging: Boolean;
@@ -178,7 +181,7 @@ type
 
 implementation
 
-uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
+uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
   System.Generics.Collections, System.Variants, UpdatedStatus.Types,
   FireDAC.Comp.Client;
 
@@ -372,17 +375,47 @@ begin
 end;
 
 function TJSONSerialize.LoadFieldStructure(const AJSONValue: TJSONValue): TFieldStructure;
+var
+  StrTemp: string;
+  IntTemp: Integer;
+  BoolTemp: Boolean;
 begin
-  Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), AJSONValue.GetValue<string>('DataType')));
-  Result.Size := StrToIntDef(TJSONObject(AJSONValue).GetValue<string>('Size'), 0);
-  Result.FieldName := AJSONValue.GetValue<string>('FieldName');
-  Result.Origin := AJSONValue.GetValue<string>('Origin');
-  Result.DisplayLabel := AJSONValue.GetValue<string>('DisplayLabel');
-  Result.Key := AJSONValue.GetValue<Boolean>('Key');
-  Result.Required := AJSONValue.GetValue<Boolean>('Required');
-  Result.Visible := AJSONValue.GetValue<Boolean>('Visible');
-  Result.ReadOnly := AJSONValue.GetValue<Boolean>('ReadOnly');
-  Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), AJSONValue.GetValue<string>('AutoGenerateValue')));
+  if AJSONValue.TryGetValue<string>('DataType', StrTemp) then
+    Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), StrTemp))
+  else
+    raise ELoadFieldStructureException.CreateFmt('Attribute %s not found in json!', ['DataType']);
+
+  if AJSONValue.TryGetValue<string>('FieldName', StrTemp) then
+    Result.FieldName := StrTemp
+  else
+    raise ELoadFieldStructureException.CreateFmt('Attribute %s not found in json!', ['FieldName']);
+
+  if AJSONValue.TryGetValue<Integer>('Size', IntTemp) then
+    Result.Size := IntTemp;
+
+  if AJSONValue.TryGetValue<Integer>('Precision', IntTemp) then
+    Result.Precision := IntTemp;
+
+  if AJSONValue.TryGetValue<string>('Origin', StrTemp) then
+    Result.Origin := StrTemp;
+
+  if AJSONValue.TryGetValue<string>('DisplayLabel', StrTemp) then
+    Result.DisplayLabel := StrTemp;
+
+  if AJSONValue.TryGetValue<Boolean>('Key', BoolTemp) then
+    Result.Key := BoolTemp;
+
+  if AJSONValue.TryGetValue<Boolean>('Required', BoolTemp) then
+    Result.Required := BoolTemp;
+
+  if AJSONValue.TryGetValue<Boolean>('Visible', BoolTemp) then
+    Result.Visible := BoolTemp;
+
+  if AJSONValue.TryGetValue<Boolean>('ReadOnly', BoolTemp) then
+    Result.ReadOnly := BoolTemp;
+
+  if AJSONValue.TryGetValue<string>('AutoGenerateValue', StrTemp) then
+    Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), StrTemp));
 end;
 
 procedure TJSONSerialize.LoadStructure(const ADataSet: TDataSet);
