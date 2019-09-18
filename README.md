@@ -35,11 +35,32 @@ var
   LJSONArray: TJSONArray;
   LJSONObject: TJSONObject;  
 begin
-  LJSONObject := qrySamples.ToJSONObject;
-  LJSONArray := qrySamples.ToJSONArray;  
+  LJSONObject := qrySamples.ToJSONObject(); // export a single record
+  LJSONArray := qrySamples.ToJSONArray(); // export all records 
 end;
 ```  
 What is the difference between the two functions? `ToJSONObject` will only convert the current DataSet record to a `TJSONObject`. `ToJSONArray` will convert to a `TJSONArray` all the records of the DataSet and not just the selected record.
+
+**Parameters**
+* `AChildRecords` - Indicates whether or not to export child records (via master detail or TDataSetField).
+* `AOnlyUpdatedRecords` - Indicates whether to export only records that have been modified (records added, changed, or deleted). This feature is only available when using `FireDAC`. The `CachedUpdates` property must be `True`;
+
+## Save and load structure 
+A not very useful but important feature is SaveStructure and LoadStructure. As the name already said, it is possible to save the entire structure of fields configured in the DataSet and also load a structure in JSON format. Here's an example of how to load and export DataSet fields:
+
+```pascal
+var
+  LJSONArray: TJSONArray;
+begin
+  LJSONArray := qrySamples.SaveStructure;
+  qrySamples.LoadStructure(LJSONArray, True);
+end;
+``` 
+
+The following properties are controlled: `FieldName, DisplayLabel, DataType, Size, Key, Origin, Required, Visible, ReadOnly, and AutoGenerateValue`;
+
+**Parameters**
+* `AOwns` - Indicates who is responsible for destroying the passed JSON as a parameter.
 
 ## Rules and peculiarities
 * **ToJSONObject**
@@ -50,81 +71,11 @@ What is the difference between the two functions? `ToJSONObject` will only conve
 * **ToJSONArray**
   * If the DataSet is empty or not assigned, a blank JSON array (`[]`) will be returned;  
   * Follows the same rules as `ToJSONObject`;
-
-#### Save the field structure
-```pascal
-var
-  JSONArray: TJSONArray;
-begin
-  JSONArray := qrySample.SaveStructure;
-end;
-``` 
-
-Returns:
-
-``` 
-[
-  {
-    "FieldName": "ID",
-    "DisplayLabel": "Id",
-    "DataType": "ftInteger",
-    "Size": 0,
-    "Key": false,
-    "Origin": "",
-    "Required": false,
-    "Visible": true,
-    "ReadOnly": true,
-    "AutoGenerateValue": "arAutoInc"
-  },
-  {
-    "FieldName": "NAME",
-    "DisplayLabel": "Name",
-    "DataType": "ftString",
-    "Size": 100,
-    "Key": false,
-    "Origin": "",
-    "Required": true,
-    "Visible": true,
-    "ReadOnly": false,
-    "AutoGenerateValue": "arNone"
-  }
-]
-``` 
-
-#### Load the field structure
-```pascal
-const 
-  STRUCTURE = 
-    '[
-      {
-        "FieldName": "ID",
-        "DisplayLabel": "Id",
-        "DataType": "ftInteger",
-        "Size": 0,
-        "Key": false,
-        "Origin": "",
-        "Required": true,
-        "Visible": true,
-        "ReadOnly": true,
-        "AutoGenerateValue": "arAutoInc"
-      },
-      {
-        "FieldName": "NAME",
-        "DisplayLabel": "Name",
-        "DataType": "ftString",
-        "Size": 100,
-        "Key": false,
-        "Origin": "",
-        "Required": true,
-        "Visible": true,
-        "ReadOnly": false,
-        "AutoGenerateValue": "arNone"
-      }
-    ]';
-begin
-  qrySample.LoadStructure(STRUCTURE);
-end;
-``` 
+* **SaveStructure**
+  * If the field count of DataSet equals zero, a blank JSON array (`[]`) will be returned;   
+* **LoadStructure**
+  * DataSet cannot be activated;
+  * Must not have fields defined;
 
 #### Load from JSON
 ```pascal
