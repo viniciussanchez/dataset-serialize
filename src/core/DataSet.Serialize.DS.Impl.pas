@@ -259,14 +259,11 @@ function TDataSetSerialize.SaveStructure: TJSONArray;
 var
   LField: TField;
   LJSONObject: TJSONObject;
-  LDataSet: TDataSet;
 begin
-  Result := nil;
-  LDataSet := FDataSet;
-  if LDataSet.FieldCount <= 0 then
-    Exit;
   Result := TJSONArray.Create;
-  for LField in LDataSet.Fields do
+  if FDataSet.FieldCount <= 0 then
+    Exit;
+  for LField in FDataSet.Fields do
   begin
     LJSONObject := TJSONObject.Create;
     LJSONObject.AddPair('FieldName', TJSONString.Create(LField.FieldName));
