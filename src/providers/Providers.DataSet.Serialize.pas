@@ -1,5 +1,5 @@
 unit Providers.DataSet.Serialize;
-
+
 interface
 
 uses System.DateUtils, System.JSON, Data.DB, BooleanField.Types, System.SysUtils;
@@ -171,4 +171,3 @@ begin
 end;
 
 end.
-
