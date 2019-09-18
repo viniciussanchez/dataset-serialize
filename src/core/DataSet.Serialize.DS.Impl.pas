@@ -52,7 +52,7 @@ type
     function HasChildModification(const ADataSet: TDataSet): Boolean;    
   public
     /// <summary>
-    ///   Responsible for creating a new isnt‚ncia of TDataSetSerialize class.
+    ///   Responsible for creating a new isnt√¢ncia of TDataSetSerialize class.
     /// </summary>
     constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True);
     /// <summary>
@@ -104,10 +104,10 @@ function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const Is
 var
   LBookMark: TBookmark;
 begin
+  Result := TJSONArray.Create;
   if ADataSet.IsEmpty then
-    Exit(TJSONArray.Create);
+    Exit;
   try
-    Result := TJSONArray.Create;
     LBookMark := ADataSet.BookMark;
     ADataSet.First;
     while not ADataSet.Eof do
