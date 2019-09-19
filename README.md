@@ -62,6 +62,27 @@ The following properties are controlled: `FieldName, DisplayLabel, DataType, Siz
 **Parameters**
 * `AOwns` - Indicates who is responsible for destroying the passed JSON as a parameter.
 
+## Validate JSON
+The `ValidateJSON` function is very useful when we want to validate on a server for example if the JSON we received in the request has all the required information. Practically, all fields in the DataSet are traversed, checking if the required fields were entered in JSON. If the field is required and has not been entered in JSON, it will be added to the JSON Array returned by the function. See the example below:
+
+```pascal
+begin
+  LJSONArray := qrySamples.ValidateJSON('{"country":"Brazil"}');
+end;
+``` 
+
+Upon receiving `{"country": "Brazil"}`, assuming our DataSet has 3 fields (ID, NAME, COUNTRY), and the ID and NAME field are required, the following will be returned:
+
+``` 
+[{"field":"ID","error":"Id not informed"},{"field":"NAME","error":"Name not informed"}]
+``` 
+
+**Parameters**
+* `ALang` - Responsible for changing the language used in the assembly of messages;
+* `AOwns` - Indicates who is responsible for destroying the passed JSON as a parameter;
+
+###### The default language is English (TLanguageType.enUS);
+
 ## Rules and peculiarities
 * **ToJSONObject**
   * If the DataSet is empty or not assigned, a blank JSON object (`{}`) will be returned;
@@ -76,6 +97,11 @@ The following properties are controlled: `FieldName, DisplayLabel, DataType, Siz
 * **LoadStructure**
   * DataSet cannot be activated;
   * Must not have fields defined;
+* **ValidateJSON**
+  * If JSON is not assigned or fields count equals zero an exception is raised.
+  * The default language of messages is English; 
+  * Even if all required fields are entered, an empty JSON array (`[]`) is returned;     
+  * A required field must have its `Required` property equal to `True`.
 
 #### Load from JSON
 ```pascal
@@ -94,35 +120,6 @@ begin
   qrySample.MergeFromJSONObject(JSON);
 end;
 ``` 
-
-#### Validate JSON
-
-Scroll through all DataSet fields by checking the fields that are required. If the field is required and has not been entered in JSON, it is added in the Array.
-
-```pascal
-const 
-  JSON_VALIDATE = '{"COUNTRY":"Brazil"}';
-begin
-  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON_VALIDATE).ToString;
-end;
-``` 
-
-Returns:
-
-``` 
-[
-  {
-    "field": "ID",
-    "error": "Id não foi informado(a)"
-  },
-  {
-    "field": "NAME",
-    "error": "Name não foi informado(a)"
-  }
-]
-``` 
-
-###### The default language is English (TLanguageType.enUS);
 
 ## JSON Nested Object
 
