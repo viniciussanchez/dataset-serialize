@@ -50,6 +50,9 @@ What is the difference between the two functions? `ToJSONObject` will only conve
 * The field that does not have the visible (`True`) property will be ignored. The same is true if its value is null or empty;
 * The attribute name in JSON will always be the field name in lower case, even if the field name is in upper case;
 * If the field is of type `TDataSetField`, a nested JSON is generated (JSONObject if it is just a child record, or JSONArray if it is more than one). The most suitable way for this type of situation is to create a master detail;
+* All child records will be exported as a JSONArray;
+* When using the `AOnlyUpdatedRecords` parameter of the ToJSONObject or ToJSONArray method, the JSON item is added to an `"object_state"` property responsible for defining what happened to the record (deleted, included or changed);
+* When a JSON array is created to represent a nested JSON using `Master Detail`, the DataSet name will be the name of the generated JSON attribute. There is a rule where if the DataSet name starts with `qry` (query) or `mt` (memtable), these initials are ignored, leaving only the rest as the attribute name in JSON.
 
 **ToJSONArray**
 * If the DataSet is empty or not assigned, a blank JSON array (`[]`) will be returned;  
@@ -102,15 +105,32 @@ Upon receiving `{"country": "Brazil"}`, assuming our DataSet has 3 fields (ID, N
 * The default language of messages is English; 
 * Even if all required fields are entered, an empty JSON array (`[]`) is returned;     
 * A required field must have its `Required` property equal to `True`.
+* The `DisplayLabel` property can be used to customize the message;
 
 ## Load from JSON
+DataSet Serializa allows you to load a DataSet with a JSONObject, JSONArray and even a nested JSON all summarized in one method: `LoadFromJSON()`. Here's an example of how to use it:
 ```pascal
-const 
-  JSON = '{"NAME":"Vinicius Sanchez","COUNTRY":"Brazil"}'; // or JSONArray
 begin
-  qrySample.LoadFromJSON(JSON);
+  qrySamples.LoadFromJSON('{"NAME":"Vinicius Sanchez","COUNTRY":"Brazil"}');
 end;
 ``` 
+
+**Parameters**
+* `AOwns` - Indicates who is responsible for destroying the passed JSON as a parameter;
+
+**LoadFromJSON**
+* If JSON or DataSet has not been assigned, nothing will be done;
+* If DataSet is not activated and is not a `TFDMemTable` class, nothing will be done;
+* If the DataSet is of type `TFDMemTable`, it's not active and fields count equals zero, the fields will be created according to the JSON need. The `DataType` will be equal to `ftString` and `Size` equal to `4096`;
+* When the `"object_state"` property is in JSON, the following validations are made:
+  * If equal to `INSERTED`, an Append is performed on the DataSet;
+  * If it is `MODIFIED` or `DELETED`, a `Locate` is made in the DataSet to find the record to be manipulated. If the registry is not found, nothing will be done. To execute `Locate`, a search for Key Fields is done within JSON;
+  * If `MODIFIED` equals the Edit method of the DataSet;
+  * If `DELETED` equals the Delete method of the DataSet;
+* If the `"object_state"` property is not found in JSON, then the `Append` method is called;
+* When loading a DataSet with JSON, fields that are `ReadOnly` are ignored;
+* If an attribute is not found in JSON with the field name (not case sensitive), or it is nullo, the field is ignored (nullo / empty);
+* When loading a DataSet with a JSON containing nested JSON using `Master Detail`, by convention, the name of the child DataSet is expected to be the same as the JSON attribute name that represents the list of children to be loaded. The name of the child DataSet may still have the initials `qry` (query) or `mt` (memtable), as these will be ignored;
 
 ## Merge from JSON
 With DataSet Serialize you can still change the DataSet registration simply by using `MergeFromJSONObject`. The function is similar to `LoadFromJSON`. An example of use is for REST servers when the verb used in the request is PUT (not necessarily), in this case we do not want to include a new record but to change the current record.
@@ -128,9 +148,8 @@ end;
 * Same as `LoadFromJSON` validations;
 
 ## Samples
-
-![dataset-serialize](img/Screenshot_3.png)
-
-![dataset-serialize](img/Screenshot_2.png)
+Check out our sample project for each situation presented above in operation. If you have any questions or suggestion, please contact, make your pull request or create an issue.
 
 ![dataset-serialize](img/Screenshot_1.png)
+
+> *Alone we go faster. Together we go further.*
