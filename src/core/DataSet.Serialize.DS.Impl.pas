@@ -172,10 +172,7 @@ begin
       TFieldType.ftDataSet:
         begin
           LNestedDataSet := TDataSetField(LField).NestedDataSet;
-          if LNestedDataSet.RecordCount = 1 then
-            Result.AddPair(LKey, DataSetToJSONObject(LNestedDataSet))
-          else if LNestedDataSet.RecordCount > 1 then
-            Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
+          Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
         Result.AddPair(LKey, TJSONString.Create(EncodingBlobField(LField)));
@@ -194,7 +191,7 @@ begin
       begin
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
-        if (LNestedDataSet.RecordCount > 0) then
+        if LNestedDataSet.RecordCount > 0 then
           Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet, True));
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
