@@ -45,6 +45,16 @@ What is the difference between the two functions? `ToJSONObject` will only conve
 * `AChildRecords` - Indicates whether or not to export child records (via master detail or TDataSetField).
 * `AOnlyUpdatedRecords` - Indicates whether to export only records that have been modified (records added, changed, or deleted). This feature is only available when using `FireDAC`. The `CachedUpdates` property must be `True`;
 
+**ToJSONObject**
+* If the DataSet is empty or not assigned, a blank JSON object (`{}`) will be returned;
+* The field that does not have the visible (`True`) property will be ignored. The same is true if its value is null or empty;
+* The attribute name in JSON will always be the field name in lower case, even if the field name is in upper case;
+* If the field is of type `TDataSetField`, a nested JSON is generated (JSONObject if it is just a child record, or JSONArray if it is more than one). The most suitable way for this type of situation is to create a master detail;
+
+**ToJSONArray**
+* If the DataSet is empty or not assigned, a blank JSON array (`[]`) will be returned;  
+* Follows the same rules as `ToJSONObject`;
+
 ## Save and load structure 
 A not very useful but important feature is SaveStructure and LoadStructure. As the name already said, it is possible to save the entire structure of fields configured in the DataSet and also load a structure in JSON format. Here's an example of how to load and export DataSet fields:
 
@@ -62,6 +72,12 @@ The following properties are controlled: `FieldName, DisplayLabel, DataType, Siz
 **Parameters**
 * `AOwns` - Indicates who is responsible for destroying the passed JSON as a parameter.
 
+**SaveStructure**
+* If the field count of DataSet equals zero, a blank JSON array (`[]`) will be returned; 
+
+**LoadStructure**
+* DataSet cannot be activated and Must not have fields defined;
+
 ## Validate JSON
 The `ValidateJSON` function is very useful when we want to validate on a server for example if the JSON we received in the request has all the required information. Practically, all fields in the DataSet are traversed, checking if the required fields were entered in JSON. If the field is required and has not been entered in JSON, it will be added to the JSON Array returned by the function. See the example below:
 
@@ -78,32 +94,16 @@ Upon receiving `{"country": "Brazil"}`, assuming our DataSet has 3 fields (ID, N
 ``` 
 
 **Parameters**
-* `ALang` - Responsible for changing the language used in the assembly of messages;
+* `ALang` - Responsible for changing the language used in the assembly of messages (default is English);
 * `AOwns` - Indicates who is responsible for destroying the passed JSON as a parameter;
 
-###### The default language is English (TLanguageType.enUS);
+**ValidateJSON**
+* If JSON is not assigned or fields count equals zero an exception is raised.
+* The default language of messages is English; 
+* Even if all required fields are entered, an empty JSON array (`[]`) is returned;     
+* A required field must have its `Required` property equal to `True`.
 
-## Rules and peculiarities
-* **ToJSONObject**
-  * If the DataSet is empty or not assigned, a blank JSON object (`{}`) will be returned;
-  * The field that does not have the visible (`True`) property will be ignored. The same is true if its value is null or empty;
-  * The attribute name in JSON will always be the field name in lower case, even if the field name is in upper case;
-  * If the field is of type `TDataSetField`, a nested JSON is generated (JSONObject if it is just a child record, or JSONArray if it is more than one). The most suitable way for this type of situation is to create a master detail;
-* **ToJSONArray**
-  * If the DataSet is empty or not assigned, a blank JSON array (`[]`) will be returned;  
-  * Follows the same rules as `ToJSONObject`;
-* **SaveStructure**
-  * If the field count of DataSet equals zero, a blank JSON array (`[]`) will be returned;   
-* **LoadStructure**
-  * DataSet cannot be activated;
-  * Must not have fields defined;
-* **ValidateJSON**
-  * If JSON is not assigned or fields count equals zero an exception is raised.
-  * The default language of messages is English; 
-  * Even if all required fields are entered, an empty JSON array (`[]`) is returned;     
-  * A required field must have its `Required` property equal to `True`.
-
-#### Load from JSON
+## Load from JSON
 ```pascal
 const 
   JSON = '{"NAME":"Vinicius Sanchez","COUNTRY":"Brazil"}'; // or JSONArray
@@ -112,7 +112,7 @@ begin
 end;
 ``` 
 
-#### Merge (Edit current record)
+## Merge (Edit current record)
 ```pascal
 const 
   JSON = '{"NAME":"Vinicius","COUNTRY":"United States"}';
