@@ -112,26 +112,24 @@ begin
 end;
 ``` 
 
-## Merge (Edit current record)
+## Merge from JSON
+With DataSet Serialize you can still change the DataSet registration simply by using `MergeFromJSONObject`. The function is similar to `LoadFromJSON`. An example of use is for REST servers when the verb used in the request is PUT (not necessarily), in this case we do not want to include a new record but to change the current record.
+
 ```pascal
-const 
-  JSON = '{"NAME":"Vinicius","COUNTRY":"United States"}';
 begin
-  qrySample.MergeFromJSONObject(JSON);
+  qrySamples.MergeFromJSONObject('{"NAME":"Vinicius","COUNTRY":"United States"}');
 end;
 ``` 
 
-## JSON Nested Object
+**Parameters**
+* `AOwns` - Indicates who is responsible for destroying the passed JSON as a parameter;
 
-Load JSON Nested Object in a simple way:
-* `[Recommended]`: Implement the detail master (TDataSet native feature) and call the function to load or export JSON using the main query.
-* `[Alternative]`: In the main dataset, create a field of type `TDataSetField` and binds the field created in the master dataset in the `DataSetField` property of the secondary dataset.
+**MergeFromJSONObject**
+* Same as `LoadFromJSON` validations;
 
-See the sample:
+## Samples
 
 ![dataset-serialize](img/Screenshot_3.png)
-
-## Another samples
 
 ![dataset-serialize](img/Screenshot_2.png)
 
