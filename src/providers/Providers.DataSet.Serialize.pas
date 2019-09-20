@@ -142,12 +142,18 @@ begin
   Result.Size := AFieldStructure.Size;
 
   case Result.DataType of
-    ftBCD: TBCDField(Result).Precision := AFieldStructure.Precision;
-    ftFloat: TFloatField(Result).Precision := AFieldStructure.Precision;
-    ftSingle: TSingleField(Result).Precision := AFieldStructure.Precision;
-    ftExtended: TExtendedField(Result).Precision := AFieldStructure.Precision;
-    ftCurrency: TCurrencyField(Result).Precision := AFieldStructure.Precision;
-    ftFMTBcd: TFMTBCDField(Result).Precision := AFieldStructure.Precision;
+    ftBCD: 
+      TBCDField(Result).Precision := AFieldStructure.Precision;
+    ftFloat: 
+      TFloatField(Result).Precision := AFieldStructure.Precision;
+    ftSingle: 
+      TSingleField(Result).Precision := AFieldStructure.Precision;
+    ftExtended: 
+      TExtendedField(Result).Precision := AFieldStructure.Precision;
+    ftCurrency: 
+      TCurrencyField(Result).Precision := AFieldStructure.Precision;
+    ftFMTBcd: 
+      TFMTBCDField(Result).Precision := AFieldStructure.Precision;
   end;
 
   Result.Visible := AFieldStructure.Visible;
