@@ -2,31 +2,18 @@ unit DataSet.Serialize.DS.Impl;
 
 interface
 
-uses DataSet.Serialize.DS.Intf, Data.DB, System.JSON;
+uses Data.DB, System.JSON;
 
 type
-  TDataSetSerialize = class(TInterfacedObject, IDataSetSerialize)
+  TDataSetSerialize = class
   private
-    FOwns: Boolean;
     FDataSet: TDataSet;
-    /// <summary>
-    ///   Clears the DataSet pointer and destroys it if it's the owner.
-    /// </summary>
-    procedure ClearDataSet;
-    /// <summary>
-    ///   Returns the same DataSet that was defined.
-    /// </summary>
-    /// <returns>
-    ///   Returns the DataSet.
-    /// </returns>
-    /// <remarks>
-    ///   Creates an exception if the DataSet has not been set.
-    /// </remarks>
-    function GetDataSet: TDataSet;
+    FOnlyUpdatedRecords: Boolean;
+    FChildRecord: Boolean;
     /// <summary>
     ///   Creates a JSON object with the data from the current record of DataSet.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet that you want to export the record.
     /// </param>
     /// <returns>
@@ -35,11 +22,11 @@ type
     /// <remarks>
     ///   Invisible or null fields will not be exported.
     /// </remarks>
-    function DataSetToJSONObject(const DataSet: TDataSet): TJSONObject;
+    function DataSetToJSONObject(const ADataSet: TDataSet): TJSONObject;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
-    /// <param name="DataSet">
+    /// <param name="ADataSet">
     ///   Refers to the DataSet that you want to export the records.
     /// </param>
     /// <returns>
@@ -48,41 +35,26 @@ type
     /// <remarks>
     ///   Invisible or null fields will not be exported.
     /// </remarks>
-    function DataSetToJSONArray(const DataSet: TDataSet): TJSONArray;
+    function DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean = False): TJSONArray;
     /// <summary>
     ///   Encrypts a blob field in Base64.
     /// </summary>
-    /// <param name="Field">
+    /// <param name="AField">
     ///   Refers to the field of type Blob or similar.
     /// </param>
     /// <returns>
     ///   Returns a string with the cryptogrammed content in Base64.
     /// </returns>
-    function EncodingBlobField(const Field: TField): string;
-  protected
+    function EncodingBlobField(const AField: TField): string;
     /// <summary>
-    ///   Responsible for defining the DataSet and its owner.
+    ///   Verifiy if a DataSet has detail dataset and if has child modification.
     /// </summary>
-    /// <param name="DataSet">
-    ///   It refers to the DataSet itself.
-    /// </param>
-    /// <param name="Owns">
-    ///   Parameter responsible for indicating whether it's responsible for the destruction of the DataSet or not.
-    /// </param>
-    /// <returns>
-    ///   Returns the IDataSetSerialize interface instance itself.
-    /// </returns>
-    function SetDataSet(const DataSet: TDataSet; const Owns: Boolean = False): IDataSetSerialize;
+    function HasChildModification(const ADataSet: TDataSet): Boolean;    
+  public
     /// <summary>
-    ///   Creates a JSON object with the data from the current record of DataSet.
+    ///   Responsible for creating a new isnt√¢ncia of TDataSetSerialize class.
     /// </summary>
-    /// <returns>
-    ///   Returns a JSON object containing the record data.
-    /// </returns>
-    /// <remarks>
-    ///   Invisible or null fields will not be generated.
-    /// </remarks>
-    function ToJSONObject: TJSONObject;
+    constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True);
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -94,6 +66,16 @@ type
     /// </remarks>
     function ToJSONArray: TJSONArray;
     /// <summary>
+    ///   Creates a JSON object with the data from the current record of DataSet.
+    /// </summary>
+    /// <returns>
+    ///   Returns a JSON object containing the record data.
+    /// </returns>
+    /// <remarks>
+    ///   Invisible or null fields will not be generated.
+    /// </remarks>
+    function ToJSONObject: TJSONObject;
+    /// <summary>
     ///   Responsible for exporting the structure of a DataSet in JSON Array format.
     /// </summary>
     /// <returns>
@@ -103,213 +85,208 @@ type
     ///   Invisible fields will not be generated.
     /// </remarks>
     function SaveStructure: TJSONArray;
-  public
-    /// <summary>
-    ///   Responsible for creating a new isnt‚ncia of TDataSetSerialize class.
-    /// </summary>
-    constructor Create;
-    /// <summary>
-    ///   Creates a new instance of IDataSetSerialize interface.
-    /// </summary>
-    /// <returns>
-    ///   Returns an instance of IDataSetSerialize interface.
-    /// </returns>
-    class function New: IDataSetSerialize; static;
-    /// <summary>
-    ///   Responsible for destroying the TDataSetSerialize class instance.
-    /// </summary>
-    /// <remarks>
-    ///   If owner of the DataSet, destroys the same.
-    /// </remarks>
-    destructor Destroy; override;
   end;
 
 implementation
 
-uses DataSetField.Types, BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize,
-  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.TypInfo;
+uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize, System.TypInfo,
+  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet,
+  UpdatedStatus.Types;
 
 { TDataSetSerialize }
 
 function TDataSetSerialize.ToJSONObject: TJSONObject;
 begin
-  Result := DataSetToJSONObject(GetDataSet);
+  Result := DataSetToJSONObject(FDataSet);
 end;
 
-function TDataSetSerialize.DataSetToJSONArray(const DataSet: TDataSet): TJSONArray;
+function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean): TJSONArray;
 var
-  BookMark: TBookmark;
+  LBookMark: TBookmark;
 begin
-  if DataSet.IsEmpty then
-    Exit(TJSONArray.Create);
+  Result := TJSONArray.Create;
+  if ADataSet.IsEmpty then
+    Exit;
   try
-    Result := TJSONArray.Create;
-    BookMark := DataSet.BookMark;
-    DataSet.First;
-    while not DataSet.Eof do
+    LBookMark := ADataSet.BookMark;
+    ADataSet.First;
+    while not ADataSet.Eof do
     begin
-      Result.AddElement(DataSetToJSONObject(DataSet));
-      DataSet.Next;
+      if IsChild and FOnlyUpdatedRecords then
+        if (ADataSet.UpdateStatus = TUpdateStatus.usUnmodified) and not(HasChildModification(ADataSet)) then
+        begin
+          ADataSet.Next;
+          Continue;
+        end;
+      Result.AddElement(DataSetToJSONObject(ADataSet));
+      ADataSet.Next;
     end;
   finally
-    if DataSet.BookmarkValid(BookMark) then
-      DataSet.GotoBookmark(BookMark);
-    DataSet.FreeBookmark(BookMark);
+    if ADataSet.BookmarkValid(LBookMark) then
+      ADataSet.GotoBookmark(LBookMark);
+    ADataSet.FreeBookmark(LBookMark);
   end;
 end;
 
-function TDataSetSerialize.DataSetToJSONObject(const DataSet: TDataSet): TJSONObject;
+function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet): TJSONObject;
 var
-  I: Integer;
-  Key: string;
-  NestedDataSet: TDataSet;
-  DataSetFieldType: TDataSetFieldType;
-  BooleanFieldType: TBooleanFieldType;
+  LKey: string;
+  LNestedDataSet: TDataSet;
+  LDataSetDetails: TList<TDataSet>;
+  LField: TField;
 begin
   Result := TJSONObject.Create;
-  if not Assigned(DataSet) or DataSet.IsEmpty then
+  if not Assigned(ADataSet) or ADataSet.IsEmpty then
     Exit;
-  for I := 0 to Pred(DataSet.FieldCount) do
+  for LField in ADataSet.Fields do
   begin
-    if (not DataSet.Fields[I].Visible) or DataSet.Fields[I].IsNull then
+    if (not LField.Visible) or LField.IsNull or LField.AsString.Trim.IsEmpty then
       Continue;
-    Key := DataSet.Fields[I].FieldName;
-    case DataSet.Fields[I].DataType of
+    LKey := LowerCase(LField.FieldName);
+    case LField.DataType of
       TFieldType.ftBoolean:
         begin
-          BooleanFieldType := TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(DataSet.Fields[I]));
-          case BooleanFieldType of
+          case TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(LField)) of
             bfUnknown, bfBoolean:
-              Result.AddPair(Key, TDataSetSerializeUtils.BooleanToJSON(DataSet.Fields[I].AsBoolean));
+              Result.AddPair(LKey, TDataSetSerializeUtils.BooleanToJSON(LField.AsBoolean));
             else
-              Result.AddPair(Key, TJSONNumber.Create(DataSet.Fields[I].AsInteger));
+              Result.AddPair(LKey, TJSONNumber.Create(LField.AsInteger));
           end;
         end;
       TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint:
-        Result.AddPair(Key, TJSONNumber.Create(DataSet.Fields[I].AsInteger));
+        Result.AddPair(LKey, TJSONNumber.Create(LField.AsInteger));
       TFieldType.ftLongWord, TFieldType.ftAutoInc:
-        Result.AddPair(Key, TJSONNumber.Create(DataSet.Fields[I].AsWideString));
+        Result.AddPair(LKey, TJSONNumber.Create(LField.AsWideString));
       TFieldType.ftLargeint:
-        Result.AddPair(Key, TJSONNumber.Create(DataSet.Fields[I].AsLargeInt));
+        Result.AddPair(LKey, TJSONNumber.Create(LField.AsLargeInt));
       TFieldType.ftSingle, TFieldType.ftFloat:
-        Result.AddPair(Key, TJSONNumber.Create(DataSet.Fields[I].AsFloat));
+        Result.AddPair(LKey, TJSONNumber.Create(LField.AsFloat));
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
-        Result.AddPair(Key, TJSONString.Create(DataSet.Fields[I].AsWideString));
+        Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-        Result.AddPair(Key, TJSONString.Create(DateToISO8601(DataSet.Fields[I].AsDateTime)));
+        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime)));
       TFieldType.ftCurrency:
-        Result.AddPair(Key, TJSONString.Create(FormatCurr('0.00##', DataSet.Fields[I].AsCurrency)));
+        Result.AddPair(LKey, TJSONString.Create(FormatCurr('0.00##', LField.AsCurrency)));
       TFieldType.ftFMTBcd, TFieldType.ftBCD:
-        Result.AddPair(Key, TJSONNumber.Create(BcdToDouble(DataSet.Fields[I].AsBcd)));
+        Result.AddPair(LKey, TJSONNumber.Create(BcdToDouble(LField.AsBcd)));
       TFieldType.ftDataSet:
         begin
-          DataSetFieldType := TDataSetSerializeUtils.DataSetFieldToType(TDataSetField(DataSet.Fields[I]));
-          NestedDataSet := TDataSetField(DataSet.Fields[I]).NestedDataSet;
-          case DataSetFieldType of
-            dfJSONObject:
-              Result.AddPair(Key, DataSetToJSONObject(NestedDataSet));
-            dfJSONArray:
-              Result.AddPair(Key, DataSetToJSONArray(NestedDataSet));
-          end;
+          LNestedDataSet := TDataSetField(LField).NestedDataSet;
+          Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
-        Result.AddPair(Key, TJSONString.Create(EncodingBlobField(DataSet.Fields[I])));
+        Result.AddPair(LKey, TJSONString.Create(EncodingBlobField(LField)));
       else
-        raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [Key]);
+        raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LKey]);
+    end;
+  end;
+  if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
+    Result.AddPair(OBJECT_STATE, TJSONString.Create(ADataSet.UpdateStatus.ToString));
+  if FChildRecord then
+  begin
+    LDataSetDetails := TList<TDataSet>.Create;
+    try
+      ADataSet.GetDetailDataSets(LDataSetDetails);      
+      for LNestedDataSet in LDataSetDetails do
+      begin
+        if FOnlyUpdatedRecords then
+          TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
+        if LNestedDataSet.RecordCount > 0 then
+          Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet, True));
+        if FOnlyUpdatedRecords then
+          TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+      end;
+    finally
+      LDataSetDetails.Free;
     end;
   end;
 end;
 
-destructor TDataSetSerialize.Destroy;
-begin
-  ClearDataSet;
-  inherited Destroy;
-end;
-
-function TDataSetSerialize.EncodingBlobField(const Field: TField): string;
+function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
 var
-  MemoryStream: TMemoryStream;
-  StringStream: TStringStream;
+  LMemoryStream: TMemoryStream;
+  LStringStream: TStringStream;
 begin
-  MemoryStream := TMemoryStream.Create;
+  LMemoryStream := TMemoryStream.Create;
   try
-    TBlobField(Field).SaveToStream(MemoryStream);
-    MemoryStream.Position := 0;
-    StringStream := TStringStream.Create;
+    TBlobField(AField).SaveToStream(LMemoryStream);
+    LMemoryStream.Position := 0;
+    LStringStream := TStringStream.Create;
     try
-      TNetEncoding.Base64.Encode(MemoryStream, StringStream);
-      Result := StringStream.DataString;
+      TNetEncoding.Base64.Encode(LMemoryStream, LStringStream);
+      Result := LStringStream.DataString;
     finally
-      StringStream.Free;
+      LStringStream.Free;
     end;
   finally
-    MemoryStream.Free;
+    LMemoryStream.Free;
   end;
 end;
 
-procedure TDataSetSerialize.ClearDataSet;
+function TDataSetSerialize.HasChildModification(const ADataSet: TDataSet): Boolean;
+var
+  LDataSetDetails: TList<TDataSet>;
+  LNestedDataSet: TDataSet;
 begin
-  if FOwns then
-    if Assigned(FDataSet) then
-      FDataSet.Free;
-  FDataSet := nil;
-end;
-
-function TDataSetSerialize.GetDataSet: TDataSet;
-begin
-  if not Assigned(FDataSet) then
-    raise EDataSetSerializeException.Create(DATASET_NOT_DIFINED);
-  Result := FDataSet;
-end;
-
-class function TDataSetSerialize.New: IDataSetSerialize;
-begin
-  Result := TDataSetSerialize.Create;
-end;
-
-function TDataSetSerialize.SetDataSet(const DataSet: TDataSet; const Owns: Boolean = False): IDataSetSerialize;
-begin
-  Result := Self;
-  ClearDataSet;
-  FDataSet := DataSet;
-  FOwns := Owns;
+  Result := False;
+  LDataSetDetails := TList<TDataSet>.Create;
+  try
+    ADataSet.GetDetailDataSets(LDataSetDetails);
+    for LNestedDataSet in LDataSetDetails do
+    begin
+      if not (LNestedDataSet is TFDDataSet) then
+        Continue;
+      try
+        TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted];
+        if (TFDDataSet(LNestedDataSet).RecordCount > 0) or HasChildModification(LNestedDataSet) then
+        begin
+          Result := True;
+          Break;
+        end;
+      finally
+        TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+      end;
+    end;
+  finally
+    LDataSetDetails.Free;
+  end;
 end;
 
 function TDataSetSerialize.SaveStructure: TJSONArray;
 var
-  I: Integer;
-  JSONObject: TJSONObject;
-  DataSet: TDataSet;
+  LField: TField;
+  LJSONObject: TJSONObject;
 begin
-  Result := nil;
-  DataSet := GetDataSet;
-  if DataSet.FieldCount <= 0 then
-    Exit;
   Result := TJSONArray.Create;
-  for I := 0 to Pred(DataSet.FieldCount) do
+  if FDataSet.FieldCount <= 0 then
+    Exit;
+  for LField in FDataSet.Fields do
   begin
-    JSONObject := TJSONObject.Create;
-    JSONObject.AddPair('FieldName', TJSONString.Create(DataSet.Fields[I].FieldName));
-    JSONObject.AddPair('DisplayLabel', TJSONString.Create(DataSet.Fields[I].DisplayLabel));
-    JSONObject.AddPair('DataType', TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(DataSet.Fields[I].DataType))));
-    JSONObject.AddPair('Size', TJSONNumber.Create(DataSet.Fields[I].SIZE));
-    JSONObject.AddPair('Key', TJSONBool.Create(pfInKey in DataSet.Fields[I].ProviderFlags));
-    JSONObject.AddPair('Origin', TJSONString.Create(DataSet.Fields[I].ORIGIN));
-    JSONObject.AddPair('Required', TJSONBool.Create(DataSet.Fields[I].Required));
-    JSONObject.AddPair('Visible', TJSONBool.Create(DataSet.Fields[I].Visible));
-    Result.AddElement(JSONObject);
+    LJSONObject := TJSONObject.Create;
+    LJSONObject.AddPair('FieldName', TJSONString.Create(LField.FieldName));
+    LJSONObject.AddPair('DisplayLabel', TJSONString.Create(LField.DisplayLabel));
+    LJSONObject.AddPair('DataType', TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LField.DataType))));
+    LJSONObject.AddPair('Size', TJSONNumber.Create(LField.SIZE));
+    LJSONObject.AddPair('Key', TJSONBool.Create(pfInKey in LField.ProviderFlags));
+    LJSONObject.AddPair('Origin', TJSONString.Create(LField.ORIGIN));
+    LJSONObject.AddPair('Required', TJSONBool.Create(LField.Required));
+    LJSONObject.AddPair('Visible', TJSONBool.Create(LField.Visible));
+    LJSONObject.AddPair('ReadOnly', TJSONBool.Create(LField.ReadOnly));
+    LJSONObject.AddPair('AutoGenerateValue', TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(LField.AutoGenerateValue))));
+    Result.AddElement(LJSONObject);
   end;
 end;
 
-constructor TDataSetSerialize.Create;
+constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True);
 begin
-  FDataSet := nil;
-  FOwns := False;
+  FDataSet := ADataSet;
+  FOnlyUpdatedRecords := AOnlyUpdatedRecords;
+  FChildRecord := AChildRecords;
 end;
 
 function TDataSetSerialize.ToJSONArray: TJSONArray;
 begin
-  Result := DataSetToJSONArray(GetDataSet);
+  Result := DataSetToJSONArray(FDataSet);
 end;
 
 end.

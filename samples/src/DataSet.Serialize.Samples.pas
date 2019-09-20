@@ -1,11 +1,11 @@
-unit Providers.DataSet.Serialize.Sample;
+unit DataSet.Serialize.Samples;
 
 interface
 
 uses Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
   Vcl.Dialogs, Vcl.ComCtrls, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Grids,
-  Vcl.DBGrids;
+  Vcl.DBGrids, Datasnap.DBClient;
 
 type
   TFrmSamples = class(TForm)
@@ -55,22 +55,64 @@ type
     Panel12: TPanel;
     Button9: TButton;
     mmJSONArrayValidate: TMemo;
+    tabJSONNested: TTabSheet;
+    mtJSONNested: TFDMemTable;
+    mtJSONNestedUF: TFDMemTable;
+    Panel11: TPanel;
+    DBGrid2: TDBGrid;
+    DBGrid3: TDBGrid;
+    mtJSONNestedPAIS: TStringField;
+    mtJSONNestedSIGLA: TStringField;
+    mtJSONNestedUFNOME: TStringField;
+    mtJSONNestedUFCEP: TStringField;
+    dsJSONNested: TDataSource;
+    dsJSONNestedUF: TDataSource;
+    Panel14: TPanel;
+    mmJSONNested: TMemo;
+    Button10: TButton;
+    mtJSONNestedESTADOS: TDataSetField;
+    Panel15: TPanel;
+    mmExportDataSetNested: TMemo;
+    Button11: TButton;
+    mtJSONNestedCity: TFDMemTable;
+    dsJSONNEstedCity: TDataSource;
+    DBGrid4: TDBGrid;
+    mtJSONNestedUFCIDADES: TDataSetField;
+    mtJSONNestedCityNOME: TStringField;
+    mtJSONNestedCityCEP: TStringField;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel16: TPanel;
+    mmDataSetField: TMemo;
+    Button12: TButton;
+    dsChieldsArray: TDataSource;
+    mtChieldsArray: TFDMemTable;
+    mtNested: TFDMemTable;
+    dsNested: TDataSource;
+    mtNestedID: TIntegerField;
+    mtNestedNAME: TStringField;
+    mtNestedARRAY: TDataSetField;
+    Panel17: TPanel;
+    DBGrid5: TDBGrid;
+    DBGrid6: TDBGrid;
+    mtChieldsArrayVALUE: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
-    procedure mtDataSetAfterInsert(DataSet: TDataSet);
     procedure Button5Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
-    procedure mtJSONAfterInsert(DataSet: TDataSet);
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
+    procedure Button10Click(Sender: TObject);
+    procedure Button11Click(Sender: TObject);
+    procedure Button12Click(Sender: TObject);
   private
-    FId, FIdJSON: Integer;
     procedure Append;
     procedure ClearFields;
     function ValidateStructure: Boolean;
@@ -93,9 +135,41 @@ begin
   mtDataSet.Post;
 end;
 
-procedure TFrmSamples.Button1Click(Sender: TObject);
+procedure TFrmSamples.Button10Click(Sender: TObject);
 begin
-  mmDataSet.Lines.Text := mtDataSet.ToJSONArray.ToString;
+  mtJSONNested.LoadFromJSON(mmJSONNested.Lines.Text);
+end;
+
+procedure TFrmSamples.Button11Click(Sender: TObject);
+var
+  LJSONObject: TJSONObject;
+begin
+  if not mtJSONNested.IsEmpty then
+  begin
+    LJSONObject := mtJSONNested.ToJSONObject;
+    try
+      mmExportDataSetNested.Lines.Text := LJSONObject.ToString;
+    finally
+      LJSONObject.Free;
+    end;
+  end;
+end;
+
+procedure TFrmSamples.Button12Click(Sender: TObject);
+begin
+  mtNested.LoadFromJSON(mmDataSetField.Lines.Text);
+end;
+
+procedure TFrmSamples.Button1Click(Sender: TObject);
+var
+  LJSONArray: TJSONArray;
+begin
+  LJSONArray := mtDataSet.ToJSONArray;
+  try
+    mmDataSet.Lines.Text := LJSONArray.ToString;
+  finally
+    LJSONArray.Free;
+  end;
 end;
 
 procedure TFrmSamples.Button2Click(Sender: TObject);
@@ -105,18 +179,32 @@ begin
 end;
 
 procedure TFrmSamples.Button3Click(Sender: TObject);
+var
+  LJSONArray: TJSONArray;
 begin
-  mmDataSet.Lines.Text := mtDataSet.SaveStructure.ToString;
+  LJSONArray := mtDataSet.SaveStructure;
+  try
+    mmDataSet.Lines.Text := LJSONArray.ToString;
+  finally
+    LJSONArray.Free;
+  end;
 end;
 
 procedure TFrmSamples.Button4Click(Sender: TObject);
+var
+  LJSONObject: TJSONObject;
 begin
-  mmDataSet.Lines.Text := mtDataSet.ToJSONObject.ToString;
+  LJSONObject := mtDataSet.ToJSONObject;
+  try
+    mmDataSet.Lines.Text := LJSONObject.ToString;
+  finally
+    LJSONObject.Free;
+  end;
 end;
 
 procedure TFrmSamples.Button5Click(Sender: TObject);
 begin
-  mtJSON.LoadStructure(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmStructure.Lines.Text),0) as TJSONArray);
+  mtJSON.LoadStructure(mmStructure.Lines.Text);
   DBGridStructure.Columns.RebuildColumns;
   DBGridStructure.Columns.Items[0].Width := 64;
   DBGridStructure.Columns.Items[1].Width := 250;
@@ -127,28 +215,32 @@ end;
 procedure TFrmSamples.Button6Click(Sender: TObject);
 begin
   if ValidateStructure then
-    mtJSON.LoadFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONObject.Lines.Text),0) as TJSONObject);
+    mtJSON.LoadFromJSON(mmJSONObject.Lines.Text);
 end;
 
 procedure TFrmSamples.Button7Click(Sender: TObject);
 begin
   if ValidateStructure then
-    mtJSON.LoadFromJSONArray(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmJSONArray.Lines.Text),0) as TJSONArray);
+    mtJSON.LoadFromJSON(mmJSONArray.Lines.Text);
 end;
 
 procedure TFrmSamples.Button8Click(Sender: TObject);
 begin
   if ValidateStructure then
     if mtJSON.RecordCount > 0 then
-      mtJSON.MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmMerge.Lines.Text),0) as TJSONObject);
+      mtJSON.MergeFromJSONObject(mmMerge.Lines.Text);
 end;
 
 procedure TFrmSamples.Button9Click(Sender: TObject);
 var
-  JSON: TJSONObject;
+  LJSONArray: TJSONArray;
 begin
-  JSON := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(mmValidateJSON.Lines.Text),0) as TJSONObject;
-  mmJSONArrayValidate.Lines.Text := mtJSON.ValidateJSON(JSON, TLanguageType.ptBR).ToString;
+  LJSONArray := mtJSON.ValidateJSON(mmValidateJSON.Lines.Text);
+  try
+    mmJSONArrayValidate.Lines.Text := LJSONArray.ToString;
+  finally
+    LJSONArray.Free;
+  end;
 end;
 
 procedure TFrmSamples.ClearFields;
@@ -164,26 +256,15 @@ end;
 
 procedure TFrmSamples.FormCreate(Sender: TObject);
 begin
-  FId := 0;
-  FIdJSON := 0;
   mtDataSet.Active := True;
+  mtJSONNested.Active := True;
+  mtJSONNestedUF.Active := True;
+  mtJSONNestedCity.Active := True;
 end;
 
 procedure TFrmSamples.FormShow(Sender: TObject);
 begin
   pclDataSetSerialize.ActivePage := tabDataSet;
-end;
-
-procedure TFrmSamples.mtDataSetAfterInsert(DataSet: TDataSet);
-begin
-  Inc(FId);
-  mtDataSetID.AsInteger := FId;
-end;
-
-procedure TFrmSamples.mtJSONAfterInsert(DataSet: TDataSet);
-begin
-  Inc(FIdJSON);
-  mtJSON.FieldByName('ID').AsInteger := FIdJSON;
 end;
 
 function TFrmSamples.ValidateStructure: Boolean;
@@ -197,5 +278,8 @@ begin
     Result := False;
   end;
 end;
+
+initialization
+  ReportMemoryLeaksOnShutdown := True;
 
 end.
