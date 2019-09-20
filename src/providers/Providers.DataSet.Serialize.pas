@@ -141,15 +141,15 @@ begin
   Result.Name := CreateValidIdentifier(ADataSet.Name + Result.FieldName);
   Result.Size := AFieldStructure.Size;
 
-  if Result is TBCDField then
-    TBCDField(Result).Precision := AFieldStructure.Precision
-  else if Result is TFloatField then
-    TFloatField(Result).Precision := AFieldStructure.Precision
-  else if Result is TSingleField then
-    TSingleField(Result).Precision := AFieldStructure.Precision
-  else if Result is TExtendedField then
-    TExtendedField(Result).Precision := AFieldStructure.Precision;
-  
+  case Result.DataType of
+    ftBCD: TBCDField(Result).Precision := AFieldStructure.Precision;
+    ftFloat: TFloatField(Result).Precision := AFieldStructure.Precision;
+    ftSingle: TSingleField(Result).Precision := AFieldStructure.Precision;
+    ftExtended: TExtendedField(Result).Precision := AFieldStructure.Precision;
+    ftCurrency: TCurrencyField(Result).Precision := AFieldStructure.Precision;
+    ftFMTBcd: TFMTBCDField(Result).Precision := AFieldStructure.Precision;
+  end;
+
   Result.Visible := AFieldStructure.Visible;
   Result.ReadOnly := AFieldStructure.ReadOnly;
   Result.Required := AFieldStructure.Required;
