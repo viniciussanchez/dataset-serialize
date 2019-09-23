@@ -72,7 +72,7 @@ end;
 
 The following properties are controlled: 
 
-`FieldName, DisplayLabel, DataType, Size, Key, Origin, Required, Visible, ReadOnly, and AutoGenerateValue`;
+`Alignment, FieldName, DisplayLabel, DataType, Size, Key, Origin, Required, Visible, ReadOnly, and AutoGenerateValue`;
 
 **Parameters**
 * `AOwns` - Indicates who is responsible for destroying the passed JSON as a parameter.
