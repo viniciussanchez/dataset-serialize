@@ -2,7 +2,7 @@ unit Providers.DataSet.Serialize;
 
 interface
 
-uses System.DateUtils, System.JSON, Data.DB, BooleanField.Types, System.SysUtils;
+uses System.DateUtils, System.JSON, Data.DB, BooleanField.Types, System.SysUtils, System.Classes;
 
 type
   /// <summary>
@@ -19,6 +19,7 @@ type
   ///   Record representing the structure of a dataset field.
   /// </summary>
   TFieldStructure = record
+    Alignment: TAlignment;
     FieldType: TFieldType;
     Size: Integer;
     Precision: Integer;
@@ -133,6 +134,7 @@ end;
 class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;
 begin
   Result := DefaultFieldClasses[AFieldStructure.FieldType].Create(ADataSet);
+  Result.Alignment := AFieldStructure.Alignment;
   Result.FieldName := AFieldStructure.FieldName;
   if Result.FieldName.Trim.IsEmpty then
     Result.FieldName := 'Field' + IntToStr(ADataSet.FieldCount + 1);

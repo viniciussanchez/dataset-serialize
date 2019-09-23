@@ -1,9 +1,8 @@
-﻿unit DataSet.Serialize.JSON.Impl;
+unit DataSet.Serialize.JSON.Impl;
 
 interface
 
-uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils,
-  System.SysUtils;
+uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils, System.SysUtils, System.Rtti;
 
 type
   TJSONSerialize = class
@@ -117,14 +116,14 @@ type
     procedure LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
 	public
     /// <summary>
-    ///   Responsible for creating a new isntância of TDataSetSerialize class.
+    ///   Responsible for creating a new instance of TDataSetSerialize class.
     /// </summary>
     /// <param name="AJSONArray">
     ///   Refers to the JSON in with the data that must be loaded in the DataSet.
     /// </param>
     constructor Create(const AJSONArray: TJSONArray; const AOwns: Boolean); overload;
     /// <summary>
-    ///   Responsible for creating a new isntância of TDataSetSerialize class.
+    ///   Responsible for creating a new instance of TDataSetSerialize class.
     /// </summary>
     /// <param name="AJSONObject">
     ///   Refers to the JSON in with the data that must be loaded in the DataSet.
@@ -383,6 +382,9 @@ begin
   else
     raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', ['DataType']);
 
+  if AJSONValue.TryGetValue<string>('Alignment', LStrTemp) then
+    Result.Alignment := TRttiEnumerationType.GetValue<TAlignment>(LStrTemp);
+
   if AJSONValue.TryGetValue<string>('FieldName', LStrTemp) then
     Result.FieldName := LStrTemp
   else
@@ -432,7 +434,7 @@ begin
   Result.AddPair(TJSONPair.Create('field', AFieldName));
   case ALang of
     ptBR:
-      Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' não foi informado(a)'));
+      Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' n�o foi informado(a)'));
     else
       Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' not informed'));
   end;

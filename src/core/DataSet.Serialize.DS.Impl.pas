@@ -52,7 +52,7 @@ type
     function HasChildModification(const ADataSet: TDataSet): Boolean;    
   public
     /// <summary>
-    ///   Responsible for creating a new isntância of TDataSetSerialize class.
+    ///   Responsible for creating a new instance of TDataSetSerialize class.
     /// </summary>
     constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True);
     /// <summary>
@@ -263,6 +263,7 @@ begin
   for LField in FDataSet.Fields do
   begin
     LJSONObject := TJSONObject.Create;
+    LJSONObject.AddPair('Alignment', TJSONString.Create(GetEnumName(TypeInfo(TAlignment), Ord(LField.Alignment))));
     LJSONObject.AddPair('FieldName', TJSONString.Create(LField.FieldName));
     LJSONObject.AddPair('DisplayLabel', TJSONString.Create(LField.DisplayLabel));
     LJSONObject.AddPair('DataType', TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LField.DataType))));
