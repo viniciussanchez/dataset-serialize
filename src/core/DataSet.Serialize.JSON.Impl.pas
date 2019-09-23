@@ -2,7 +2,8 @@
 
 interface
 
-uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils;
+uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils,
+  System.SysUtils;
 
 type
   TJSONSerialize = class
@@ -56,6 +57,16 @@ type
     ///   Indicates whether to include or change the DataSet record.
     /// </param>
     procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const AMerging: Boolean);
+    /// <summary>
+    ///   Loads a DataSet with a JSONOValue.
+    /// </summary>
+    /// <param name="AJSONValue">
+    ///   Refers to the JSON value that must be loaded in the DataSet.
+    /// </param>
+    /// <param name="ADataSet">
+    ///   Refers to the DataSet which must be loaded with the JSON value.
+    /// </param>
+    procedure JSONValueToDataSet(const AJSONValue: TJSONValue; const ADataSet: TDataSet);
     /// <summary>
     ///   Loads a DataSet with a JSONArray.
     /// </summary>
@@ -168,7 +179,7 @@ type
 
 implementation
 
-uses System.Classes, System.SysUtils, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
+uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
   System.Generics.Collections, System.Variants, UpdatedStatus.Types,
   FireDAC.Comp.Client;
 
@@ -284,6 +295,15 @@ begin
   end;
 end;
 
+procedure TJSONSerialize.JSONValueToDataSet(const AJSONValue: TJSONValue; const ADataSet: TDataSet);
+begin
+  if ADataSet.Fields.Count <> 1 then
+    raise EDataSetSerializeException.Create(Format(INVALID_FIELD_COUNT, [ADataSet.Name]));
+  ADataSet.Append;
+  ADataSet.Fields.Fields[0].AsString := AJSONValue.Value;
+  ADataSet.Post;
+end;
+
 procedure TJSONSerialize.ToDataSet(const ADataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
@@ -353,17 +373,47 @@ begin
 end;
 
 function TJSONSerialize.LoadFieldStructure(const AJSONValue: TJSONValue): TFieldStructure;
+var
+  LStrTemp: string;
+  LIntTemp: Integer;
+  LBoolTemp: Boolean;
 begin
-  Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), AJSONValue.GetValue<string>('DataType')));
-  Result.Size := StrToIntDef(TJSONObject(AJSONValue).GetValue<string>('Size'), 0);
-  Result.FieldName := AJSONValue.GetValue<string>('FieldName');
-  Result.Origin := AJSONValue.GetValue<string>('Origin');
-  Result.DisplayLabel := AJSONValue.GetValue<string>('DisplayLabel');
-  Result.Key := AJSONValue.GetValue<Boolean>('Key');
-  Result.Required := AJSONValue.GetValue<Boolean>('Required');
-  Result.Visible := AJSONValue.GetValue<Boolean>('Visible');
-  Result.ReadOnly := AJSONValue.GetValue<Boolean>('ReadOnly');
-  Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), AJSONValue.GetValue<string>('AutoGenerateValue')));
+  if AJSONValue.TryGetValue<string>('DataType', LStrTemp) then
+    Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), LStrTemp))
+  else
+    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', ['DataType']);
+
+  if AJSONValue.TryGetValue<string>('FieldName', LStrTemp) then
+    Result.FieldName := LStrTemp
+  else
+    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', ['FieldName']);
+
+  if AJSONValue.TryGetValue<Integer>('Size', LIntTemp) then
+    Result.Size := LIntTemp;
+
+  if AJSONValue.TryGetValue<Integer>('Precision', LIntTemp) then
+    Result.Precision := LIntTemp;
+
+  if AJSONValue.TryGetValue<string>('Origin', LStrTemp) then
+    Result.Origin := LStrTemp;
+
+  if AJSONValue.TryGetValue<string>('DisplayLabel', LStrTemp) then
+    Result.DisplayLabel := LStrTemp;
+
+  if AJSONValue.TryGetValue<Boolean>('Key', LBoolTemp) then
+    Result.Key := LBoolTemp;
+
+  if AJSONValue.TryGetValue<Boolean>('Required', LBoolTemp) then
+    Result.Required := LBoolTemp;
+
+  if AJSONValue.TryGetValue<Boolean>('Visible', LBoolTemp) then
+    Result.Visible := LBoolTemp;
+
+  if AJSONValue.TryGetValue<Boolean>('ReadOnly', LBoolTemp) then
+    Result.ReadOnly := LBoolTemp;
+
+  if AJSONValue.TryGetValue<string>('AutoGenerateValue', LStrTemp) then
+    Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), LStrTemp));
 end;
 
 procedure TJSONSerialize.LoadStructure(const ADataSet: TDataSet);
@@ -417,8 +467,10 @@ begin
   begin
     if (LJSONValue is TJSONArray) then
       JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet)
+    else if (LJSONValue is TJSONObject) then
+      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False)
     else
-      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False);
+      JSONValueToDataSet(LJSONValue, ADataSet);
   end;
   if ADataSet.Active then
     ADataSet.First;

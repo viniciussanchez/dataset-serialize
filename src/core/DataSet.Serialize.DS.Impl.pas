@@ -52,7 +52,7 @@ type
     function HasChildModification(const ADataSet: TDataSet): Boolean;    
   public
     /// <summary>
-    ///   Responsible for creating a new isnt‚ncia of TDataSetSerialize class.
+    ///   Responsible for creating a new isnt√¢ncia of TDataSetSerialize class.
     /// </summary>
     constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True);
     /// <summary>
@@ -104,10 +104,10 @@ function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const Is
 var
   LBookMark: TBookmark;
 begin
+  Result := TJSONArray.Create;
   if ADataSet.IsEmpty then
-    Exit(TJSONArray.Create);
+    Exit;
   try
-    Result := TJSONArray.Create;
     LBookMark := ADataSet.BookMark;
     ADataSet.First;
     while not ADataSet.Eof do
@@ -172,10 +172,7 @@ begin
       TFieldType.ftDataSet:
         begin
           LNestedDataSet := TDataSetField(LField).NestedDataSet;
-          if LNestedDataSet.RecordCount = 1 then
-            Result.AddPair(LKey, DataSetToJSONObject(LNestedDataSet))
-          else if LNestedDataSet.RecordCount > 1 then
-            Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
+          Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
         Result.AddPair(LKey, TJSONString.Create(EncodingBlobField(LField)));
@@ -194,7 +191,7 @@ begin
       begin
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
-        if (LNestedDataSet.RecordCount > 0) then
+        if LNestedDataSet.RecordCount > 0 then
           Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet, True));
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
@@ -259,14 +256,11 @@ function TDataSetSerialize.SaveStructure: TJSONArray;
 var
   LField: TField;
   LJSONObject: TJSONObject;
-  LDataSet: TDataSet;
 begin
-  Result := nil;
-  LDataSet := FDataSet;
-  if LDataSet.FieldCount <= 0 then
-    Exit;
   Result := TJSONArray.Create;
-  for LField in LDataSet.Fields do
+  if FDataSet.FieldCount <= 0 then
+    Exit;
+  for LField in FDataSet.Fields do
   begin
     LJSONObject := TJSONObject.Create;
     LJSONObject.AddPair('FieldName', TJSONString.Create(LField.FieldName));
