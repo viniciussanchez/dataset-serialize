@@ -140,7 +140,7 @@ begin
     Exit;
   for LField in ADataSet.Fields do
   begin
-    if (not LField.Visible) or LField.IsNull or LField.AsString.Trim.IsEmpty then
+    if not(LField.Visible) then
       Continue;
     LKey := LowerCase(LField.FieldName);
     case LField.DataType of
