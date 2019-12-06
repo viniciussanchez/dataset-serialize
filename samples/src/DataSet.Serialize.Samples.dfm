@@ -437,6 +437,7 @@ object FrmSamples: TFrmSamples
               Lines.Strings = (
                 '['
                 '  {'
+                '    "Alignment": "taRightJustify",'
                 '    "FieldName": "ID",'
                 '    "DisplayLabel": "Id",'
                 '    "DataType": "ftInteger",'
@@ -449,6 +450,7 @@ object FrmSamples: TFrmSamples
                 '    "AutoGenerateValue": "arAutoInc"'
                 '  },'
                 '  {'
+                '    "Alignment": "taLeftJustify",'
                 '    "FieldName": "NAME",'
                 '    "DisplayLabel": "Name",'
                 '    "DataType": "ftString",'
@@ -461,6 +463,7 @@ object FrmSamples: TFrmSamples
                 '    "AutoGenerateValue": "arNone"'
                 '  },'
                 '  {'
+                '    "Alignment": "taLeftJustify",'
                 '    "FieldName": "COUNTRY",'
                 '    "DisplayLabel": "Country",'
                 '    "DataType": "ftString",'
@@ -494,8 +497,6 @@ object FrmSamples: TFrmSamples
         TabOrder = 0
         object TabSheet1: TTabSheet
           Caption = 'TDataSetField - Samples 1'
-          ExplicitWidth = 281
-          ExplicitHeight = 165
           object Panel11: TPanel
             Left = 241
             Top = 0
@@ -504,8 +505,6 @@ object FrmSamples: TFrmSamples
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 0
-            ExplicitWidth = 504
-            ExplicitHeight = 543
             object DBGrid2: TDBGrid
               Left = 0
               Top = 0
@@ -601,7 +600,6 @@ object FrmSamples: TFrmSamples
             Align = alLeft
             BevelOuter = bvNone
             TabOrder = 1
-            ExplicitHeight = 543
             object mmJSONNested: TMemo
               Left = 0
               Top = 33
@@ -657,7 +655,6 @@ object FrmSamples: TFrmSamples
                 '}')
               ScrollBars = ssVertical
               TabOrder = 0
-              ExplicitHeight = 510
             end
             object Button10: TButton
               Left = 0
@@ -678,8 +675,6 @@ object FrmSamples: TFrmSamples
             Align = alRight
             BevelOuter = bvNone
             TabOrder = 2
-            ExplicitLeft = 745
-            ExplicitHeight = 543
             object mmExportDataSetNested: TMemo
               Left = 0
               Top = 33
@@ -689,7 +684,6 @@ object FrmSamples: TFrmSamples
               ReadOnly = True
               ScrollBars = ssVertical
               TabOrder = 0
-              ExplicitHeight = 510
             end
             object Button11: TButton
               Left = 0
@@ -706,7 +700,6 @@ object FrmSamples: TFrmSamples
         object TabSheet2: TTabSheet
           Caption = 'TDataSetField - Samples 2'
           ImageIndex = 1
-          ExplicitLeft = 0
           object Panel16: TPanel
             Left = 0
             Top = 0
@@ -715,7 +708,6 @@ object FrmSamples: TFrmSamples
             Align = alLeft
             BevelOuter = bvNone
             TabOrder = 0
-            ExplicitLeft = 8
             object mmDataSetField: TMemo
               Left = 0
               Top = 33
@@ -777,7 +769,6 @@ object FrmSamples: TFrmSamples
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 1
-            ExplicitTop = -3
             object DBGrid5: TDBGrid
               Left = 0
               Top = 0
