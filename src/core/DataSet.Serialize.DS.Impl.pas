@@ -143,6 +143,11 @@ begin
     if not(LField.Visible) then
       Continue;
     LKey := LowerCase(LField.FieldName);
+    if LField.IsNull then
+    begin
+      Result.AddPair(LKey, TJSONNull.Create);
+      Continue;
+    end;
     case LField.DataType of
       TFieldType.ftBoolean:
         begin
