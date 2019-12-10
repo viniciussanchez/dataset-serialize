@@ -47,7 +47,7 @@ What is the difference between the two functions? ToJSONObject will only convert
 
 **ToJSONObject**
 * If the DataSet is empty or not assigned, a blank JSON object (`{}`) will be returned;
-* The field that does not have the visible (True) property will be ignored. The same is true if its value is null or empty;
+* The field that does not have the visible (True) property will be ignored. 
 * The attribute name in JSON will always be the field name in lower case, even if the field name is in upper case;
 * If the field is of type TDataSetField, a nested JSON is generated (JSONObject if it is just a child record, or JSONArray if it is more than one). The most suitable way for this type of situation is to create a master detail;
 * All child records will be exported as a JSONArray;
