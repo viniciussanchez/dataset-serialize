@@ -193,7 +193,7 @@ var
   LDataSetDetails: TList<TDataSet>;
   LObjectState: string;
 begin
-  if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) then
+  if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
     
   if not(ADataSet.Active) then
@@ -434,7 +434,7 @@ begin
   Result.AddPair(TJSONPair.Create('field', AFieldName));
   case ALang of
     ptBR:
-      Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' n„o foi informado(a)'));
+      Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' n√£o foi informado(a)'));
     else
       Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' not informed'));
   end;
