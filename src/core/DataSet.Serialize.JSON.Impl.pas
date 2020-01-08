@@ -208,13 +208,19 @@ begin
   if AJSONObject.TryGetValue(OBJECT_STATE, LObjectState) then
   begin
     if TUpdateStatus.usInserted.ToString.Equals(LObjectState) then
-      ADataSet.Append
+    begin
+      if ADataSet.State <> dsInsert then
+        ADataSet.Append;
+    end
     else if not TUpdateStatus.usUnmodified.ToString.Equals(LObjectState) then
     begin
       if not ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
         Exit;
       if TUpdateStatus.usModified.ToString.Equals(LObjectState) then
-        ADataSet.Edit
+      begin
+        if ADataSet.State <> dsEdit then
+          ADataSet.Edit;
+      end
       else if TUpdateStatus.usDeleted.ToString.Equals(LObjectState) then
       begin
         ADataSet.Delete;
@@ -223,9 +229,15 @@ begin
     end;
   end
   else if AMerging then
-    ADataSet.Edit
+  begin
+    if ADataSet.State <> dsEdit then
+      ADataSet.Edit;
+  end
   else
-    ADataSet.Append;
+  begin
+    if ADataSet.State <> dsInsert then
+      ADataSet.Append;
+  end;
     
   if (ADataSet.State in dsEditModes) then
   begin
