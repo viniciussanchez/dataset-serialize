@@ -168,8 +168,10 @@ begin
         Result.AddPair(LKey, TJSONNumber.Create(LField.AsFloat));
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
         Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
-      TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
+      TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
         Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime)));
+      TFieldType.ftDate:
+        Result.AddPair(LKey, TJSONString.Create(FormatDateTime('YYYY-MM-DD', LField.AsDateTime)));
       TFieldType.ftCurrency:
         Result.AddPair(LKey, TJSONString.Create(FormatCurr('0.00##', LField.AsCurrency)));
       TFieldType.ftFMTBcd, TFieldType.ftBCD:
