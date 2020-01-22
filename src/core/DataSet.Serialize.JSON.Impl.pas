@@ -1,4 +1,4 @@
-unit DataSet.Serialize.JSON.Impl;
+﻿unit DataSet.Serialize.JSON.Impl;
 
 interface
 
@@ -179,8 +179,7 @@ type
 implementation
 
 uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
-  System.Generics.Collections, System.Variants, UpdatedStatus.Types,
-  FireDAC.Comp.Client;
+  System.Generics.Collections, System.Variants, UpdatedStatus.Types, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 { TJSONSerialize }
 
@@ -192,6 +191,7 @@ var
   LBooleanValue: Boolean;
   LDataSetDetails: TList<TDataSet>;
   LObjectState: string;
+  LMasterSource: TDataSource;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
@@ -205,88 +205,99 @@ begin
     ADataSet.Open;
   end;
 
-  if AJSONObject.TryGetValue(OBJECT_STATE, LObjectState) then
-  begin
-    if TUpdateStatus.usInserted.ToString.Equals(LObjectState) then
+  LMasterSource := nil;
+  try
+    if AJSONObject.TryGetValue(OBJECT_STATE, LObjectState) then
+    begin
+      if TUpdateStatus.usInserted.ToString.Equals(LObjectState) then
+      begin
+        if ADataSet.State <> dsInsert then
+          ADataSet.Append;
+      end
+      else if not TUpdateStatus.usUnmodified.ToString.Equals(LObjectState) then
+      begin
+        if ADataSet.InheritsFrom(TFDDataSet) and Assigned(TFDDataSet(ADataSet).MasterSource) then
+        begin
+          LMasterSource := TFDDataSet(ADataSet).MasterSource;
+          TFDDataSet(ADataSet).MasterSource := nil;
+        end;
+        if not ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
+          Exit;
+        if TUpdateStatus.usModified.ToString.Equals(LObjectState) then
+        begin
+          if ADataSet.State <> dsEdit then
+            ADataSet.Edit;
+        end
+        else if TUpdateStatus.usDeleted.ToString.Equals(LObjectState) then
+        begin
+          ADataSet.Delete;
+          Exit;
+        end;
+      end;
+    end
+    else if AMerging then
+    begin
+      if ADataSet.State <> dsEdit then
+        ADataSet.Edit;
+    end
+    else
     begin
       if ADataSet.State <> dsInsert then
         ADataSet.Append;
-    end
-    else if not TUpdateStatus.usUnmodified.ToString.Equals(LObjectState) then
-    begin
-      if not ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
-        Exit;
-      if TUpdateStatus.usModified.ToString.Equals(LObjectState) then
-      begin
-        if ADataSet.State <> dsEdit then
-          ADataSet.Edit;
-      end
-      else if TUpdateStatus.usDeleted.ToString.Equals(LObjectState) then
-      begin
-        ADataSet.Delete;
-        Exit;
-      end;
     end;
-  end
-  else if AMerging then
-  begin
-    if ADataSet.State <> dsEdit then
-      ADataSet.Edit;
-  end
-  else
-  begin
-    if ADataSet.State <> dsInsert then
-      ADataSet.Append;
-  end;
     
-  if (ADataSet.State in dsEditModes) then
-  begin
-    for LField in ADataSet.Fields do
+    if (ADataSet.State in dsEditModes) then
     begin
-      if LField.ReadOnly then
-        Continue;
-      if not (AJSONObject.TryGetValue(LField.FieldName, LJSONValue) or AJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue)) then
-        Continue;
-      if LJSONValue is TJSONNull then
+      for LField in ADataSet.Fields do
       begin
-        LField.Clear;
-        Continue;
-      end;
-      case LField.DataType of
-        TFieldType.ftBoolean:
-          if LJSONValue.TryGetValue<Boolean>(LBooleanValue) then
-            LField.AsBoolean := LBooleanValue;
-        TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint, TFieldType.ftLongWord:
-          LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
-        TFieldType.ftLargeint, TFieldType.ftAutoInc:
-          LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
-        TFieldType.ftCurrency:
-          LField.AsCurrency := StrToCurr(LJSONValue.Value);
-        TFieldType.ftFloat, TFieldType.ftFMTBcd, TFieldType.ftBCD, TFieldType.ftSingle:
-          LField.AsFloat := StrToFloat(LJSONValue.Value);
-        TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
-          LField.AsString := LJSONValue.Value;
-        TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-          LField.AsDateTime := ISO8601ToDate(LJSONValue.Value);
-        TFieldType.ftDataSet:
-          begin
-            LNestedDataSet := TDataSetField(LField).NestedDataSet;
-            if LJSONValue is TJSONObject then
-              JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, False)
-            else if LJSONValue is TJSONArray then
+        if LField.ReadOnly then
+          Continue;
+        if not (AJSONObject.TryGetValue(LField.FieldName, LJSONValue) or AJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue)) then
+          Continue;
+        if LJSONValue is TJSONNull then
+        begin
+          LField.Clear;
+          Continue;
+        end;
+        case LField.DataType of
+          TFieldType.ftBoolean:
+            if LJSONValue.TryGetValue<Boolean>(LBooleanValue) then
+              LField.AsBoolean := LBooleanValue;
+          TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint, TFieldType.ftLongWord:
+            LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
+          TFieldType.ftLargeint, TFieldType.ftAutoInc:
+            LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
+          TFieldType.ftCurrency:
+            LField.AsCurrency := StrToCurr(LJSONValue.Value);
+          TFieldType.ftFloat, TFieldType.ftFMTBcd, TFieldType.ftBCD, TFieldType.ftSingle:
+            LField.AsFloat := StrToFloat(LJSONValue.Value);
+          TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
+            LField.AsString := LJSONValue.Value;
+          TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
+            LField.AsDateTime := ISO8601ToDate(LJSONValue.Value);
+          TFieldType.ftDataSet:
             begin
-              ClearDataSet(LNestedDataSet);
-              JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
+              LNestedDataSet := TDataSetField(LField).NestedDataSet;
+              if LJSONValue is TJSONObject then
+                JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, False)
+              else if LJSONValue is TJSONArray then
+              begin
+                ClearDataSet(LNestedDataSet);
+                JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
+              end;
             end;
-          end;
-        TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
-          LoadBlobFieldFromStream(LField, LJSONValue);
-        else
-          raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
+          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
+            LoadBlobFieldFromStream(LField, LJSONValue);
+          else
+            raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
+        end;
       end;
+      ADataSet.Post;
     end;
-    ADataSet.Post;
-  end;  
+  finally
+    if Assigned(LMasterSource) then
+      TFDDataSet(ADataSet).MasterSource := LMasterSource;
+  end;
   LDataSetDetails := TList<TDataSet>.Create;
   try
     ADataSet.GetDetailDataSets(LDataSetDetails);
