@@ -52,10 +52,7 @@ type
     /// <param name="ADataSet">
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
-    /// <param name="AMerging">
-    ///   Indicates whether to include or change the DataSet record.
-    /// </param>
-    procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const AMerging, ADetail: Boolean);
+    procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet);
     /// <summary>
     ///   Loads a DataSet with a JSONOValue.
     /// </summary>
@@ -75,7 +72,7 @@ type
     /// <param name="ADataSet">
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
-    procedure JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet; const ADetail: Boolean);
+    procedure JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
     /// <summary>
     ///   Creates a JSON informing the required field.
     /// </summary>
@@ -183,7 +180,7 @@ uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, Provi
 
 { TJSONSerialize }
 
-procedure TJSONSerialize.JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const AMerging, ADetail: Boolean);
+procedure TJSONSerialize.JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet);
 var
   LField: TField;
   LJSONValue: TJSONValue;
@@ -195,7 +192,7 @@ var
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
-    
+
   if not(ADataSet.Active) then
   begin
     if not(ADataSet is TFDMemTable)  then
@@ -233,19 +230,20 @@ begin
           ADataSet.Delete;
           Exit;
         end;
-      end
+      end;
     end
-    else if AMerging and not ADetail then
+    else if FMerging then
     begin
       if ADataSet.State <> dsEdit then
-        ADataSet.Edit;
+        if ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
+          ADataSet.Edit;
     end
-    else if not ADetail  then         
+    else
     begin
       if ADataSet.State <> dsInsert then
         ADataSet.Append;
     end;
-    
+
     if (ADataSet.State in dsEditModes) then
     begin
       for LField in ADataSet.Fields do
@@ -279,11 +277,11 @@ begin
             begin
               LNestedDataSet := TDataSetField(LField).NestedDataSet;
               if LJSONValue is TJSONObject then
-                JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, False, False)
+                JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet)
               else if LJSONValue is TJSONArray then
               begin
                 ClearDataSet(LNestedDataSet);
-                JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet, False);
+                JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
               end;
             end;
           TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
@@ -308,9 +306,9 @@ begin
       if LJSONValue is TJSONNull then
         Continue;
       if LJSONValue is TJSONObject then
-        JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, False, True)
+        JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet)
       else if LJSONValue is TJSONArray then
-        JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet, True);
+        JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
     end;
   finally
     LDataSetDetails.Free;
@@ -329,9 +327,9 @@ end;
 procedure TJSONSerialize.ToDataSet(const ADataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
-    JSONObjectToDataSet(FJSONObject, ADataSet, FMerging, False)
+    JSONObjectToDataSet(FJSONObject, ADataSet)
   else if Assigned(FJSONArray) then
-    JSONArrayToDataSet(FJSONArray, ADataSet, False)
+    JSONArrayToDataSet(FJSONArray, ADataSet)
   else
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
 end;
@@ -482,7 +480,7 @@ begin
   FJSONArray := AJSONArray;
 end;
 
-procedure TJSONSerialize.JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet; const ADetail: Boolean);
+procedure TJSONSerialize.JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
 var
   LJSONValue: TJSONValue;
 begin
@@ -491,9 +489,9 @@ begin
   for LJSONValue in AJSONArray do
   begin
     if (LJSONValue is TJSONArray) then
-      JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet, ADetail)
+      JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet)
     else if (LJSONValue is TJSONObject) then
-      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False, ADetail)
+      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet)
     else
       JSONValueToDataSet(LJSONValue, ADataSet);
   end;
@@ -560,3 +558,4 @@ begin
 end;
 
 end.
+
