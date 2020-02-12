@@ -1,4 +1,4 @@
-﻿unit DataSet.Serialize.JSON.Impl;
+unit DataSet.Serialize.JSON.Impl;
 
 interface
 
@@ -52,7 +52,10 @@ type
     /// <param name="ADataSet">
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
-    procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet);
+    /// <param name="ADetail">
+    ///   Indicates if it's a dataset detail.
+    /// </param>
+    procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const ADetail: Boolean);
     /// <summary>
     ///   Loads a DataSet with a JSONOValue.
     /// </summary>
@@ -180,7 +183,7 @@ uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, Provi
 
 { TJSONSerialize }
 
-procedure TJSONSerialize.JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet);
+procedure TJSONSerialize.JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const ADetail: Boolean);
 var
   LField: TField;
   LJSONValue: TJSONValue;
@@ -235,8 +238,15 @@ begin
     else if FMerging then
     begin
       if ADataSet.State <> dsEdit then
-        if ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
+      begin
+        if ADetail then
+        begin
+          if ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
+            ADataSet.Edit;
+        end
+        else
           ADataSet.Edit;
+      end;
     end
     else
     begin
@@ -277,7 +287,7 @@ begin
             begin
               LNestedDataSet := TDataSetField(LField).NestedDataSet;
               if LJSONValue is TJSONObject then
-                JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet)
+                JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, True)
               else if LJSONValue is TJSONArray then
               begin
                 ClearDataSet(LNestedDataSet);
@@ -306,7 +316,7 @@ begin
       if LJSONValue is TJSONNull then
         Continue;
       if LJSONValue is TJSONObject then
-        JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet)
+        JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, True)
       else if LJSONValue is TJSONArray then
         JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
     end;
@@ -327,7 +337,7 @@ end;
 procedure TJSONSerialize.ToDataSet(const ADataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
-    JSONObjectToDataSet(FJSONObject, ADataSet)
+    JSONObjectToDataSet(FJSONObject, ADataSet, False)
   else if Assigned(FJSONArray) then
     JSONArrayToDataSet(FJSONArray, ADataSet)
   else
@@ -491,7 +501,7 @@ begin
     if (LJSONValue is TJSONArray) then
       JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet)
     else if (LJSONValue is TJSONObject) then
-      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet)
+      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False)
     else
       JSONValueToDataSet(LJSONValue, ADataSet);
   end;
@@ -558,4 +568,3 @@ begin
 end;
 
 end.
-
