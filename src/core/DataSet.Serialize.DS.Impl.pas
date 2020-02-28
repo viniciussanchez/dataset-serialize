@@ -232,6 +232,7 @@ end;
 
 function TDataSetSerialize.HasChildModification(const ADataSet: TDataSet): Boolean;
 var
+  LMasterSource: TDataSource;
   LDataSetDetails: TList<TDataSet>;
   LNestedDataSet: TDataSet;
 begin
@@ -241,17 +242,21 @@ begin
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
+      Result := HasChildModification(LNestedDataSet);
+      if Result then
+        Break;
       if not (LNestedDataSet is TFDDataSet) then
         Continue;
+      LMasterSource := TFDDataSet(LNestedDataSet).MasterSource;
       try
+        TFDDataSet(LNestedDataSet).MasterSource := nil;
         TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted];
-        if (TFDDataSet(LNestedDataSet).RecordCount > 0) or HasChildModification(LNestedDataSet) then
-        begin
-          Result := True;
+        Result := TFDDataSet(LNestedDataSet).RecordCount > 0;
+        if Result then
           Break;
-        end;
       finally
         TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+        TFDDataSet(LNestedDataSet).MasterSource := LMasterSource;
       end;
     end;
   finally
