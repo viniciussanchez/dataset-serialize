@@ -17,13 +17,14 @@ If you choose to install manually, simply add the following folders to your proj
 ../dataset-serialize/src/core
 ../dataset-serialize/src/helpers
 ../dataset-serialize/src/providers
+../dataset-serialize/src/singletons
 ../dataset-serialize/src/types
 ```
 
 ## Getting Started
-All features offered by DataSet Serialize are located in the class helper in unit DataSet.Serialize.Helper. To get your project started, simply add your reference where your functionality is needed. Here's an example:
+All features offered by DataSet Serialize are located in the class helper in unit DataSet.Serialize. To get your project started, simply add your reference where your functionality is needed. Here's an example:
 ```pascal
-uses DataSet.Serialize.Helper;
+uses DataSet.Serialize;
 ```
 Let's now look at each feature, its rules and peculiarities, to deliver the best to all users.
 
@@ -148,6 +149,37 @@ end;
 
 **MergeFromJSONObject**
 * Same as LoadFromJSON validations;
+
+## Configurations
+You can customize some features of DataSet-Serialize:
+* Date input is UTC (time zone)
+```pascal
+TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
+```
+* Export null values
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := True;
+```
+* Export only fields visible
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := True;
+```
+* Field name in lowerCamelCase pattern
+```pascal
+  TDataSetSerializeConfig.GetInstance.LowerCamelCase := True;
+```
+* Format date (for export field type equals ftDate)
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.FormatDate := 'YYYY-MM-DD';
+```
+* Format currency (for export field type equals ftCurrency)
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.FormatCurrency := '0.00##';
+```
+* Define DataSet prefixes
+```pascal
+  TDataSetSerializeConfig.GetInstance.DataSetPrefix := ['mt', 'qry'];
+```
 
 ## Samples
 Check out our sample project for each situation presented above in operation. If you have any questions or suggestion, please contact, make your pull request or create an issue.
