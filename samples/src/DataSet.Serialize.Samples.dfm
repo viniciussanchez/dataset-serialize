@@ -76,18 +76,26 @@ object FrmSamples: TFrmSamples
             item
               Expanded = False
               FieldName = 'ID'
+              Width = 40
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'NAME'
-              Width = 250
+              Width = 203
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'COUNTRY'
-              Width = 145
+              Width = 87
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'DATE'
+              Title.Caption = 'Date'
+              Width = 120
               Visible = True
             end>
         end
@@ -820,8 +828,24 @@ object FrmSamples: TFrmSamples
         end
       end
     end
+    object tabConfig: TTabSheet
+      Caption = 'Configurations'
+      ImageIndex = 3
+      object chkDateInputIsUTC: TCheckBox
+        Left = 3
+        Top = 3
+        Width = 161
+        Height = 17
+        Caption = 'Date input is UTC (time zone)'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = chkDateInputIsUTCClick
+      end
+    end
   end
   object mtDataSet: TFDMemTable
+    AfterInsert = mtDataSetAfterInsert
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -848,6 +872,9 @@ object FrmSamples: TFrmSamples
       FieldName = 'COUNTRY'
       Visible = False
       Size = 60
+    end
+    object mtDataSetDATE: TDateTimeField
+      FieldName = 'DATE'
     end
   end
   object dsDataSet: TDataSource

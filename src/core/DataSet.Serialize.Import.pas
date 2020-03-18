@@ -1,8 +1,8 @@
-unit DataSet.Serialize.JSON.Impl;
+﻿unit DataSet.Serialize.Import;
 
 interface
 
-uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils, System.SysUtils, System.Rtti;
+uses System.JSON, Data.DB, DataSet.Serialize.Language, DataSet.Serialize.Utils, System.StrUtils, System.SysUtils, System.Rtti;
 
 type
   TJSONSerialize = class
@@ -178,8 +178,8 @@ type
 
 implementation
 
-uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
-  System.Generics.Collections, System.Variants, UpdatedStatus.Types, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, DataSet.Serialize.Consts, System.Generics.Collections,
+  System.Variants, DataSet.Serialize.UpdatedStatus, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 { TJSONSerialize }
 

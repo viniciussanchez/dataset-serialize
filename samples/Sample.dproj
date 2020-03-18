@@ -90,18 +90,19 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\src\helpers\DataSet.Serialize.Helper.pas"/>
-        <DCCReference Include="..\src\types\BooleanField.Types.pas"/>
-        <DCCReference Include="..\src\providers\Providers.DataSet.Serialize.pas"/>
-        <DCCReference Include="..\src\core\DataSet.Serialize.DS.Impl.pas"/>
-        <DCCReference Include="..\src\core\DataSet.Serialize.JSON.Impl.pas"/>
-        <DCCReference Include="..\src\providers\Providers.DataSet.Serialize.Constants.pas"/>
-        <DCCReference Include="..\src\types\Language.Types.pas"/>
+        <DCCReference Include="..\src\helpers\DataSet.Serialize.pas"/>
+        <DCCReference Include="..\src\types\DataSet.Serialize.BooleanField.pas"/>
+        <DCCReference Include="..\src\providers\DataSet.Serialize.Utils.pas"/>
+        <DCCReference Include="..\src\core\DataSet.Serialize.Export.pas"/>
+        <DCCReference Include="..\src\core\DataSet.Serialize.Import.pas"/>
+        <DCCReference Include="..\src\providers\DataSet.Serialize.Consts.pas"/>
+        <DCCReference Include="..\src\types\DataSet.Serialize.Language.pas"/>
         <DCCReference Include="src\DataSet.Serialize.Samples.pas">
             <Form>FrmSamples</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\src\types\UpdatedStatus.Types.pas"/>
+        <DCCReference Include="..\src\types\DataSet.Serialize.UpdatedStatus.pas"/>
+        <DCCReference Include="..\src\singletons\DataSet.Serialize.Config.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

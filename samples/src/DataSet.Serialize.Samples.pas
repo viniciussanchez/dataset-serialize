@@ -97,6 +97,9 @@ type
     DBGrid5: TDBGrid;
     DBGrid6: TDBGrid;
     mtChieldsArrayVALUE: TIntegerField;
+    mtDataSetDATE: TDateTimeField;
+    tabConfig: TTabSheet;
+    chkDateInputIsUTC: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -112,6 +115,8 @@ type
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
+    procedure mtDataSetAfterInsert(DataSet: TDataSet);
+    procedure chkDateInputIsUTCClick(Sender: TObject);
   private
     procedure Append;
     procedure ClearFields;
@@ -125,7 +130,8 @@ implementation
 
 {$R *.dfm}
 
-uses DataSet.Serialize.Helper, System.JSON, Language.Types;
+uses DataSet.Serialize, System.JSON, DataSet.Serialize.Language,
+  DataSet.Serialize.Config;
 
 procedure TFrmSamples.Append;
 begin
@@ -243,6 +249,11 @@ begin
   end;
 end;
 
+procedure TFrmSamples.chkDateInputIsUTCClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.DateInputIsUTC := chkDateInputIsUTC.Checked;
+end;
+
 procedure TFrmSamples.ClearFields;
 begin
   edtName.Clear;
@@ -265,6 +276,11 @@ end;
 procedure TFrmSamples.FormShow(Sender: TObject);
 begin
   pclDataSetSerialize.ActivePage := tabDataSet;
+end;
+
+procedure TFrmSamples.mtDataSetAfterInsert(DataSet: TDataSet);
+begin
+  mtDataSetDATE.AsDateTime := Now;
 end;
 
 function TFrmSamples.ValidateStructure: Boolean;

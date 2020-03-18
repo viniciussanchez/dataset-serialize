@@ -1,4 +1,4 @@
-unit DataSet.Serialize.DS.Impl;
+unit DataSet.Serialize.Export;
 
 interface
 
@@ -89,9 +89,9 @@ type
 
 implementation
 
-uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize, System.TypInfo,
-  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet,
-  UpdatedStatus.Types;
+uses DataSet.Serialize.BooleanField, System.DateUtils, Data.FmtBcd, System.SysUtils, DataSet.Serialize.Utils, System.TypInfo,
+  DataSet.Serialize.Consts, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet,
+  DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
 
 { TDataSetSerialize }
 
@@ -169,7 +169,7 @@ begin
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
         Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime)));
+        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
       TFieldType.ftDate:
         Result.AddPair(LKey, TJSONString.Create(FormatDateTime('YYYY-MM-DD', LField.AsDateTime)));
       TFieldType.ftCurrency:
