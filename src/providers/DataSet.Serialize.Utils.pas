@@ -161,12 +161,16 @@ begin
 end;
 
 class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;
+var
+  LPrefix: string;
 begin
   Result := ADataSetName;
-  if ADataSetName.StartsWith('mt') then
-    Result := Copy(ADataSetName, 03, ADataSetName.Length - 2)
-  else if ADataSetName.StartsWith('qry') then
-    Result := Copy(ADataSetName, 04, ADataSetName.Length - 3);
+  for LPrefix in TDataSetSerializeConfig.GetInstance.DataSetPrefix do
+    if ADataSetName.StartsWith(LPrefix) then
+    begin
+      Result := Copy(ADataSetName, Succ(LPrefix.Length), ADataSetName.Length - LPrefix.Length);
+      Break;
+    end;
 end;
 
 class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;

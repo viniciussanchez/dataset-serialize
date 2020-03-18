@@ -24,7 +24,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 994
     Height = 571
-    ActivePage = tabJSON
+    ActivePage = tabDataSet
     Align = alClient
     TabOrder = 0
     object tabDataSet: TTabSheet
@@ -841,6 +841,20 @@ object FrmSamples: TFrmSamples
       ImageIndex = 3
       ExplicitLeft = 0
       ExplicitTop = 28
+      object Label1: TLabel
+        Left = 3
+        Top = 108
+        Width = 239
+        Height = 13
+        Caption = 'Format date (for export field type equals ftDate):'
+      end
+      object Label4: TLabel
+        Left = 3
+        Top = 156
+        Width = 280
+        Height = 13
+        Caption = 'Format currency (for export field type equals ftCurrency):'
+      end
       object chkDateInputIsUTC: TCheckBox
         Left = 3
         Top = 3
@@ -884,6 +898,40 @@ object FrmSamples: TFrmSamples
         State = cbChecked
         TabOrder = 3
         OnClick = chkFieldNameLowerCamelCasePatternClick
+      end
+      object edtFormatDate: TEdit
+        Left = 3
+        Top = 127
+        Width = 326
+        Height = 21
+        TabOrder = 4
+        Text = 'YYYY-MM-DD'
+      end
+      object btnApplyFormatDate: TButton
+        Left = 335
+        Top = 125
+        Width = 58
+        Height = 25
+        Caption = 'Apply'
+        TabOrder = 5
+        OnClick = btnApplyFormatDateClick
+      end
+      object edtFormatCurrency: TEdit
+        Left = 3
+        Top = 175
+        Width = 326
+        Height = 21
+        TabOrder = 6
+        Text = '0.00##'
+      end
+      object btnFormatCurrency: TButton
+        Left = 335
+        Top = 173
+        Width = 58
+        Height = 25
+        Caption = 'Apply'
+        TabOrder = 7
+        OnClick = btnFormatCurrencyClick
       end
     end
   end

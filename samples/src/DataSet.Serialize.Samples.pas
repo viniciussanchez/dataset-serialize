@@ -103,6 +103,12 @@ type
     chkExportNullValues: TCheckBox;
     chkExportOnlyFieldsVisible: TCheckBox;
     chkFieldNameLowerCamelCasePattern: TCheckBox;
+    Label1: TLabel;
+    edtFormatDate: TEdit;
+    btnApplyFormatDate: TButton;
+    Label4: TLabel;
+    edtFormatCurrency: TEdit;
+    btnFormatCurrency: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -123,6 +129,8 @@ type
     procedure chkExportNullValuesClick(Sender: TObject);
     procedure chkExportOnlyFieldsVisibleClick(Sender: TObject);
     procedure chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
+    procedure btnApplyFormatDateClick(Sender: TObject);
+    procedure btnFormatCurrencyClick(Sender: TObject);
   private
     procedure Append;
     procedure ClearFields;
@@ -146,6 +154,16 @@ begin
   if not Trim(edtCountry.Text).IsEmpty then
     mtDataSetCOUNTRY.AsString := edtCountry.Text;
   mtDataSet.Post;
+end;
+
+procedure TFrmSamples.btnApplyFormatDateClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.FormatDate := edtFormatDate.Text;
+end;
+
+procedure TFrmSamples.btnFormatCurrencyClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.FormatCurrency := edtFormatCurrency.Text;
 end;
 
 procedure TFrmSamples.Button10Click(Sender: TObject);

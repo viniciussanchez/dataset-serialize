@@ -179,7 +179,7 @@ type
 implementation
 
 uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, DataSet.Serialize.Consts, System.Generics.Collections,
-  System.Variants, DataSet.Serialize.UpdatedStatus, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  System.Variants, DataSet.Serialize.UpdatedStatus, FireDAC.Comp.DataSet, FireDAC.Comp.Client, DataSet.Serialize.Config;
 
 { TJSONSerialize }
 
@@ -282,7 +282,7 @@ begin
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
             LField.AsString := LJSONValue.Value;
           TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-            LField.AsDateTime := ISO8601ToDate(LJSONValue.Value);
+            LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
           TFieldType.ftDataSet:
             begin
               LNestedDataSet := TDataSetField(LField).NestedDataSet;

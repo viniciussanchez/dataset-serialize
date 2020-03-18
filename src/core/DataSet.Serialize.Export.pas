@@ -173,9 +173,9 @@ begin
       TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
         Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
       TFieldType.ftDate:
-        Result.AddPair(LKey, TJSONString.Create(FormatDateTime('YYYY-MM-DD', LField.AsDateTime)));
+        Result.AddPair(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
       TFieldType.ftCurrency:
-        Result.AddPair(LKey, TJSONString.Create(FormatCurr('0.00##', LField.AsCurrency)));
+        Result.AddPair(LKey, TJSONString.Create(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, LField.AsCurrency)));
       TFieldType.ftFMTBcd, TFieldType.ftBCD:
         Result.AddPair(LKey, TJSONNumber.Create(BcdToDouble(LField.AsBcd)));
       TFieldType.ftDataSet:

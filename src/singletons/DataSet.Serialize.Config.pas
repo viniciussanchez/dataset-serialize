@@ -7,8 +7,12 @@ type
   private
     FExportNullValues: Boolean;
     FExportOnlyFieldsVisible: Boolean;
+    FFormatCurrency: string;
+    FFormatDate: string;
   public
     constructor Create;
+    property FormatDate: string read FFormatDate write FFormatDate;
+    property FormatCurrency: string read FFormatCurrency write FFormatCurrency;
     property ExportOnlyFieldsVisible: Boolean read FExportOnlyFieldsVisible write FExportOnlyFieldsVisible;
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
   end;
@@ -16,10 +20,12 @@ type
   TDataSetSerializeConfig = class
   private
     FLowerCamelCase: Boolean;
+    FDataSetPrefix: TArray<string>;
     FDateInputIsUTC: Boolean;
     FExport: TDataSetSerializeConfigExport;
     constructor Create;
   public
+    property DataSetPrefix: TArray<string> read FDataSetPrefix write FDataSetPrefix;
     property LowerCamelCase: Boolean read FLowerCamelCase write FLowerCamelCase;
     property DateInputIsUTC: Boolean read FDateInputIsUTC write FDateInputIsUTC;
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
@@ -61,6 +67,7 @@ begin
   begin
     Instancia := TDataSetSerializeConfig(inherited NewInstance);
     Instancia.LowerCamelCase := True;
+    Instancia.DataSetPrefix := ['mt', 'qry'];
     Instancia.DateInputIsUTC := True;
   end;
   Result := Instancia;
@@ -72,6 +79,8 @@ constructor TDataSetSerializeConfigExport.Create;
 begin
   FExportNullValues := True;
   FExportOnlyFieldsVisible := True;
+  FFormatCurrency := '0.00##';
+  FFormatDate := 'YYYY-MM-DD';
 end;
 
 initialization
