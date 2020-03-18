@@ -140,12 +140,14 @@ begin
     Exit;
   for LField in ADataSet.Fields do
   begin
-    if not(LField.Visible) then
-      Continue;
-    LKey := LowerCase(LField.FieldName);
+    if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible then
+      if not(LField.Visible) then
+        Continue;
+    LKey := TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName);
     if LField.IsNull then
     begin
-      Result.AddPair(LKey, TJSONNull.Create);
+      if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
+        Result.AddPair(LKey, TJSONNull.Create);
       Continue;
     end;
     case LField.DataType of
@@ -275,17 +277,17 @@ begin
   for LField in FDataSet.Fields do
   begin
     LJSONObject := TJSONObject.Create;
-    LJSONObject.AddPair('Alignment', TJSONString.Create(GetEnumName(TypeInfo(TAlignment), Ord(LField.Alignment))));
-    LJSONObject.AddPair('FieldName', TJSONString.Create(LField.FieldName));
-    LJSONObject.AddPair('DisplayLabel', TJSONString.Create(LField.DisplayLabel));
-    LJSONObject.AddPair('DataType', TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LField.DataType))));
-    LJSONObject.AddPair('Size', TJSONNumber.Create(LField.SIZE));
-    LJSONObject.AddPair('Key', TJSONBool.Create(pfInKey in LField.ProviderFlags));
-    LJSONObject.AddPair('Origin', TJSONString.Create(LField.ORIGIN));
-    LJSONObject.AddPair('Required', TJSONBool.Create(LField.Required));
-    LJSONObject.AddPair('Visible', TJSONBool.Create(LField.Visible));
-    LJSONObject.AddPair('ReadOnly', TJSONBool.Create(LField.ReadOnly));
-    LJSONObject.AddPair('AutoGenerateValue', TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(LField.AutoGenerateValue))));
+    LJSONObject.AddPair(FIELD_PROPERTY_ALIGNMENT, TJSONString.Create(GetEnumName(TypeInfo(TAlignment), Ord(LField.Alignment))));
+    LJSONObject.AddPair(FIELD_PROPERTY_FIELD_NAME, TJSONString.Create(LField.FieldName));
+    LJSONObject.AddPair(FIELD_PROPERTY_DISPLAY_LABEL, TJSONString.Create(LField.DisplayLabel));
+    LJSONObject.AddPair(FIELD_PROPERTY_DATA_TYPE, TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LField.DataType))));
+    LJSONObject.AddPair(FIELD_PROPERTY_SIZE, TJSONNumber.Create(LField.SIZE));
+    LJSONObject.AddPair(FIELD_PROPERTY_KEY, TJSONBool.Create(pfInKey in LField.ProviderFlags));
+    LJSONObject.AddPair(FIELD_PROPERTY_ORIGIN, TJSONString.Create(LField.ORIGIN));
+    LJSONObject.AddPair(FIELD_PROPERTY_REQUIRED, TJSONBool.Create(LField.Required));
+    LJSONObject.AddPair(FIELD_PROPERTY_VISIBLE, TJSONBool.Create(LField.Visible));
+    LJSONObject.AddPair(FIELD_PROPERTY_READ_ONLY, TJSONBool.Create(LField.ReadOnly));
+    LJSONObject.AddPair(FIELD_PROPERTY_AUTO_GENERATE_VALUE, TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(LField.AutoGenerateValue))));
     Result.AddElement(LJSONObject);
   end;
 end;

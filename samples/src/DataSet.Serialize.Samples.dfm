@@ -24,7 +24,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 994
     Height = 571
-    ActivePage = tabDataSet
+    ActivePage = tabJSON
     Align = alClient
     TabOrder = 0
     object tabDataSet: TTabSheet
@@ -48,9 +48,9 @@ object FrmSamples: TFrmSamples
         object Label2: TLabel
           Left = 8
           Top = 12
-          Width = 27
+          Width = 50
           Height = 13
-          Caption = 'Name'
+          Caption = 'First name'
         end
         object Label3: TLabel
           Left = 264
@@ -81,7 +81,7 @@ object FrmSamples: TFrmSamples
             end
             item
               Expanded = False
-              FieldName = 'NAME'
+              FieldName = 'FIRST_NAME'
               Width = 203
               Visible = True
             end
@@ -224,32 +224,40 @@ object FrmSamples: TFrmSamples
           Lines.Strings = (
             '['
             '  {'
-            '    "NAME": "Vinicius Sanchez",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Vinicius",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Julio Cesar Senha",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Julio",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Mateus Vicente",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Andre",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Eduardo Viana Pessoa",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Mateus",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Alan Carlos Echer",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Luis",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Luis Gustavo de Miranda",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Jose",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Fagner Granella",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Fagner",'
+            '    "country": "Brazil"'
+            '  },'
+            '  {'
+            '    "firstName": "Eduardo",'
+            '    "country": "Brazil"'
+            '  },'
+            '  {'
+            '    "firstName": "Alan",'
+            '    "country": "Brazil"'
             '  }'
             ']')
           ReadOnly = True
@@ -304,8 +312,8 @@ object FrmSamples: TFrmSamples
           Align = alTop
           Lines.Strings = (
             '{'
-            '  "NAME": "Vinicius",'
-            '  "COUNTRY": "United States"'
+            '  "firstName": "Vinicius",'
+            '  "country": "United States"'
             '}')
           ReadOnly = True
           ScrollBars = ssVertical
@@ -335,8 +343,8 @@ object FrmSamples: TFrmSamples
               Align = alClient
               Lines.Strings = (
                 '{'
-                '  "NAME": "Vinicius Sanchez",'
-                '  "COUNTRY": "Brazil"'
+                '  "firstName": "Vinicius",'
+                '  "country": "Brazil"'
                 '}')
               ReadOnly = True
               ScrollBars = ssVertical
@@ -370,8 +378,8 @@ object FrmSamples: TFrmSamples
               Align = alBottom
               Lines.Strings = (
                 '{'
-                '  "NAME": "",'
-                '  "COUNTRY": ""'
+                '  "firstName": "",'
+                '  "country": ""'
                 '}')
               ReadOnly = True
               ScrollBars = ssVertical
@@ -445,43 +453,43 @@ object FrmSamples: TFrmSamples
               Lines.Strings = (
                 '['
                 '  {'
-                '    "Alignment": "taRightJustify",'
-                '    "FieldName": "ID",'
-                '    "DisplayLabel": "Id",'
-                '    "DataType": "ftInteger",'
-                '    "Size": 0,'
-                '    "Key": false,'
-                '    "Origin": "",'
-                '    "Required": false,'
-                '    "Visible": true,'
-                '    "ReadOnly": true,'
-                '    "AutoGenerateValue": "arAutoInc"'
+                '    "alignment": "taRightJustify",'
+                '    "fieldName": "ID",'
+                '    "displayLabel": "Id",'
+                '    "dataType": "ftInteger",'
+                '    "size": 0,'
+                '    "key": false,'
+                '    "origin": "",'
+                '    "required": false,'
+                '    "visible": true,'
+                '    "readOnly": true,'
+                '    "autoGenerateValue": "arAutoInc"'
                 '  },'
                 '  {'
-                '    "Alignment": "taLeftJustify",'
-                '    "FieldName": "NAME",'
-                '    "DisplayLabel": "Name",'
-                '    "DataType": "ftString",'
-                '    "Size": 100,'
-                '    "Key": false,'
-                '    "Origin": "",'
-                '    "Required": true,'
-                '    "Visible": true,'
-                '    "ReadOnly": false,'
-                '    "AutoGenerateValue": "arNone"'
+                '    "alignment": "taLeftJustify",'
+                '    "fieldName": "FIRST_NAME",'
+                '    "displayLabel": "First name",'
+                '    "dataType": "ftString",'
+                '    "size": 100,'
+                '    "key": false,'
+                '    "origin": "",'
+                '    "required": true,'
+                '    "visible": true,'
+                '    "readOnly": false,'
+                '    "autoGenerateValue": "arNone"'
                 '  },'
                 '  {'
-                '    "Alignment": "taLeftJustify",'
-                '    "FieldName": "COUNTRY",'
-                '    "DisplayLabel": "Country",'
-                '    "DataType": "ftString",'
-                '    "Size": 60,'
-                '    "Key": false,'
-                '    "Origin": "",'
-                '    "Required": false,'
-                '    "Visible": false,'
-                '    "ReadOnly": false,'
-                '    "AutoGenerateValue": "arNone"'
+                '    "alignment": "taLeftJustify",'
+                '    "fieldName": "COUNTRY",'
+                '    "displayLabel": "Country",'
+                '    "dataType": "ftString",'
+                '    "size": 60,'
+                '    "key": false,'
+                '    "origin": "",'
+                '    "required": false,'
+                '    "visible": false,'
+                '    "readOnly": false,'
+                '    "autoGenerateValue": "arNone"'
                 '  }'
                 ']')
               ReadOnly = True
@@ -831,6 +839,8 @@ object FrmSamples: TFrmSamples
     object tabConfig: TTabSheet
       Caption = 'Configurations'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 28
       object chkDateInputIsUTC: TCheckBox
         Left = 3
         Top = 3
@@ -841,6 +851,39 @@ object FrmSamples: TFrmSamples
         State = cbChecked
         TabOrder = 0
         OnClick = chkDateInputIsUTCClick
+      end
+      object chkExportNullValues: TCheckBox
+        Left = 3
+        Top = 26
+        Width = 102
+        Height = 17
+        Caption = 'Export null values'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        OnClick = chkExportNullValuesClick
+      end
+      object chkExportOnlyFieldsVisible: TCheckBox
+        Left = 3
+        Top = 49
+        Width = 134
+        Height = 17
+        Caption = 'Export only fields visible'
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
+        OnClick = chkExportOnlyFieldsVisibleClick
+      end
+      object chkFieldNameLowerCamelCasePattern: TCheckBox
+        Left = 3
+        Top = 72
+        Width = 206
+        Height = 17
+        Caption = 'Field name in lowerCamelCase pattern'
+        Checked = True
+        State = cbChecked
+        TabOrder = 3
+        OnClick = chkFieldNameLowerCamelCasePatternClick
       end
     end
   end
@@ -861,9 +904,9 @@ object FrmSamples: TFrmSamples
       FieldName = 'ID'
       ReadOnly = True
     end
-    object mtDataSetNAME: TStringField
-      DisplayLabel = 'Name'
-      FieldName = 'NAME'
+    object mtDataSetFIRST_NAME: TStringField
+      DisplayLabel = 'First name'
+      FieldName = 'FIRST_NAME'
       Required = True
       Size = 100
     end

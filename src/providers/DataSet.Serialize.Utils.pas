@@ -36,6 +36,16 @@ type
   TDataSetSerializeUtils = class
   public
     /// <summary>
+    ///   Transform field name in lower camel case pattern.
+    /// </summary>
+    /// <param name="AFieldName">
+    ///   Field name to format.
+    /// </param>
+    /// <returns>
+    ///   Field name in lower camel case format.
+    /// </returns>
+    class function FieldNameToLowerCamelCase(const AFieldName: string): string;
+    /// <summary>
     ///   Creates a new field in the DataSet.
     /// </summary>
     /// <param name="AFieldStructure">
@@ -86,7 +96,7 @@ type
 
 implementation
 
-uses DataSet.Serialize.Consts;
+uses DataSet.Serialize.Consts, DataSet.Serialize.Config;
 
 { TDataSetSerializeUtils }
 
@@ -120,6 +130,34 @@ begin
     Result := '_'
   else if CharInSet(Result[1], ['0' .. '9']) then
     Result := '_' + Result;
+end;
+
+class function TDataSetSerializeUtils.FieldNameToLowerCamelCase(const AFieldName: string): string;
+var
+  LChar: string;
+  LUnderline: Boolean;
+begin
+  Result := EmptyStr;
+  if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+    Exit(AFieldName.ToLower);
+  LUnderline := False;
+  for LChar in AFieldName do
+  begin
+    if LChar.Equals('_') then
+    begin
+      LUnderline := True;
+      Continue;
+    end;
+    if LUnderline then
+    begin
+      LUnderline := False;
+      Result := Result + LChar.ToUpper;
+      Continue;
+    end;
+    Result := Result + LChar.ToLower;
+  end;
+  if Result.IsEmpty then
+    Result := AFieldName;
 end;
 
 class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;

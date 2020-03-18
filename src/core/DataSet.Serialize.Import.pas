@@ -260,7 +260,7 @@ begin
       begin
         if LField.ReadOnly then
           Continue;
-        if not (AJSONObject.TryGetValue(LField.FieldName, LJSONValue) or AJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue)) then
+        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName), LJSONValue) then
           Continue;
         if LJSONValue is TJSONNull then
         begin
@@ -347,7 +347,7 @@ end;
 function TJSONSerialize.Validate(const ADataSet: TDataSet; const ALang: TLanguageType = enUS): TJSONArray;
 var
   LField: TField;
-  LJSONValue: string;
+  LFieldNameLowerCamelCase, LJSONValue: string;
 begin
   if not Assigned(FJSONObject) then
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
@@ -357,13 +357,14 @@ begin
   for LField in ADataSet.Fields do
     if LField.Required then
     begin
-      if FJSONObject.TryGetValue(LField.FieldName, LJSONValue) or FJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue) then
+      LFieldNameLowerCamelCase := TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName);
+      if FJSONObject.TryGetValue(LFieldNameLowerCamelCase, LJSONValue) then
       begin
         if LJSONValue.Trim.IsEmpty then
-          Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
+          Result.AddElement(AddFieldNotFound(LFieldNameLowerCamelCase, LField.DisplayLabel, ALang));
       end
       else if LField.IsNull then
-        Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
+        Result.AddElement(AddFieldNotFound(LFieldNameLowerCamelCase, LField.DisplayLabel, ALang));
     end;
 end;
 
@@ -408,44 +409,41 @@ var
   LIntTemp: Integer;
   LBoolTemp: Boolean;
 begin
-  if AJSONValue.TryGetValue<string>('DataType', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_DATA_TYPE, LStrTemp) then
     Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), LStrTemp))
   else
-    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', ['DataType']);
+    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', [FIELD_PROPERTY_DATA_TYPE]);
 
-  if AJSONValue.TryGetValue<string>('Alignment', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_ALIGNMENT, LStrTemp) then
     Result.Alignment := TRttiEnumerationType.GetValue<TAlignment>(LStrTemp);
 
-  if AJSONValue.TryGetValue<string>('FieldName', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_FIELD_NAME, LStrTemp) then
     Result.FieldName := LStrTemp
   else
-    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', ['FieldName']);
+    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', [FIELD_PROPERTY_FIELD_NAME]);
 
-  if AJSONValue.TryGetValue<Integer>('Size', LIntTemp) then
+  if AJSONValue.TryGetValue<Integer>(FIELD_PROPERTY_SIZE, LIntTemp) then
     Result.Size := LIntTemp;
 
-  if AJSONValue.TryGetValue<Integer>('Precision', LIntTemp) then
-    Result.Precision := LIntTemp;
-
-  if AJSONValue.TryGetValue<string>('Origin', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_ORIGIN, LStrTemp) then
     Result.Origin := LStrTemp;
 
-  if AJSONValue.TryGetValue<string>('DisplayLabel', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_DISPLAY_LABEL, LStrTemp) then
     Result.DisplayLabel := LStrTemp;
 
-  if AJSONValue.TryGetValue<Boolean>('Key', LBoolTemp) then
+  if AJSONValue.TryGetValue<Boolean>(FIELD_PROPERTY_KEY, LBoolTemp) then
     Result.Key := LBoolTemp;
 
-  if AJSONValue.TryGetValue<Boolean>('Required', LBoolTemp) then
+  if AJSONValue.TryGetValue<Boolean>(FIELD_PROPERTY_REQUIRED, LBoolTemp) then
     Result.Required := LBoolTemp;
 
-  if AJSONValue.TryGetValue<Boolean>('Visible', LBoolTemp) then
+  if AJSONValue.TryGetValue<Boolean>(FIELD_PROPERTY_VISIBLE, LBoolTemp) then
     Result.Visible := LBoolTemp;
 
-  if AJSONValue.TryGetValue<Boolean>('ReadOnly', LBoolTemp) then
+  if AJSONValue.TryGetValue<Boolean>(FIELD_PROPERTY_READ_ONLY, LBoolTemp) then
     Result.ReadOnly := LBoolTemp;
 
-  if AJSONValue.TryGetValue<string>('AutoGenerateValue', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_AUTO_GENERATE_VALUE, LStrTemp) then
     Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), LStrTemp));
 end;
 

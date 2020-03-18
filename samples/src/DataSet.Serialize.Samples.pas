@@ -14,7 +14,7 @@ type
     tabJSON: TTabSheet;
     mtDataSet: TFDMemTable;
     mtDataSetID: TIntegerField;
-    mtDataSetNAME: TStringField;
+    mtDataSetFIRST_NAME: TStringField;
     mtDataSetCOUNTRY: TStringField;
     Panel1: TPanel;
     dsDataSet: TDataSource;
@@ -100,6 +100,9 @@ type
     mtDataSetDATE: TDateTimeField;
     tabConfig: TTabSheet;
     chkDateInputIsUTC: TCheckBox;
+    chkExportNullValues: TCheckBox;
+    chkExportOnlyFieldsVisible: TCheckBox;
+    chkFieldNameLowerCamelCasePattern: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -117,6 +120,9 @@ type
     procedure Button12Click(Sender: TObject);
     procedure mtDataSetAfterInsert(DataSet: TDataSet);
     procedure chkDateInputIsUTCClick(Sender: TObject);
+    procedure chkExportNullValuesClick(Sender: TObject);
+    procedure chkExportOnlyFieldsVisibleClick(Sender: TObject);
+    procedure chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
   private
     procedure Append;
     procedure ClearFields;
@@ -130,14 +136,15 @@ implementation
 
 {$R *.dfm}
 
-uses DataSet.Serialize, System.JSON, DataSet.Serialize.Language,
-  DataSet.Serialize.Config;
+uses DataSet.Serialize, System.JSON, DataSet.Serialize.Language, DataSet.Serialize.Config;
 
 procedure TFrmSamples.Append;
 begin
   mtDataSet.Append;
-  mtDataSetNAME.AsString := edtName.Text;
-  mtDataSetCOUNTRY.AsString := edtCountry.Text;
+  if not Trim(edtName.Text).IsEmpty then
+    mtDataSetFIRST_NAME.AsString := edtName.Text;
+  if not Trim(edtCountry.Text).IsEmpty then
+    mtDataSetCOUNTRY.AsString := edtCountry.Text;
   mtDataSet.Post;
 end;
 
@@ -252,6 +259,21 @@ end;
 procedure TFrmSamples.chkDateInputIsUTCClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.DateInputIsUTC := chkDateInputIsUTC.Checked;
+end;
+
+procedure TFrmSamples.chkExportNullValuesClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := chkExportNullValues.Checked;
+end;
+
+procedure TFrmSamples.chkExportOnlyFieldsVisibleClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := chkExportOnlyFieldsVisible.Checked;
+end;
+
+procedure TFrmSamples.chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.LowerCamelCase := chkFieldNameLowerCamelCasePattern.Checked;
 end;
 
 procedure TFrmSamples.ClearFields;
