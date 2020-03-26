@@ -340,7 +340,7 @@ begin
   LFieldName := EmptyStr;
   for LChar in Result do
   begin
-    if not CharInSet(LChar, ['a'..'z']) then        
+    if CharInSet(LChar, ['A'..'Z']) then        
       LFieldName := LFieldName + '_';
     LFieldName := LFieldName + LChar
   end;
