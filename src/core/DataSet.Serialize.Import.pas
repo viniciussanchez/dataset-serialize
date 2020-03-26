@@ -111,9 +111,13 @@ type
     /// </returns>
     function GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
     /// <summary>
+    ///   Convert JSONPait in FieldName.
+    /// </summary>
+    function JSONPairToFieldName(const AJSONPair: TJSONPair): string;    
+    /// <summary>
     ///   Load the fields into the dataset.
     /// </summary>
-    procedure LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
+    procedure LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);    
   public
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
@@ -325,6 +329,24 @@ begin
   end;
 end;
 
+function TJSONSerialize.JSONPairToFieldName(const AJSONPair: TJSONPair): string;
+var
+  LChar: Char;
+  LFieldName: string;
+begin
+  Result := AJSONPair.JsonString.Value;
+  if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+    Exit;
+  LFieldName := EmptyStr;
+  for LChar in Result do
+  begin
+    if not CharInSet(LChar, ['a'..'z']) then        
+      LFieldName := LFieldName + '_';
+    LFieldName := LFieldName + LChar
+  end;
+  Result := LFieldName.ToUpper;      
+end;
+
 procedure TJSONSerialize.JSONValueToDataSet(const AJSONValue: TJSONValue; const ADataSet: TDataSet);
 begin
   if ADataSet.Fields.Count <> 1 then
@@ -390,13 +412,13 @@ end;
 
 procedure TJSONSerialize.LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
 var
-  JSONPair: TJSONPair;
+  LJSONPair: TJSONPair;
 begin
-  for JSONPair in AJSONObject do
+  for LJSONPair in AJSONObject do
   begin
     with ADataSet.FieldDefs.AddFieldDef do
     begin
-      Name := JSONPair.JsonString.Value;
+      Name := JSONPairToFieldName(LJSONPair);
       DataType := ftString;
       Size := 4096;
     end;
