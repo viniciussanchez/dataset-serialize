@@ -114,7 +114,7 @@ type
     ///   Load the fields into the dataset.
     /// </summary>
     procedure LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
-	public
+  public
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
     /// </summary>
