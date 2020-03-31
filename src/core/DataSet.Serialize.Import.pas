@@ -569,13 +569,7 @@ begin
   Result := EmptyStr;
   for LField in ADataSet.Fields do
     if pfInKey in LField.ProviderFlags then
-    begin
-      Result := Result + IfThen(Result.Trim.IsEmpty, EmptyStr, ';');
-      if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
-        Result := Result + TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName)
-      else
-        Result := Result + LField.FieldName;
-    end;
+      Result := Result + IfThen(Result.Trim.IsEmpty, EmptyStr, ';') + LField.FieldName;
 end;
 
 function TJSONSerialize.GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
