@@ -569,7 +569,13 @@ begin
   Result := EmptyStr;
   for LField in ADataSet.Fields do
     if pfInKey in LField.ProviderFlags then
-      Result := Result + IfThen(Result.Trim.IsEmpty, EmptyStr, ';') + LField.FieldName;
+    begin
+      Result := Result + IfThen(Result.Trim.IsEmpty, EmptyStr, ';');
+      if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+        Result := Result + TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName)
+      else
+        Result := Result + LField.FieldName;
+    end;
 end;
 
 function TJSONSerialize.GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
@@ -580,7 +586,12 @@ begin
   for LField in ADataSet.Fields do
     if pfInKey in LField.ProviderFlags then
     begin
-      if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
+      if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+      begin
+        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName), LKeyValue) then
+          Continue;
+      end
+      else if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
         Continue;
       SetLength(Result, Length(Result) + 1);
       Result[Pred(Length(Result))] := LKeyValue;
