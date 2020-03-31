@@ -211,7 +211,7 @@ begin
 
   LMasterSource := nil;
   try
-    if AJSONObject.TryGetValue(OBJECT_STATE, LObjectState) then
+    if AJSONObject.TryGetValue('object_state', LObjectState) or AJSONObject.TryGetValue('objectState', LObjectState) then
     begin
       if TUpdateStatus.usInserted.ToString.Equals(LObjectState) then
       begin

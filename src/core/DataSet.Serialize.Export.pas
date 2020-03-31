@@ -190,7 +190,12 @@ begin
     end;
   end;
   if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
-    Result.AddPair(OBJECT_STATE, TJSONString.Create(ADataSet.UpdateStatus.ToString));
+  begin
+    if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+      Result.AddPair('objectState', TJSONString.Create(ADataSet.UpdateStatus.ToString))
+    else
+      Result.AddPair('object_state', TJSONString.Create(ADataSet.UpdateStatus.ToString));
+  end;
   if FChildRecord then
   begin
     LDataSetDetails := TList<TDataSet>.Create;
