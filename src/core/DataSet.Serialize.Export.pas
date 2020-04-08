@@ -183,7 +183,7 @@ begin
           LNestedDataSet := TDataSetField(LField).NestedDataSet;
           Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
         end;
-      TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
+      TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob, TFieldType.ftStream:
         Result.AddPair(LKey, TJSONString.Create(EncodingBlobField(LField)));
       else
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LKey]);
