@@ -298,7 +298,7 @@ begin
                 JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
               end;
             end;
-          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
+          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob, TFieldType.ftStream:
             LoadBlobFieldFromStream(LField, LJSONValue);
           else
             raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
