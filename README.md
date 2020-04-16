@@ -131,7 +131,7 @@ end;
   * If MODIFIED equals the Edit method of the DataSet;
   * If DELETED equals the Delete method of the DataSet;
 * If the "object_state" property is not found in JSON, then the Append method is called;
-* When loading a DataSet with JSON, fields that are ReadOnly are ignored;
+* When loading a DataSet with JSON, fields that are ReadOnly or Visible(False) are ignored;
 * If an attribute is not found in JSON with the field name (not case sensitive), or it is nullo, the field is ignored (nullo / empty);
 * When loading a DataSet with a JSON containing nested JSON using Master Detail, by convention, the name of the child DataSet is expected to be the same as the JSON attribute name that represents the list of children to be loaded. The name of the child DataSet may still have the initials qry (query) or mt (memtable), as these will be ignored;
 
@@ -163,6 +163,10 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 * Export only fields visible
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := True;
+```
+* Import only fields visible
+```pascal
+  TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := True;
 ```
 * Field name in lowerCamelCase pattern
 ```pascal

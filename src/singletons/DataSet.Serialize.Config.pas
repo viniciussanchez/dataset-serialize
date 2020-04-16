@@ -17,18 +17,28 @@ type
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
   end;
 
+  TDataSetSerializeConfigImport = class
+  private
+    FImportOnlyFieldsVisible: Boolean;
+  public
+    constructor Create;
+    property ImportOnlyFieldsVisible: Boolean read FImportOnlyFieldsVisible write FImportOnlyFieldsVisible;
+  end;
+
   TDataSetSerializeConfig = class
   private
     FLowerCamelCase: Boolean;
     FDataSetPrefix: TArray<string>;
     FDateInputIsUTC: Boolean;
     FExport: TDataSetSerializeConfigExport;
+    FImport: TDataSetSerializeConfigImport;
     constructor Create;
   public
     property DataSetPrefix: TArray<string> read FDataSetPrefix write FDataSetPrefix;
     property LowerCamelCase: Boolean read FLowerCamelCase write FLowerCamelCase;
     property DateInputIsUTC: Boolean read FDateInputIsUTC write FDateInputIsUTC;
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
+    property Import: TDataSetSerializeConfigImport read FImport write FImport;
     class function GetInstance: TDataSetSerializeConfig;
     class function NewInstance: TObject; override;
     destructor Destroy; override;
@@ -47,12 +57,16 @@ constructor TDataSetSerializeConfig.Create;
 begin
   if not Assigned(FExport) then
     FExport := TDataSetSerializeConfigExport.Create;
+  if not Assigned(FImport) then
+    FImport := TDataSetSerializeConfigImport.Create;
 end;
 
 destructor TDataSetSerializeConfig.Destroy;
 begin
   if Assigned(FExport) then
     FExport.Free;
+  if Assigned(FImport) then
+    FImport.Free;
   inherited;
 end;
 
@@ -81,6 +95,13 @@ begin
   FExportOnlyFieldsVisible := True;
   FFormatCurrency := '0.00##';
   FFormatDate := 'YYYY-MM-DD';
+end;
+
+{ TDataSetSerializeConfigImport }
+
+constructor TDataSetSerializeConfigImport.Create;
+begin
+  FImportOnlyFieldsVisible := True;
 end;
 
 initialization

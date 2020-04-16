@@ -262,6 +262,9 @@ begin
     begin
       for LField in ADataSet.Fields do
       begin
+        if TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible then
+          if not(LField.Visible) then
+            Continue;
         if LField.ReadOnly then
           Continue;
         if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName), LJSONValue) then
