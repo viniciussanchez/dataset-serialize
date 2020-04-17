@@ -839,18 +839,16 @@ object FrmSamples: TFrmSamples
     object tabConfig: TTabSheet
       Caption = 'Configurations'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 28
       object Label1: TLabel
         Left = 3
-        Top = 108
+        Top = 139
         Width = 239
         Height = 13
         Caption = 'Format date (for export field type equals ftDate):'
       end
       object Label4: TLabel
         Left = 3
-        Top = 156
+        Top = 187
         Width = 280
         Height = 13
         Caption = 'Format currency (for export field type equals ftCurrency):'
@@ -901,7 +899,7 @@ object FrmSamples: TFrmSamples
       end
       object edtFormatDate: TEdit
         Left = 3
-        Top = 127
+        Top = 158
         Width = 326
         Height = 21
         TabOrder = 4
@@ -909,7 +907,7 @@ object FrmSamples: TFrmSamples
       end
       object btnApplyFormatDate: TButton
         Left = 335
-        Top = 125
+        Top = 156
         Width = 58
         Height = 25
         Caption = 'Apply'
@@ -918,7 +916,7 @@ object FrmSamples: TFrmSamples
       end
       object edtFormatCurrency: TEdit
         Left = 3
-        Top = 175
+        Top = 206
         Width = 326
         Height = 21
         TabOrder = 6
@@ -926,12 +924,23 @@ object FrmSamples: TFrmSamples
       end
       object btnFormatCurrency: TButton
         Left = 335
-        Top = 173
+        Top = 204
         Width = 58
         Height = 25
         Caption = 'Apply'
         TabOrder = 7
         OnClick = btnFormatCurrencyClick
+      end
+      object chkImportOnlyFieldsVisible: TCheckBox
+        Left = 3
+        Top = 95
+        Width = 134
+        Height = 17
+        Caption = 'Import only fields visible'
+        Checked = True
+        State = cbChecked
+        TabOrder = 8
+        OnClick = chkImportOnlyFieldsVisibleClick
       end
     end
   end

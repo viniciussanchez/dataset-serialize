@@ -109,6 +109,7 @@ type
     Label4: TLabel;
     edtFormatCurrency: TEdit;
     btnFormatCurrency: TButton;
+    chkImportOnlyFieldsVisible: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -131,6 +132,7 @@ type
     procedure chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
     procedure btnApplyFormatDateClick(Sender: TObject);
     procedure btnFormatCurrencyClick(Sender: TObject);
+    procedure chkImportOnlyFieldsVisibleClick(Sender: TObject);
   private
     procedure Append;
     procedure ClearFields;
@@ -292,6 +294,11 @@ end;
 procedure TFrmSamples.chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.LowerCamelCase := chkFieldNameLowerCamelCasePattern.Checked;
+end;
+
+procedure TFrmSamples.chkImportOnlyFieldsVisibleClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := chkImportOnlyFieldsVisible.Checked;
 end;
 
 procedure TFrmSamples.ClearFields;
