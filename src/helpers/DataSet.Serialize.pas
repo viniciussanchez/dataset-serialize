@@ -1,8 +1,8 @@
-unit DataSet.Serialize.Helper;
+unit DataSet.Serialize;
 
 interface
 
-uses System.JSON, Data.DB, Language.Types;
+uses System.JSON, Data.DB, DataSet.Serialize.Language;
 
 type
   TDataSetSerializeHelper = class Helper for TDataSet
@@ -163,7 +163,7 @@ type
 
 implementation
 
-uses System.SysUtils, DataSet.Serialize.DS.Impl, DataSet.Serialize.JSON.Impl;
+uses System.SysUtils, DataSet.Serialize.Export, DataSet.Serialize.Import;
 
 function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONArray;
 var

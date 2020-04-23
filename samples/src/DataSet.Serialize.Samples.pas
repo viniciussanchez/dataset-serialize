@@ -14,7 +14,7 @@ type
     tabJSON: TTabSheet;
     mtDataSet: TFDMemTable;
     mtDataSetID: TIntegerField;
-    mtDataSetNAME: TStringField;
+    mtDataSetFIRST_NAME: TStringField;
     mtDataSetCOUNTRY: TStringField;
     Panel1: TPanel;
     dsDataSet: TDataSource;
@@ -97,6 +97,19 @@ type
     DBGrid5: TDBGrid;
     DBGrid6: TDBGrid;
     mtChieldsArrayVALUE: TIntegerField;
+    mtDataSetDATE: TDateTimeField;
+    tabConfig: TTabSheet;
+    chkDateInputIsUTC: TCheckBox;
+    chkExportNullValues: TCheckBox;
+    chkExportOnlyFieldsVisible: TCheckBox;
+    chkFieldNameLowerCamelCasePattern: TCheckBox;
+    Label1: TLabel;
+    edtFormatDate: TEdit;
+    btnApplyFormatDate: TButton;
+    Label4: TLabel;
+    edtFormatCurrency: TEdit;
+    btnFormatCurrency: TButton;
+    chkImportOnlyFieldsVisible: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button2Click(Sender: TObject);
@@ -112,6 +125,14 @@ type
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
+    procedure mtDataSetAfterInsert(DataSet: TDataSet);
+    procedure chkDateInputIsUTCClick(Sender: TObject);
+    procedure chkExportNullValuesClick(Sender: TObject);
+    procedure chkExportOnlyFieldsVisibleClick(Sender: TObject);
+    procedure chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
+    procedure btnApplyFormatDateClick(Sender: TObject);
+    procedure btnFormatCurrencyClick(Sender: TObject);
+    procedure chkImportOnlyFieldsVisibleClick(Sender: TObject);
   private
     procedure Append;
     procedure ClearFields;
@@ -125,14 +146,26 @@ implementation
 
 {$R *.dfm}
 
-uses DataSet.Serialize.Helper, System.JSON, Language.Types;
+uses DataSet.Serialize, System.JSON, DataSet.Serialize.Language, DataSet.Serialize.Config;
 
 procedure TFrmSamples.Append;
 begin
   mtDataSet.Append;
-  mtDataSetNAME.AsString := edtName.Text;
-  mtDataSetCOUNTRY.AsString := edtCountry.Text;
+  if not Trim(edtName.Text).IsEmpty then
+    mtDataSetFIRST_NAME.AsString := edtName.Text;
+  if not Trim(edtCountry.Text).IsEmpty then
+    mtDataSetCOUNTRY.AsString := edtCountry.Text;
   mtDataSet.Post;
+end;
+
+procedure TFrmSamples.btnApplyFormatDateClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.FormatDate := edtFormatDate.Text;
+end;
+
+procedure TFrmSamples.btnFormatCurrencyClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.FormatCurrency := edtFormatCurrency.Text;
 end;
 
 procedure TFrmSamples.Button10Click(Sender: TObject);
@@ -243,6 +276,31 @@ begin
   end;
 end;
 
+procedure TFrmSamples.chkDateInputIsUTCClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.DateInputIsUTC := chkDateInputIsUTC.Checked;
+end;
+
+procedure TFrmSamples.chkExportNullValuesClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := chkExportNullValues.Checked;
+end;
+
+procedure TFrmSamples.chkExportOnlyFieldsVisibleClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := chkExportOnlyFieldsVisible.Checked;
+end;
+
+procedure TFrmSamples.chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.LowerCamelCase := chkFieldNameLowerCamelCasePattern.Checked;
+end;
+
+procedure TFrmSamples.chkImportOnlyFieldsVisibleClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := chkImportOnlyFieldsVisible.Checked;
+end;
+
 procedure TFrmSamples.ClearFields;
 begin
   edtName.Clear;
@@ -265,6 +323,11 @@ end;
 procedure TFrmSamples.FormShow(Sender: TObject);
 begin
   pclDataSetSerialize.ActivePage := tabDataSet;
+end;
+
+procedure TFrmSamples.mtDataSetAfterInsert(DataSet: TDataSet);
+begin
+  mtDataSetDATE.AsDateTime := Now;
 end;
 
 function TFrmSamples.ValidateStructure: Boolean;

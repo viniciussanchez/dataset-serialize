@@ -1,4 +1,4 @@
-unit DataSet.Serialize.DS.Impl;
+unit DataSet.Serialize.Export;
 
 interface
 
@@ -89,9 +89,9 @@ type
 
 implementation
 
-uses BooleanField.Types, System.DateUtils, Data.FmtBcd, System.SysUtils, Providers.DataSet.Serialize, System.TypInfo,
-  Providers.DataSet.Serialize.Constants, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet,
-  UpdatedStatus.Types;
+uses DataSet.Serialize.BooleanField, System.DateUtils, Data.FmtBcd, System.SysUtils, DataSet.Serialize.Utils, System.TypInfo,
+  DataSet.Serialize.Consts, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet,
+  DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
 
 { TDataSetSerialize }
 
@@ -140,12 +140,14 @@ begin
     Exit;
   for LField in ADataSet.Fields do
   begin
-    if not(LField.Visible) then
-      Continue;
-    LKey := LowerCase(LField.FieldName);
+    if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible then
+      if not(LField.Visible) then
+        Continue;
+    LKey := TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName);
     if LField.IsNull then
     begin
-      Result.AddPair(LKey, TJSONNull.Create);
+      if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
+        Result.AddPair(LKey, TJSONNull.Create);
       Continue;
     end;
     case LField.DataType of
@@ -169,11 +171,11 @@ begin
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
         Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime)));
+        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
       TFieldType.ftDate:
-        Result.AddPair(LKey, TJSONString.Create(FormatDateTime('YYYY-MM-DD', LField.AsDateTime)));
+        Result.AddPair(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
       TFieldType.ftCurrency:
-        Result.AddPair(LKey, TJSONString.Create(FormatCurr('0.00##', LField.AsCurrency)));
+        Result.AddPair(LKey, TJSONString.Create(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, LField.AsCurrency)));
       TFieldType.ftFMTBcd, TFieldType.ftBCD:
         Result.AddPair(LKey, TJSONNumber.Create(BcdToDouble(LField.AsBcd)));
       TFieldType.ftDataSet:
@@ -181,14 +183,19 @@ begin
           LNestedDataSet := TDataSetField(LField).NestedDataSet;
           Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
         end;
-      TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
+      TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob, TFieldType.ftStream:
         Result.AddPair(LKey, TJSONString.Create(EncodingBlobField(LField)));
       else
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LKey]);
     end;
   end;
   if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
-    Result.AddPair(OBJECT_STATE, TJSONString.Create(ADataSet.UpdateStatus.ToString));
+  begin
+    if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+      Result.AddPair('objectState', TJSONString.Create(ADataSet.UpdateStatus.ToString))
+    else
+      Result.AddPair('object_state', TJSONString.Create(ADataSet.UpdateStatus.ToString));
+  end;
   if FChildRecord then
   begin
     LDataSetDetails := TList<TDataSet>.Create;
@@ -232,6 +239,7 @@ end;
 
 function TDataSetSerialize.HasChildModification(const ADataSet: TDataSet): Boolean;
 var
+  LMasterSource: TDataSource;
   LDataSetDetails: TList<TDataSet>;
   LNestedDataSet: TDataSet;
 begin
@@ -241,17 +249,21 @@ begin
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
+      Result := HasChildModification(LNestedDataSet);
+      if Result then
+        Break;
       if not (LNestedDataSet is TFDDataSet) then
         Continue;
+      LMasterSource := TFDDataSet(LNestedDataSet).MasterSource;
       try
+        TFDDataSet(LNestedDataSet).MasterSource := nil;
         TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted];
-        if (TFDDataSet(LNestedDataSet).RecordCount > 0) or HasChildModification(LNestedDataSet) then
-        begin
-          Result := True;
+        Result := TFDDataSet(LNestedDataSet).RecordCount > 0;
+        if Result then
           Break;
-        end;
       finally
         TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+        TFDDataSet(LNestedDataSet).MasterSource := LMasterSource;
       end;
     end;
   finally
@@ -270,17 +282,17 @@ begin
   for LField in FDataSet.Fields do
   begin
     LJSONObject := TJSONObject.Create;
-    LJSONObject.AddPair('Alignment', TJSONString.Create(GetEnumName(TypeInfo(TAlignment), Ord(LField.Alignment))));
-    LJSONObject.AddPair('FieldName', TJSONString.Create(LField.FieldName));
-    LJSONObject.AddPair('DisplayLabel', TJSONString.Create(LField.DisplayLabel));
-    LJSONObject.AddPair('DataType', TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LField.DataType))));
-    LJSONObject.AddPair('Size', TJSONNumber.Create(LField.SIZE));
-    LJSONObject.AddPair('Key', TJSONBool.Create(pfInKey in LField.ProviderFlags));
-    LJSONObject.AddPair('Origin', TJSONString.Create(LField.ORIGIN));
-    LJSONObject.AddPair('Required', TJSONBool.Create(LField.Required));
-    LJSONObject.AddPair('Visible', TJSONBool.Create(LField.Visible));
-    LJSONObject.AddPair('ReadOnly', TJSONBool.Create(LField.ReadOnly));
-    LJSONObject.AddPair('AutoGenerateValue', TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(LField.AutoGenerateValue))));
+    LJSONObject.AddPair(FIELD_PROPERTY_ALIGNMENT, TJSONString.Create(GetEnumName(TypeInfo(TAlignment), Ord(LField.Alignment))));
+    LJSONObject.AddPair(FIELD_PROPERTY_FIELD_NAME, TJSONString.Create(LField.FieldName));
+    LJSONObject.AddPair(FIELD_PROPERTY_DISPLAY_LABEL, TJSONString.Create(LField.DisplayLabel));
+    LJSONObject.AddPair(FIELD_PROPERTY_DATA_TYPE, TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LField.DataType))));
+    LJSONObject.AddPair(FIELD_PROPERTY_SIZE, TJSONNumber.Create(LField.SIZE));
+    LJSONObject.AddPair(FIELD_PROPERTY_KEY, TJSONBool.Create(pfInKey in LField.ProviderFlags));
+    LJSONObject.AddPair(FIELD_PROPERTY_ORIGIN, TJSONString.Create(LField.ORIGIN));
+    LJSONObject.AddPair(FIELD_PROPERTY_REQUIRED, TJSONBool.Create(LField.Required));
+    LJSONObject.AddPair(FIELD_PROPERTY_VISIBLE, TJSONBool.Create(LField.Visible));
+    LJSONObject.AddPair(FIELD_PROPERTY_READ_ONLY, TJSONBool.Create(LField.ReadOnly));
+    LJSONObject.AddPair(FIELD_PROPERTY_AUTO_GENERATE_VALUE, TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(LField.AutoGenerateValue))));
     Result.AddElement(LJSONObject);
   end;
 end;

@@ -17,13 +17,14 @@ If you choose to install manually, simply add the following folders to your proj
 ../dataset-serialize/src/core
 ../dataset-serialize/src/helpers
 ../dataset-serialize/src/providers
+../dataset-serialize/src/singletons
 ../dataset-serialize/src/types
 ```
 
 ## Getting Started
-All features offered by DataSet Serialize are located in the class helper in unit DataSet.Serialize.Helper. To get your project started, simply add your reference where your functionality is needed. Here's an example:
+All features offered by DataSet Serialize are located in the class helper in unit DataSet.Serialize. To get your project started, simply add your reference where your functionality is needed. Here's an example:
 ```pascal
-uses DataSet.Serialize.Helper;
+uses DataSet.Serialize;
 ```
 Let's now look at each feature, its rules and peculiarities, to deliver the best to all users.
 
@@ -92,10 +93,10 @@ begin
 end;
 ``` 
 
-Upon receiving `{"country": "Brazil"}`, assuming our DataSet has 3 fields (ID, NAME, COUNTRY), and the ID and NAME field are required, the following will be returned:
+Upon receiving `{"country": "Brazil"}`, assuming our DataSet has 3 fields (ID, FIRST_NAME, COUNTRY), and the ID and FIRST_NAME field are required, the following will be returned:
 
 ``` 
-[{"field":"ID","error":"Id not informed"},{"field":"NAME","error":"Name not informed"}]
+[{"field":"id","error":"Id not informed"},{"field":"firstName","error":"Name not informed"}]
 ``` 
 
 **Parameters**
@@ -113,7 +114,7 @@ Upon receiving `{"country": "Brazil"}`, assuming our DataSet has 3 fields (ID, N
 DataSet Serializa allows you to load a DataSet with a JSONObject, JSONArray and even a nested JSON all summarized in one method: LoadFromJSON(). Here's an example of how to use it:
 ```pascal
 begin
-  qrySamples.LoadFromJSON('{"NAME":"Vinicius Sanchez","COUNTRY":"Brazil"}');
+  qrySamples.LoadFromJSON('{"firstName":"Vinicius Sanchez","country":"Brazil"}');
 end;
 ``` 
 
@@ -130,7 +131,7 @@ end;
   * If MODIFIED equals the Edit method of the DataSet;
   * If DELETED equals the Delete method of the DataSet;
 * If the "object_state" property is not found in JSON, then the Append method is called;
-* When loading a DataSet with JSON, fields that are ReadOnly are ignored;
+* When loading a DataSet with JSON, fields that are ReadOnly or Visible(False) are ignored;
 * If an attribute is not found in JSON with the field name (not case sensitive), or it is nullo, the field is ignored (nullo / empty);
 * When loading a DataSet with a JSON containing nested JSON using Master Detail, by convention, the name of the child DataSet is expected to be the same as the JSON attribute name that represents the list of children to be loaded. The name of the child DataSet may still have the initials qry (query) or mt (memtable), as these will be ignored;
 
@@ -139,7 +140,7 @@ With DataSet Serialize you can still change the DataSet registration simply by u
 
 ```pascal
 begin
-  qrySamples.MergeFromJSONObject('{"NAME":"Vinicius","COUNTRY":"United States"}');
+  qrySamples.MergeFromJSONObject('{"firstName":"Vinicius","country":"United States"}');
 end;
 ``` 
 
@@ -148,6 +149,41 @@ end;
 
 **MergeFromJSONObject**
 * Same as LoadFromJSON validations;
+
+## Configurations
+You can customize some features of DataSet-Serialize:
+* Date input is UTC (time zone)
+```pascal
+TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
+```
+* Export null values
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := True;
+```
+* Export only fields visible
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := True;
+```
+* Import only fields visible
+```pascal
+  TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := True;
+```
+* Field name in lowerCamelCase pattern
+```pascal
+  TDataSetSerializeConfig.GetInstance.LowerCamelCase := True;
+```
+* Format date (for export field type equals ftDate)
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.FormatDate := 'YYYY-MM-DD';
+```
+* Format currency (for export field type equals ftCurrency)
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.FormatCurrency := '0.00##';
+```
+* Define DataSet prefixes
+```pascal
+  TDataSetSerializeConfig.GetInstance.DataSetPrefix := ['mt', 'qry'];
+```
 
 ## Samples
 Check out our sample project for each situation presented above in operation. If you have any questions or suggestion, please contact, make your pull request or create an issue.

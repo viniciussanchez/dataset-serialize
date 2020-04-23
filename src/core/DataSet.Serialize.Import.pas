@@ -1,8 +1,8 @@
-﻿unit DataSet.Serialize.JSON.Impl;
+﻿unit DataSet.Serialize.Import;
 
 interface
 
-uses System.JSON, Data.DB, Language.Types, Providers.DataSet.Serialize, System.StrUtils, System.SysUtils, System.Rtti;
+uses System.JSON, Data.DB, DataSet.Serialize.Language, DataSet.Serialize.Utils, System.StrUtils, System.SysUtils, System.Rtti;
 
 type
   TJSONSerialize = class
@@ -52,7 +52,10 @@ type
     /// <param name="ADataSet">
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
-    procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet);
+    /// <param name="ADetail">
+    ///   Indicates if it's a dataset detail.
+    /// </param>
+    procedure JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const ADetail: Boolean);
     /// <summary>
     ///   Loads a DataSet with a JSONOValue.
     /// </summary>
@@ -108,10 +111,14 @@ type
     /// </returns>
     function GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
     /// <summary>
+    ///   Convert JSONPait in FieldName.
+    /// </summary>
+    function JSONPairToFieldName(const AJSONPair: TJSONPair): string;    
+    /// <summary>
     ///   Load the fields into the dataset.
     /// </summary>
-    procedure LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
-	public
+    procedure LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);    
+  public
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
     /// </summary>
@@ -175,12 +182,12 @@ type
 
 implementation
 
-uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, Providers.DataSet.Serialize.Constants,
-  System.Generics.Collections, System.Variants, UpdatedStatus.Types, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+uses System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, DataSet.Serialize.Consts, System.Generics.Collections,
+  System.Variants, DataSet.Serialize.UpdatedStatus, FireDAC.Comp.DataSet, FireDAC.Comp.Client, DataSet.Serialize.Config;
 
 { TJSONSerialize }
 
-procedure TJSONSerialize.JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet);
+procedure TJSONSerialize.JSONObjectToDataSet(const AJSONObject: TJSONObject; const ADataSet: TDataSet; const ADetail: Boolean);
 var
   LField: TField;
   LJSONValue: TJSONValue;
@@ -204,7 +211,7 @@ begin
 
   LMasterSource := nil;
   try
-    if AJSONObject.TryGetValue(OBJECT_STATE, LObjectState) then
+    if AJSONObject.TryGetValue('object_state', LObjectState) or AJSONObject.TryGetValue('objectState', LObjectState) then
     begin
       if TUpdateStatus.usInserted.ToString.Equals(LObjectState) then
       begin
@@ -235,8 +242,15 @@ begin
     else if FMerging then
     begin
       if ADataSet.State <> dsEdit then
-        if ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
+      begin
+        if ADetail then
+        begin
+          if ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
+            ADataSet.Edit;
+        end
+        else
           ADataSet.Edit;
+      end;
     end
     else
     begin
@@ -248,9 +262,12 @@ begin
     begin
       for LField in ADataSet.Fields do
       begin
+        if TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible then
+          if not(LField.Visible) then
+            Continue;
         if LField.ReadOnly then
           Continue;
-        if not (AJSONObject.TryGetValue(LField.FieldName, LJSONValue) or AJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue)) then
+        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName), LJSONValue) then
           Continue;
         if LJSONValue is TJSONNull then
         begin
@@ -272,19 +289,19 @@ begin
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
             LField.AsString := LJSONValue.Value;
           TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-            LField.AsDateTime := ISO8601ToDate(LJSONValue.Value);
+            LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
           TFieldType.ftDataSet:
             begin
               LNestedDataSet := TDataSetField(LField).NestedDataSet;
               if LJSONValue is TJSONObject then
-                JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet)
+                JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, True)
               else if LJSONValue is TJSONArray then
               begin
                 ClearDataSet(LNestedDataSet);
                 JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
               end;
             end;
-          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
+          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob, TFieldType.ftStream:
             LoadBlobFieldFromStream(LField, LJSONValue);
           else
             raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
@@ -306,13 +323,31 @@ begin
       if LJSONValue is TJSONNull then
         Continue;
       if LJSONValue is TJSONObject then
-        JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet)
+        JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, True)
       else if LJSONValue is TJSONArray then
         JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
     end;
   finally
     LDataSetDetails.Free;
   end;
+end;
+
+function TJSONSerialize.JSONPairToFieldName(const AJSONPair: TJSONPair): string;
+var
+  LChar: Char;
+  LFieldName: string;
+begin
+  Result := AJSONPair.JsonString.Value;
+  if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+    Exit;
+  LFieldName := EmptyStr;
+  for LChar in Result do
+  begin
+    if CharInSet(LChar, ['A'..'Z']) then        
+      LFieldName := LFieldName + '_';
+    LFieldName := LFieldName + LChar
+  end;
+  Result := LFieldName.ToUpper;      
 end;
 
 procedure TJSONSerialize.JSONValueToDataSet(const AJSONValue: TJSONValue; const ADataSet: TDataSet);
@@ -327,7 +362,7 @@ end;
 procedure TJSONSerialize.ToDataSet(const ADataSet: TDataSet);
 begin
   if Assigned(FJSONObject) then
-    JSONObjectToDataSet(FJSONObject, ADataSet)
+    JSONObjectToDataSet(FJSONObject, ADataSet, False)
   else if Assigned(FJSONArray) then
     JSONArrayToDataSet(FJSONArray, ADataSet)
   else
@@ -337,7 +372,7 @@ end;
 function TJSONSerialize.Validate(const ADataSet: TDataSet; const ALang: TLanguageType = enUS): TJSONArray;
 var
   LField: TField;
-  LJSONValue: string;
+  LFieldNameLowerCamelCase, LJSONValue: string;
 begin
   if not Assigned(FJSONObject) then
     raise EDataSetSerializeException.Create(JSON_NOT_DIFINED);
@@ -347,13 +382,14 @@ begin
   for LField in ADataSet.Fields do
     if LField.Required then
     begin
-      if FJSONObject.TryGetValue(LField.FieldName, LJSONValue) or FJSONObject.TryGetValue(LowerCase(LField.FieldName), LJSONValue) then
+      LFieldNameLowerCamelCase := TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName);
+      if FJSONObject.TryGetValue(LFieldNameLowerCamelCase, LJSONValue) then
       begin
         if LJSONValue.Trim.IsEmpty then
-          Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
+          Result.AddElement(AddFieldNotFound(LFieldNameLowerCamelCase, LField.DisplayLabel, ALang));
       end
       else if LField.IsNull then
-        Result.AddElement(AddFieldNotFound(LField.FieldName, LField.DisplayLabel, ALang));
+        Result.AddElement(AddFieldNotFound(LFieldNameLowerCamelCase, LField.DisplayLabel, ALang));
     end;
 end;
 
@@ -379,13 +415,13 @@ end;
 
 procedure TJSONSerialize.LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
 var
-  JSONPair: TJSONPair;
+  LJSONPair: TJSONPair;
 begin
-  for JSONPair in AJSONObject do
+  for LJSONPair in AJSONObject do
   begin
     with ADataSet.FieldDefs.AddFieldDef do
     begin
-      Name := JSONPair.JsonString.Value;
+      Name := JSONPairToFieldName(LJSONPair);
       DataType := ftString;
       Size := 4096;
     end;
@@ -398,44 +434,41 @@ var
   LIntTemp: Integer;
   LBoolTemp: Boolean;
 begin
-  if AJSONValue.TryGetValue<string>('DataType', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_DATA_TYPE, LStrTemp) then
     Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), LStrTemp))
   else
-    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', ['DataType']);
+    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', [FIELD_PROPERTY_DATA_TYPE]);
 
-  if AJSONValue.TryGetValue<string>('Alignment', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_ALIGNMENT, LStrTemp) then
     Result.Alignment := TRttiEnumerationType.GetValue<TAlignment>(LStrTemp);
 
-  if AJSONValue.TryGetValue<string>('FieldName', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_FIELD_NAME, LStrTemp) then
     Result.FieldName := LStrTemp
   else
-    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', ['FieldName']);
+    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', [FIELD_PROPERTY_FIELD_NAME]);
 
-  if AJSONValue.TryGetValue<Integer>('Size', LIntTemp) then
+  if AJSONValue.TryGetValue<Integer>(FIELD_PROPERTY_SIZE, LIntTemp) then
     Result.Size := LIntTemp;
 
-  if AJSONValue.TryGetValue<Integer>('Precision', LIntTemp) then
-    Result.Precision := LIntTemp;
-
-  if AJSONValue.TryGetValue<string>('Origin', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_ORIGIN, LStrTemp) then
     Result.Origin := LStrTemp;
 
-  if AJSONValue.TryGetValue<string>('DisplayLabel', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_DISPLAY_LABEL, LStrTemp) then
     Result.DisplayLabel := LStrTemp;
 
-  if AJSONValue.TryGetValue<Boolean>('Key', LBoolTemp) then
+  if AJSONValue.TryGetValue<Boolean>(FIELD_PROPERTY_KEY, LBoolTemp) then
     Result.Key := LBoolTemp;
 
-  if AJSONValue.TryGetValue<Boolean>('Required', LBoolTemp) then
+  if AJSONValue.TryGetValue<Boolean>(FIELD_PROPERTY_REQUIRED, LBoolTemp) then
     Result.Required := LBoolTemp;
 
-  if AJSONValue.TryGetValue<Boolean>('Visible', LBoolTemp) then
+  if AJSONValue.TryGetValue<Boolean>(FIELD_PROPERTY_VISIBLE, LBoolTemp) then
     Result.Visible := LBoolTemp;
 
-  if AJSONValue.TryGetValue<Boolean>('ReadOnly', LBoolTemp) then
+  if AJSONValue.TryGetValue<Boolean>(FIELD_PROPERTY_READ_ONLY, LBoolTemp) then
     Result.ReadOnly := LBoolTemp;
 
-  if AJSONValue.TryGetValue<string>('AutoGenerateValue', LStrTemp) then
+  if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_AUTO_GENERATE_VALUE, LStrTemp) then
     Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), LStrTemp));
 end;
 
@@ -491,7 +524,7 @@ begin
     if (LJSONValue is TJSONArray) then
       JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet)
     else if (LJSONValue is TJSONObject) then
-      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet)
+      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False)
     else
       JSONValueToDataSet(LJSONValue, ADataSet);
   end;
@@ -550,7 +583,12 @@ begin
   for LField in ADataSet.Fields do
     if pfInKey in LField.ProviderFlags then
     begin
-      if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
+      if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+      begin
+        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName), LKeyValue) then
+          Continue;
+      end
+      else if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
         Continue;
       SetLength(Result, Length(Result) + 1);
       Result[Pred(Length(Result))] := LKeyValue;
@@ -558,4 +596,3 @@ begin
 end;
 
 end.
-

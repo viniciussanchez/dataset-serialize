@@ -48,9 +48,9 @@ object FrmSamples: TFrmSamples
         object Label2: TLabel
           Left = 8
           Top = 12
-          Width = 27
+          Width = 50
           Height = 13
-          Caption = 'Name'
+          Caption = 'First name'
         end
         object Label3: TLabel
           Left = 264
@@ -76,18 +76,26 @@ object FrmSamples: TFrmSamples
             item
               Expanded = False
               FieldName = 'ID'
+              Width = 40
               Visible = True
             end
             item
               Expanded = False
-              FieldName = 'NAME'
-              Width = 250
+              FieldName = 'FIRST_NAME'
+              Width = 203
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'COUNTRY'
-              Width = 145
+              Width = 87
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'DATE'
+              Title.Caption = 'Date'
+              Width = 120
               Visible = True
             end>
         end
@@ -216,32 +224,40 @@ object FrmSamples: TFrmSamples
           Lines.Strings = (
             '['
             '  {'
-            '    "NAME": "Vinicius Sanchez",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Vinicius",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Julio Cesar Senha",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Julio",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Mateus Vicente",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Andre",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Eduardo Viana Pessoa",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Mateus",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Alan Carlos Echer",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Luis",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Luis Gustavo de Miranda",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Jose",'
+            '    "country": "Brazil"'
             '  },'
             '  {'
-            '    "NAME": "Fagner Granella",'
-            '    "COUNTRY": "Brazil"'
+            '    "firstName": "Fagner",'
+            '    "country": "Brazil"'
+            '  },'
+            '  {'
+            '    "firstName": "Eduardo",'
+            '    "country": "Brazil"'
+            '  },'
+            '  {'
+            '    "firstName": "Alan",'
+            '    "country": "Brazil"'
             '  }'
             ']')
           ReadOnly = True
@@ -296,8 +312,8 @@ object FrmSamples: TFrmSamples
           Align = alTop
           Lines.Strings = (
             '{'
-            '  "NAME": "Vinicius",'
-            '  "COUNTRY": "United States"'
+            '  "firstName": "Vinicius",'
+            '  "country": "United States"'
             '}')
           ReadOnly = True
           ScrollBars = ssVertical
@@ -327,8 +343,8 @@ object FrmSamples: TFrmSamples
               Align = alClient
               Lines.Strings = (
                 '{'
-                '  "NAME": "Vinicius Sanchez",'
-                '  "COUNTRY": "Brazil"'
+                '  "firstName": "Vinicius",'
+                '  "country": "Brazil"'
                 '}')
               ReadOnly = True
               ScrollBars = ssVertical
@@ -362,8 +378,8 @@ object FrmSamples: TFrmSamples
               Align = alBottom
               Lines.Strings = (
                 '{'
-                '  "NAME": "",'
-                '  "COUNTRY": ""'
+                '  "firstName": "",'
+                '  "country": ""'
                 '}')
               ReadOnly = True
               ScrollBars = ssVertical
@@ -437,43 +453,43 @@ object FrmSamples: TFrmSamples
               Lines.Strings = (
                 '['
                 '  {'
-                '    "Alignment": "taRightJustify",'
-                '    "FieldName": "ID",'
-                '    "DisplayLabel": "Id",'
-                '    "DataType": "ftInteger",'
-                '    "Size": 0,'
-                '    "Key": false,'
-                '    "Origin": "",'
-                '    "Required": false,'
-                '    "Visible": true,'
-                '    "ReadOnly": true,'
-                '    "AutoGenerateValue": "arAutoInc"'
+                '    "alignment": "taRightJustify",'
+                '    "fieldName": "ID",'
+                '    "displayLabel": "Id",'
+                '    "dataType": "ftInteger",'
+                '    "size": 0,'
+                '    "key": false,'
+                '    "origin": "",'
+                '    "required": false,'
+                '    "visible": true,'
+                '    "readOnly": true,'
+                '    "autoGenerateValue": "arAutoInc"'
                 '  },'
                 '  {'
-                '    "Alignment": "taLeftJustify",'
-                '    "FieldName": "NAME",'
-                '    "DisplayLabel": "Name",'
-                '    "DataType": "ftString",'
-                '    "Size": 100,'
-                '    "Key": false,'
-                '    "Origin": "",'
-                '    "Required": true,'
-                '    "Visible": true,'
-                '    "ReadOnly": false,'
-                '    "AutoGenerateValue": "arNone"'
+                '    "alignment": "taLeftJustify",'
+                '    "fieldName": "FIRST_NAME",'
+                '    "displayLabel": "First name",'
+                '    "dataType": "ftString",'
+                '    "size": 100,'
+                '    "key": false,'
+                '    "origin": "",'
+                '    "required": true,'
+                '    "visible": true,'
+                '    "readOnly": false,'
+                '    "autoGenerateValue": "arNone"'
                 '  },'
                 '  {'
-                '    "Alignment": "taLeftJustify",'
-                '    "FieldName": "COUNTRY",'
-                '    "DisplayLabel": "Country",'
-                '    "DataType": "ftString",'
-                '    "Size": 60,'
-                '    "Key": false,'
-                '    "Origin": "",'
-                '    "Required": false,'
-                '    "Visible": false,'
-                '    "ReadOnly": false,'
-                '    "AutoGenerateValue": "arNone"'
+                '    "alignment": "taLeftJustify",'
+                '    "fieldName": "COUNTRY",'
+                '    "displayLabel": "Country",'
+                '    "dataType": "ftString",'
+                '    "size": 60,'
+                '    "key": false,'
+                '    "origin": "",'
+                '    "required": false,'
+                '    "visible": false,'
+                '    "readOnly": false,'
+                '    "autoGenerateValue": "arNone"'
                 '  }'
                 ']')
               ReadOnly = True
@@ -820,8 +836,116 @@ object FrmSamples: TFrmSamples
         end
       end
     end
+    object tabConfig: TTabSheet
+      Caption = 'Configurations'
+      ImageIndex = 3
+      object Label1: TLabel
+        Left = 3
+        Top = 139
+        Width = 239
+        Height = 13
+        Caption = 'Format date (for export field type equals ftDate):'
+      end
+      object Label4: TLabel
+        Left = 3
+        Top = 187
+        Width = 280
+        Height = 13
+        Caption = 'Format currency (for export field type equals ftCurrency):'
+      end
+      object chkDateInputIsUTC: TCheckBox
+        Left = 3
+        Top = 3
+        Width = 161
+        Height = 17
+        Caption = 'Date input is UTC (time zone)'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = chkDateInputIsUTCClick
+      end
+      object chkExportNullValues: TCheckBox
+        Left = 3
+        Top = 26
+        Width = 102
+        Height = 17
+        Caption = 'Export null values'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        OnClick = chkExportNullValuesClick
+      end
+      object chkExportOnlyFieldsVisible: TCheckBox
+        Left = 3
+        Top = 49
+        Width = 134
+        Height = 17
+        Caption = 'Export only fields visible'
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
+        OnClick = chkExportOnlyFieldsVisibleClick
+      end
+      object chkFieldNameLowerCamelCasePattern: TCheckBox
+        Left = 3
+        Top = 72
+        Width = 206
+        Height = 17
+        Caption = 'Field name in lowerCamelCase pattern'
+        Checked = True
+        State = cbChecked
+        TabOrder = 3
+        OnClick = chkFieldNameLowerCamelCasePatternClick
+      end
+      object edtFormatDate: TEdit
+        Left = 3
+        Top = 158
+        Width = 326
+        Height = 21
+        TabOrder = 4
+        Text = 'YYYY-MM-DD'
+      end
+      object btnApplyFormatDate: TButton
+        Left = 335
+        Top = 156
+        Width = 58
+        Height = 25
+        Caption = 'Apply'
+        TabOrder = 5
+        OnClick = btnApplyFormatDateClick
+      end
+      object edtFormatCurrency: TEdit
+        Left = 3
+        Top = 206
+        Width = 326
+        Height = 21
+        TabOrder = 6
+        Text = '0.00##'
+      end
+      object btnFormatCurrency: TButton
+        Left = 335
+        Top = 204
+        Width = 58
+        Height = 25
+        Caption = 'Apply'
+        TabOrder = 7
+        OnClick = btnFormatCurrencyClick
+      end
+      object chkImportOnlyFieldsVisible: TCheckBox
+        Left = 3
+        Top = 95
+        Width = 134
+        Height = 17
+        Caption = 'Import only fields visible'
+        Checked = True
+        State = cbChecked
+        TabOrder = 8
+        OnClick = chkImportOnlyFieldsVisibleClick
+      end
+    end
   end
   object mtDataSet: TFDMemTable
+    AfterInsert = mtDataSetAfterInsert
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -837,9 +961,9 @@ object FrmSamples: TFrmSamples
       FieldName = 'ID'
       ReadOnly = True
     end
-    object mtDataSetNAME: TStringField
-      DisplayLabel = 'Name'
-      FieldName = 'NAME'
+    object mtDataSetFIRST_NAME: TStringField
+      DisplayLabel = 'First name'
+      FieldName = 'FIRST_NAME'
       Required = True
       Size = 100
     end
@@ -848,6 +972,9 @@ object FrmSamples: TFrmSamples
       FieldName = 'COUNTRY'
       Visible = False
       Size = 60
+    end
+    object mtDataSetDATE: TDateTimeField
+      FieldName = 'DATE'
     end
   end
   object dsDataSet: TDataSource
