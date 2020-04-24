@@ -422,14 +422,16 @@ begin
     with ADataSet.FieldDefs.AddFieldDef do
     begin
       Name := JSONPairToFieldName(LJSONPair);
-      Size := 4096;
-      if Length(LJSONPair.JsonValue.Value) > Size then
+      if Length(LJSONPair.JsonValue.Value) > 4096 then
       begin
-        Size := Length(LJSONPair.Value);
         DataType := ftBlob;
+        Size := Length(LJSONPair.Value);
       end
       else
+      begin
         DataType := ftString;
+        Size := 4096;
+      end;
     end;
   end;
 end;
