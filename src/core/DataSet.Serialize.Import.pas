@@ -322,6 +322,9 @@ begin
         Continue;
       if LJSONValue is TJSONNull then
         Continue;
+      if TUpdateStatus.usUnmodified.ToString.Equals(LObjectState) then
+        if not ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
+          Continue;
       if LJSONValue is TJSONObject then
         JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, True)
       else if LJSONValue is TJSONArray then
