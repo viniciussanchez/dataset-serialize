@@ -318,7 +318,7 @@ begin
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
-      if not AJSONObject.TryGetValue(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), LJSONValue) then
+      if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), LJSONValue) then
         Continue;
       if LJSONValue is TJSONNull then
         Continue;
