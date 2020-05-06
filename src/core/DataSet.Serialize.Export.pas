@@ -206,7 +206,7 @@ begin
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
         if LNestedDataSet.RecordCount > 0 then
-          Result.AddPair(LowerCase(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name)), DataSetToJSONArray(LNestedDataSet, True));
+          Result.AddPair(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet, True));
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
       end;

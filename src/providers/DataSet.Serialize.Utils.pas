@@ -2,7 +2,7 @@ unit DataSet.Serialize.Utils;
 
 interface
 
-uses System.DateUtils, System.JSON, Data.DB, DataSet.Serialize.BooleanField, System.SysUtils, System.Classes;
+uses System.DateUtils, System.JSON, Data.DB, DataSet.Serialize.BooleanField, System.SysUtils, System.Classes, System.Character;
 
 type
   /// <summary>
@@ -161,6 +161,8 @@ begin
 end;
 
 class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;
+const
+  FIRST_CHAR = 1;
 var
   LPrefix: string;
 begin
@@ -171,6 +173,10 @@ begin
       Result := Copy(ADataSetName, Succ(LPrefix.Length), ADataSetName.Length - LPrefix.Length);
       Break;
     end;
+  if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
+    Result := Result.ToLower
+  else
+    Result[FIRST_CHAR] := Result[FIRST_CHAR].ToLower;
 end;
 
 class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;
