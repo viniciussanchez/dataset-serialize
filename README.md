@@ -188,6 +188,14 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ## Samples
 Check out our sample project for each situation presented above in operation. If you have any questions or suggestion, please contact, make your pull request or create an issue.
 
-![dataset-serialize](img/Screenshot_1.png)
+![dataset-serialize](img/img-02.png)
+
+## Team
+
+This project is maintained by the following person(s) and a bunch of [awesome contributors](https://github.com/viniciussanchez/dataset-serialize/graphs/contributors).
+
+[![Vinicius Sanchez](https://avatars3.githubusercontent.com/u/16382981?s=60&v=4)](https://github.com/viniciussanchez) | [![Mateus Vicente](https://avatars0.githubusercontent.com/u/50463556?s=60&v=4)](https://github.com/mateusvicente100)
+--- | ---
+[Vinicius Sanchez](https://github.com/viniciussanchez) | [Mateus Vicente](https://github.com/mateusvicente100)
 
 > *Alone we go faster. Together we go further.*
