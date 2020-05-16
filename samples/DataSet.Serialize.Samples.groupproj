@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{64697B35-538E-46D6-AB65-06DCBD381B61}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="basic\basic.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="configuration\configuration.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="master-detail\master_detail.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="basic">
+        <MSBuild Projects="basic\basic.dproj"/>
+    </Target>
+    <Target Name="basic:Clean">
+        <MSBuild Projects="basic\basic.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="basic:Make">
+        <MSBuild Projects="basic\basic.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="configuration">
+        <MSBuild Projects="configuration\configuration.dproj"/>
+    </Target>
+    <Target Name="configuration:Clean">
+        <MSBuild Projects="configuration\configuration.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="configuration:Make">
+        <MSBuild Projects="configuration\configuration.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="master_detail">
+        <MSBuild Projects="master-detail\master_detail.dproj"/>
+    </Target>
+    <Target Name="master_detail:Clean">
+        <MSBuild Projects="master-detail\master_detail.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="master_detail:Make">
+        <MSBuild Projects="master-detail\master_detail.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="basic;configuration;master_detail"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="basic:Clean;configuration:Clean;master_detail:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="basic:Make;configuration:Make;master_detail:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
