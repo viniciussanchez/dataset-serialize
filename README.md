@@ -192,7 +192,7 @@ Check out our sample project for each situation presented above in operation. If
 
 ## Team
 
-This theme is maintained by the following person(s) and a bunch of [awesome contributors](https://github.com/viniciussanchez/dataset-serialize/graphs/contributors).
+This project is maintained by the following person(s) and a bunch of [awesome contributors](https://github.com/viniciussanchez/dataset-serialize/graphs/contributors).
 
 [![Vinicius Sanchez](https://avatars3.githubusercontent.com/u/16382981?s=60&v=4)](https://github.com/viniciussanchez) | [![Mateus Vicente](https://avatars0.githubusercontent.com/u/50463556?s=60&v=4)](https://github.com/mateusvicente100)
 --- | ---
