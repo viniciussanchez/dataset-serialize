@@ -198,4 +198,8 @@ This project is maintained by the following person(s) and a bunch of [awesome co
 --- | ---
 [Vinicius Sanchez](https://github.com/viniciussanchez) | [Mateus Vicente](https://github.com/mateusvicente100)
 
-> *Alone we go faster. Together we go further.*
+## License
+
+`DataSet-Serialize` is free and open-source software licensed under the [MIT License](https://github.com/viniciussanchez/dataset-serialize/blob/master/LICENSE).
+
+:point_right: *Alone we go faster. Together we go further.*
