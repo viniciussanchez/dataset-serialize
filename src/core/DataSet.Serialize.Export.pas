@@ -168,7 +168,7 @@ begin
         Result.AddPair(LKey, TJSONNumber.Create(LField.AsLargeInt));
       TFieldType.ftSingle, TFieldType.ftFloat:
         Result.AddPair(LKey, TJSONNumber.Create(LField.AsFloat));
-      TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
+      TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
         Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
         Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
