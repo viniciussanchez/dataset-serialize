@@ -165,8 +165,6 @@ object FrmSamples: TFrmSamples
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 255
-    ExplicitHeight = 306
     object Panel4: TPanel
       AlignWithMargins = True
       Left = 0
@@ -180,7 +178,6 @@ object FrmSamples: TFrmSamples
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitHeight = 306
       object Panel5: TPanel
         Left = 0
         Top = 0
@@ -209,7 +206,6 @@ object FrmSamples: TFrmSamples
         ItemHeight = 13
         TabOrder = 1
         OnClick = chbFieldsClick
-        ExplicitHeight = 281
       end
     end
     object Panel6: TPanel
@@ -225,7 +221,6 @@ object FrmSamples: TFrmSamples
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitHeight = 306
       object Panel7: TPanel
         Left = 0
         Top = 0
@@ -302,8 +297,6 @@ object FrmSamples: TFrmSamples
         Caption = 'ToJSONArray'
         TabOrder = 2
         OnClick = Button1Click
-        ExplicitLeft = 4
-        ExplicitTop = 315
       end
       object DBGrid2: TDBGrid
         Left = 0
@@ -354,7 +347,6 @@ object FrmSamples: TFrmSamples
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitHeight = 306
       object Panel10: TPanel
         Left = 0
         Top = 0
@@ -389,7 +381,6 @@ object FrmSamples: TFrmSamples
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 1
-        ExplicitHeight = 281
       end
     end
   end

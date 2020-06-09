@@ -175,7 +175,12 @@ begin
       TFieldType.ftDate:
         Result.AddPair(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
       TFieldType.ftCurrency:
-        Result.AddPair(LKey, TJSONString.Create(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, LField.AsCurrency)));
+        begin
+          if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
+            Result.AddPair(LKey, TJSONNumber.Create(LField.AsCurrency))
+          else
+            Result.AddPair(LKey, TJSONString.Create(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, LField.AsCurrency)));
+        end;
       TFieldType.ftFMTBcd, TFieldType.ftBCD:
         Result.AddPair(LKey, TJSONNumber.Create(BcdToDouble(LField.AsBcd)));
       TFieldType.ftDataSet:

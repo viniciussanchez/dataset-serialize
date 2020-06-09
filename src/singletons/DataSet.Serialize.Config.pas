@@ -96,7 +96,7 @@ begin
   FExportNullValues := True;
   FExportOnlyFieldsVisible := True;
   ExportEmptyDataSet := False;
-  FFormatCurrency := '0.00##';
+  FFormatCurrency := EmptyStr;
   FFormatDate := 'YYYY-MM-DD';
 end;
 
