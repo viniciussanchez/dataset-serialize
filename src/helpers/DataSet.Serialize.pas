@@ -264,7 +264,7 @@ end;
 function TDataSetSerializeHelper.ValidateJSON(const AJSONString: string; const ALang: TLanguageType): TJSONArray;
 begin
   if Trim(AJSONString).StartsWith('{') then
-    Result := ValidateJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONObject, ALang)
+    Result := ValidateJSON(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONObject, ALang)
   else
     Result := TJSONArray.Create();
 end;
@@ -272,21 +272,21 @@ end;
 procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('{') then
-    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONObject)
+    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONObject)
   else if Trim(AJSONString).StartsWith('[') then
-    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONArray);
+    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONArray);
 end;
 
 procedure TDataSetSerializeHelper.LoadStructure(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('[') then
-    LoadStructure(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONArray);
+    LoadStructure(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONArray);
 end;
 
 procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('{') then
-    MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONString), 0) as TJSONObject)
+    MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONObject)
 end;
 
 end.
