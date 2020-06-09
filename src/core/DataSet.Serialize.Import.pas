@@ -267,7 +267,7 @@ begin
             Continue;
         if LField.ReadOnly then
           Continue;
-        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName), LJSONValue) then
+        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName), LJSONValue) then
           Continue;
         if LJSONValue is TJSONNull then
         begin
@@ -385,7 +385,7 @@ begin
   for LField in ADataSet.Fields do
     if LField.Required then
     begin
-      LFieldNameLowerCamelCase := TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName);
+      LFieldNameLowerCamelCase := TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName);
       if FJSONObject.TryGetValue(LFieldNameLowerCamelCase, LJSONValue) then
       begin
         if LJSONValue.Trim.IsEmpty then
@@ -596,7 +596,7 @@ begin
     begin
       if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
       begin
-        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName), LKeyValue) then
+        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName), LKeyValue) then
           Continue;
       end
       else if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
