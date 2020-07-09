@@ -7,6 +7,7 @@ type
   private
     FExportNullValues: Boolean;
     FExportOnlyFieldsVisible: Boolean;
+    FExportEmptyDataSet: Boolean;
     FFormatCurrency: string;
     FFormatDate: string;
   public
@@ -15,6 +16,7 @@ type
     property FormatCurrency: string read FFormatCurrency write FFormatCurrency;
     property ExportOnlyFieldsVisible: Boolean read FExportOnlyFieldsVisible write FExportOnlyFieldsVisible;
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
+    property ExportEmptyDataSet: Boolean read FExportEmptyDataSet write FExportEmptyDataSet;
   end;
 
   TDataSetSerializeConfigImport = class
@@ -93,7 +95,8 @@ constructor TDataSetSerializeConfigExport.Create;
 begin
   FExportNullValues := True;
   FExportOnlyFieldsVisible := True;
-  FFormatCurrency := '0.00##';
+  ExportEmptyDataSet := False;
+  FFormatCurrency := EmptyStr;
   FFormatDate := 'YYYY-MM-DD';
 end;
 

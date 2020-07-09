@@ -36,7 +36,7 @@ type
   TDataSetSerializeUtils = class
   public
     /// <summary>
-    ///   Transform field name in lower camel case pattern.
+    ///   Transform name in lower camel case pattern.
     /// </summary>
     /// <param name="AFieldName">
     ///   Field name to format.
@@ -44,7 +44,7 @@ type
     /// <returns>
     ///   Field name in lower camel case format.
     /// </returns>
-    class function FieldNameToLowerCamelCase(const AFieldName: string): string;
+    class function NameToLowerCamelCase(const AFieldName: string): string;
     /// <summary>
     ///   Creates a new field in the DataSet.
     /// </summary>
@@ -132,18 +132,18 @@ begin
     Result := '_' + Result;
 end;
 
-class function TDataSetSerializeUtils.FieldNameToLowerCamelCase(const AFieldName: string): string;
+class function TDataSetSerializeUtils.NameToLowerCamelCase(const AFieldName: string): string;
 var
-  LChar: string;
+  I: Integer;
   LUnderline: Boolean;
 begin
   Result := EmptyStr;
   if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
     Exit(AFieldName.ToLower);
   LUnderline := False;
-  for LChar in AFieldName do
+  for I := 1 to AFieldName.Length do
   begin
-    if LChar.Equals('_') then
+    if AFieldName[I] = '_' then
     begin
       LUnderline := True;
       Continue;
@@ -151,18 +151,19 @@ begin
     if LUnderline then
     begin
       LUnderline := False;
-      Result := Result + LChar.ToUpper;
+      Result := Result + UpperCase(AFieldName[I]);
       Continue;
     end;
-    Result := Result + LChar.ToLower;
+    if CharInSet(AFieldName[Pred(I)], ['a' .. 'z']) and CharInSet(AFieldName[I], ['A' .. 'Z']) then
+      Result := Result + AFieldName[I]
+    else
+      Result := Result + LowerCase(AFieldName[I]);
   end;
   if Result.IsEmpty then
     Result := AFieldName;
 end;
 
 class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;
-const
-  FIRST_CHAR = 1;
 var
   LPrefix: string;
 begin
@@ -173,10 +174,7 @@ begin
       Result := Copy(ADataSetName, Succ(LPrefix.Length), ADataSetName.Length - LPrefix.Length);
       Break;
     end;
-  if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
-    Result := Result.ToLower
-  else
-    Result[FIRST_CHAR] := Result[FIRST_CHAR].ToLower;
+  Result := Self.NameToLowerCamelCase(Result);
 end;
 
 class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;

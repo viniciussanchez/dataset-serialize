@@ -143,7 +143,7 @@ begin
     if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible then
       if not(LField.Visible) then
         Continue;
-    LKey := TDataSetSerializeUtils.FieldNameToLowerCamelCase(LField.FieldName);
+    LKey := TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName);
     if LField.IsNull then
     begin
       if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
@@ -168,14 +168,19 @@ begin
         Result.AddPair(LKey, TJSONNumber.Create(LField.AsLargeInt));
       TFieldType.ftSingle, TFieldType.ftFloat:
         Result.AddPair(LKey, TJSONNumber.Create(LField.AsFloat));
-      TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
+      TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
         Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
         Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
       TFieldType.ftDate:
         Result.AddPair(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
       TFieldType.ftCurrency:
-        Result.AddPair(LKey, TJSONString.Create(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, LField.AsCurrency)));
+        begin
+          if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
+            Result.AddPair(LKey, TJSONNumber.Create(LField.AsCurrency))
+          else
+            Result.AddPair(LKey, TJSONString.Create(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, LField.AsCurrency)));
+        end;
       TFieldType.ftFMTBcd, TFieldType.ftBCD:
         Result.AddPair(LKey, TJSONNumber.Create(BcdToDouble(LField.AsBcd)));
       TFieldType.ftDataSet:
@@ -205,7 +210,7 @@ begin
       begin
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
-        if LNestedDataSet.RecordCount > 0 then
+        if TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet or (LNestedDataSet.RecordCount > 0) then
           Result.AddPair(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet, True));
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
