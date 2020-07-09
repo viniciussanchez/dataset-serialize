@@ -75,7 +75,7 @@ type
     /// <param name="ADataSet">
     ///   Refers to the DataSet which must be loaded with the JSON data.
     /// </param>
-    procedure JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
+    procedure JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet; const ADetail: Boolean = False);
     /// <summary>
     ///   Creates a JSON informing the required field.
     /// </summary>
@@ -328,7 +328,7 @@ begin
       if LJSONValue is TJSONObject then
         JSONObjectToDataSet(LJSONValue as TJSONObject, LNestedDataSet, True)
       else if LJSONValue is TJSONArray then
-        JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
+        JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet, True);
     end;
   finally
     LDataSetDetails.Free;
@@ -524,7 +524,7 @@ begin
   FJSONArray := AJSONArray;
 end;
 
-procedure TJSONSerialize.JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
+procedure TJSONSerialize.JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet; const ADetail: Boolean = False);
 var
   LJSONValue: TJSONValue;
 begin
@@ -533,9 +533,9 @@ begin
   for LJSONValue in AJSONArray do
   begin
     if (LJSONValue is TJSONArray) then
-      JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet)
+      JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet, ADetail)
     else if (LJSONValue is TJSONObject) then
-      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, False)
+      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, ADetail)
     else
       JSONValueToDataSet(LJSONValue, ADataSet);
   end;
