@@ -286,7 +286,7 @@ begin
             LField.AsCurrency := StrToCurr(LJSONValue.Value);
           TFieldType.ftFloat, TFieldType.ftFMTBcd, TFieldType.ftBCD, TFieldType.ftSingle:
             LField.AsFloat := StrToFloat(LJSONValue.Value);
-          TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo:
+          TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo,TFieldType.ftGuid:
             LField.AsString := LJSONValue.Value;
           TFieldType.ftDate, TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
             LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
@@ -407,6 +407,7 @@ begin
     LMemoryStream := TMemoryStream.Create;
     try
       TNetEncoding.Base64.Decode(LStringStream, LMemoryStream);
+      LMemoryStream.Position := 0;
       TBlobField(AField).LoadFromStream(LMemoryStream);
     finally
       LMemoryStream.Free;
