@@ -82,7 +82,11 @@ var
 begin
   LJSONArray := mtUsers.ToJSONArray;
   try
+{$IF COMPILERVERSION < 33}
+    memoDataSet.Lines.Text := LJSONArray.ToJSON;
+{$ELSE}
     memoDataSet.Lines.Text := LJSONArray.Format;
+{$ENDIF}
   finally
     LJSONArray.Free;
   end;
@@ -105,7 +109,11 @@ var
 begin
   LJSONArray := mtUsers.SaveStructure;
   try
+{$IF COMPILERVERSION < 33}
+    memoDataSet.Lines.Text := LJSONArray.ToJSON;
+{$ELSE}
     memoDataSet.Lines.Text := LJSONArray.Format;
+{$ENDIF}
   finally
     LJSONArray.Free;
   end;
@@ -117,7 +125,11 @@ var
 begin
   LJSONObject := mtUsers.ToJSONObject;
   try
+{$IF COMPILERVERSION < 33}
+    memoDataSet.Lines.Text := LJSONObject.ToJSON;
+{$ELSE}
     memoDataSet.Lines.Text := LJSONObject.Format;
+{$ENDIF}
   finally
     LJSONObject.Free;
   end;
