@@ -139,7 +139,7 @@ var
 begin
   Result := EmptyStr;
   if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
-    Exit(AFieldName);
+    Exit(AFieldName.ToLower);
   LUnderline := False;
   for I := 1 to AFieldName.Length do
   begin
