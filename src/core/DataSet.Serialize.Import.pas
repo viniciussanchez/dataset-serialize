@@ -204,7 +204,7 @@ begin
   begin
     if not(ADataSet is TFDMemTable)  then
       Exit;
-    if ADataSet.FieldDefs.Count = 0 then
+    if ADataSet.FieldCount = 0 then
       LoadFieldsFromJSON(ADataSet, AJSONObject);
     ADataSet.Open;
   end;
