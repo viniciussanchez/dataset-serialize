@@ -267,7 +267,7 @@ begin
             Continue;
         if LField.ReadOnly then
           Continue;
-        if not (AJSONObject.TryGetValue(TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName), LJSONValue) or (AJSONObject.TryGetValue(LField.FieldName, LJSONValue))) then
+        if not (AJSONObject.TryGetValue(TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName), LJSONValue) or (AJSONObject.TryGetValue(LField.FieldName.ToLower, LJSONValue))) then
           Continue;
         if LJSONValue is TJSONNull then
         begin
