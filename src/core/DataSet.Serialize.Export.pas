@@ -294,7 +294,7 @@ begin
     LJSONObject.AddPair(FIELD_PROPERTY_SIZE, TJSONNumber.Create(LField.SIZE));
     LJSONObject.AddPair(FIELD_PROPERTY_ORIGIN, TJSONString.Create(LField.ORIGIN));
     
-   {$IFDEF VER290}
+   {$IF COMPILERVERSION <= 29}
     LJSONObject.AddPair(FIELD_PROPERTY_KEY, TJSONString.Create(BoolToStr(pfInKey in LField.ProviderFlags)));
     LJSONObject.AddPair(FIELD_PROPERTY_REQUIRED, TJSONString.Create(BoolToStr(LField.Required)));
     LJSONObject.AddPair(FIELD_PROPERTY_VISIBLE, TJSONString.Create(BoolToStr(LField.Visible)));
