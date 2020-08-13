@@ -89,7 +89,7 @@ type
 
 implementation
 
-uses DataSet.Serialize.BooleanField, System.DateUtils, Data.FmtBcd, System.SysUtils, DataSet.Serialize.Utils, System.TypInfo,
+uses DataSet.Serialize.BooleanField, System.DateUtils, Data.FmtBcd, Data.SqlTimSt, System.SysUtils, DataSet.Serialize.Utils, System.TypInfo,
   DataSet.Serialize.Consts, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet,
   DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
 
@@ -170,10 +170,14 @@ begin
         Result.AddPair(LKey, TJSONNumber.Create(LField.AsFloat));
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
         Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
-      TFieldType.ftTimeStamp, TFieldType.ftDateTime, TFieldType.ftTime:
-        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
       TFieldType.ftDate:
         Result.AddPair(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
+      TFieldType.ftDateTime:
+        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
+      TFieldType.ftTime:
+        Result.AddPair(LKey, TJSONString.Create(SQLTimeStampToStr('hh:nn:ss', LField.AsSQLTimeStamp)));
+      TFieldType.ftTimeStamp:
+        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(SQLTimeStampToDateTime(LField.AsSQLTimeStamp),TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
       TFieldType.ftCurrency:
         begin
           if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
