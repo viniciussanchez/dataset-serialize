@@ -170,14 +170,14 @@ begin
         Result.AddPair(LKey, TJSONNumber.Create(LField.AsFloat));
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
         Result.AddPair(LKey, TJSONString.Create(LField.AsWideString));
-      TFieldType.ftDate:
-        Result.AddPair(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
       TFieldType.ftDateTime:
-        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
-      TFieldType.ftTime:
-        Result.AddPair(LKey, TJSONString.Create(SQLTimeStampToStr('hh:nn:ss', LField.AsSQLTimeStamp)));
-      TFieldType.ftTimeStamp:
-        Result.AddPair(LKey, TJSONString.Create(DateToISO8601(SQLTimeStampToDateTime(LField.AsSQLTimeStamp),TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
+           Result.AddPair(LKey, TJSONString.Create(FormatDateTime('c', LField.AsDateTime)));
+       TFieldType.ftTimeStamp:
+           Result.AddPair(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
+       TFieldType.ftTime:
+           Result.AddPair(LKey, TJSONString.Create(FormatDateTime('tt', LField.AsDateTime)));
+       TFieldType.ftDate:
+           Result.AddPair(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
       TFieldType.ftCurrency:
         begin
           if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then

@@ -289,11 +289,11 @@ begin
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
             LField.AsString := LJSONValue.Value;
           TFieldType.ftDate:
-            LField.AsDateTime := EncodeDate(StrToInt(Copy(LJSONValue.Value, 1, 4)), StrToInt(Copy(LJSONValue.Value, 6, 2)), StrToInt(Copy(LJSONValue.Value, 9, 2)));
-          TFieldType.ftDateTime:
-            LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
-          TFieldType.ftTimeStamp, TFieldType.ftTime:
-            LField.AsDateTime := EncodeTime(StrToInt(Copy(LJSONValue.Value, 1, 2)), StrToInt(Copy(LJSONValue.Value, 4, 2)), StrToInt(Copy(LJSONValue.Value, 7, 2)), 0);
+             LField.AsDateTime := DateOf(ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
+          TFieldType.ftTimeStamp, TFieldType.ftDateTime:
+             LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
+          TFieldType.ftTime:
+             LField.AsDateTime := StrToTime(LJSONValue.Value);
           TFieldType.ftDataSet:
             begin
               LNestedDataSet := TDataSetField(LField).NestedDataSet;
