@@ -42,7 +42,6 @@ type
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
     property Import: TDataSetSerializeConfigImport read FImport write FImport;
     class function GetInstance: TDataSetSerializeConfig;
-    class function NewInstance: TObject; override;
     destructor Destroy; override;
   end;
 
@@ -74,14 +73,9 @@ end;
 
 class function TDataSetSerializeConfig.GetInstance: TDataSetSerializeConfig;
 begin
-  Result := TDataSetSerializeConfig.Create;
-end;
-
-class function TDataSetSerializeConfig.NewInstance: TObject;
-begin
   if not Assigned(Instancia) then
   begin
-    Instancia := TDataSetSerializeConfig(inherited NewInstance);
+    Instancia := TDataSetSerializeConfig.Create;
     Instancia.LowerCamelCase := True;
     Instancia.DataSetPrefix := ['mt', 'qry'];
     Instancia.DateInputIsUTC := True;
