@@ -133,32 +133,29 @@ begin
 end;
 
 class function TDataSetSerializeUtils.NameToLowerCamelCase(const AFieldName: string): string;
-var
-  I: Integer;
-  LUnderline: Boolean;
+var I: Integer;
+    LField: TArray<Char>;
 begin
   Result := EmptyStr;
   if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
     Exit(AFieldName.ToLower);
-  LUnderline := False;
-  for I := 1 to AFieldName.Length do
+
+  LField := AFieldName.ToCharArray;
+
+  I := Low(LField);
+  While i <= High(LField) do
   begin
-    if AFieldName[I] = '_' then
+    if (LField[I] = '_') then
     begin
-      LUnderline := True;
-      Continue;
-    end;
-    if LUnderline then
-    begin
-      LUnderline := False;
-      Result := Result + UpperCase(AFieldName[I]);
-      Continue;
-    end;
-    if CharInSet(AFieldName[Pred(I)], ['a' .. 'z']) and CharInSet(AFieldName[I], ['A' .. 'Z']) then
-      Result := Result + AFieldName[I]
+      Inc(i);
+      Result := Result + UpperCase(LField[I]);
+    end
     else
-      Result := Result + LowerCase(AFieldName[I]);
+      Result := Result + LowerCase(LField[I]);
+
+    Inc(i);
   end;
+
   if Result.IsEmpty then
     Result := AFieldName;
 end;
