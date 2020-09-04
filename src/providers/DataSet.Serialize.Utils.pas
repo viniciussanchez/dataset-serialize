@@ -133,15 +133,14 @@ begin
 end;
 
 class function TDataSetSerializeUtils.NameToLowerCamelCase(const AFieldName: string): string;
-var I: Integer;
-    LField: TArray<Char>;
+var
+  I: Integer;
+  LField: TArray<Char>;
 begin
   Result := EmptyStr;
   if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
     Exit(AFieldName.ToLower);
-
   LField := AFieldName.ToCharArray;
-
   I := Low(LField);
   While i <= High(LField) do
   begin
@@ -152,10 +151,8 @@ begin
     end
     else
       Result := Result + LowerCase(LField[I]);
-
     Inc(i);
   end;
-
   if Result.IsEmpty then
     Result := AFieldName;
 end;

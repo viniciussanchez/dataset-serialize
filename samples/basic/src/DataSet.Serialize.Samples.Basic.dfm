@@ -20,7 +20,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 984
     Height = 561
-    ActivePage = tabDataSet
+    ActivePage = tabEmptyDataSet
     Align = alClient
     MultiLine = True
     TabOrder = 0
@@ -266,10 +266,6 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = '  JSON  '
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel13: TPanel
         Left = 0
         Top = 0
@@ -548,6 +544,102 @@ object FrmSamples: TFrmSamples
         end
       end
     end
+    object tabEmptyDataSet: TTabSheet
+      Caption = 'Load empty DataSet'
+      ImageIndex = 2
+      object Panel16: TPanel
+        Left = 0
+        Top = 244
+        Width = 976
+        Height = 25
+        Align = alTop
+        Alignment = taLeftJustify
+        BevelOuter = bvNone
+        Caption = 'DataSet'
+        Color = 16091980
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        ExplicitLeft = -16
+        ExplicitTop = 256
+      end
+      object DBGrid3: TDBGrid
+        Left = 0
+        Top = 294
+        Width = 976
+        Height = 239
+        Align = alClient
+        DataSource = dsEmpty
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+      end
+      object memoEmpty: TMemo
+        Left = 0
+        Top = 25
+        Width = 976
+        Height = 219
+        Align = alTop
+        BorderStyle = bsNone
+        Lines.Strings = (
+          '['
+          '  {'
+          '    "ID": 3,'
+          '    "DESCRICAO": "Coca Cola",'
+          '    "CATEGORIA": 1,'
+          '    "PRECO": 2,'
+          '    "CATEGORIA_DESCRICAO": "BEBEDIAS"'
+          '  },'
+          '  {'
+          '    "ID": 1,'
+          '    "DESCRICAO": "RedBull",'
+          '    "CATEGORIA": 1,'
+          '    "PRECO": 2.39,'
+          '    "CATEGORIA_DESCRICAO": "BEBEDIAS"'
+          '  }'
+          ']')
+        TabOrder = 2
+      end
+      object Panel17: TPanel
+        Left = 0
+        Top = 0
+        Width = 976
+        Height = 25
+        Align = alTop
+        Alignment = taLeftJustify
+        BevelOuter = bvNone
+        Caption = '  JSON String'
+        Color = 16091980
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 3
+        ExplicitTop = 8
+      end
+      object Button7: TButton
+        Left = 0
+        Top = 269
+        Width = 976
+        Height = 25
+        Align = alTop
+        Caption = 'Load from JSON string'
+        TabOrder = 4
+        OnClick = Button7Click
+        ExplicitTop = 244
+      end
+    end
   end
   object dsUsers: TDataSource
     DataSet = mtUsers
@@ -578,5 +670,21 @@ object FrmSamples: TFrmSamples
       FieldName = 'COUNTRY'
       Size = 60
     end
+  end
+  object mtEmpty: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 776
+    Top = 376
+  end
+  object dsEmpty: TDataSource
+    DataSet = mtEmpty
+    Left = 720
+    Top = 376
   end
 end

@@ -341,18 +341,18 @@ end;
 
 function TJSONSerialize.JSONPairToFieldName(const AJSONPair: TJSONPair): string;
 var
-  LChar: Char;
+  I: Integer;
   LFieldName: string;
 begin
   Result := AJSONPair.JsonString.Value;
   if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
     Exit;
   LFieldName := EmptyStr;
-  for LChar in Result do
+  for I := 1 to Length(Result) do
   begin
-    if CharInSet(LChar, ['A'..'Z']) then        
+    if CharInSet(Result[I], ['A'..'Z']) and CharInSet(Result[Pred(I)], ['a'..'z']) then
       LFieldName := LFieldName + '_';
-    LFieldName := LFieldName + LChar
+    LFieldName := LFieldName + Result[I];
   end;
   Result := LFieldName.ToUpper;      
 end;
