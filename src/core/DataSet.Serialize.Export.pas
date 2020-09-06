@@ -1,8 +1,17 @@
 unit DataSet.Serialize.Export;
 
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
-uses Data.DB, System.JSON;
+uses
+{$IF DEFINED(FPC)}
+  DB, fpjson;
+{$ELSE}
+  Data.DB, System.JSON;
+{$ENDIF}
 
 type
   TDataSetSerialize = class
@@ -89,8 +98,14 @@ type
 
 implementation
 
-uses DataSet.Serialize.BooleanField, System.DateUtils, Data.FmtBcd, System.SysUtils, DataSet.Serialize.Utils, System.TypInfo,
-  DataSet.Serialize.Consts, System.Classes, System.NetEncoding, System.Generics.Collections, FireDAC.Comp.DataSet,
+uses
+{$IF DEFINED(FPC)}
+  DateUtils, SysUtils, Classes, Generics.Collections,
+{$ELSE}
+  System.DateUtils, Data.FmtBcd, System.SysUtils, System.TypInfo, System.Classes, System.NetEncoding,
+  System.Generics.Collections, FireDAC.Comp.DataSet,
+{$ENDIF}
+  DataSet.Serialize.BooleanField, DataSet.Serialize.Utils, DataSet.Serialize.Consts,
   DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
 
 { TDataSetSerialize }

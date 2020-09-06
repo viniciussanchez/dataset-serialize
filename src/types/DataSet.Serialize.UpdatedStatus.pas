@@ -1,8 +1,17 @@
 unit DataSet.Serialize.UpdatedStatus;
 
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
-uses Data.DB;
+uses
+{$IF DEFINED(FPC)}
+  DB;
+{$ELSE}
+  Data.DB;
+{$ENDIF}
 
 type
   TUpdateStatusHelper = record helper for TUpdateStatus

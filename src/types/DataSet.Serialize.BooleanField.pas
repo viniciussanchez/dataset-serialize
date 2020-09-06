@@ -1,5 +1,9 @@
 unit DataSet.Serialize.BooleanField;
 
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
 type

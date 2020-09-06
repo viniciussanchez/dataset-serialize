@@ -1,8 +1,18 @@
 unit DataSet.Serialize;
-
+
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
-uses System.JSON, Data.DB, DataSet.Serialize.Language;
+uses
+{$IF DEFINED(FPC)}
+  DB, fpjson,
+{$ELSE}
+  System.JSON, Data.DB,
+{$ENDIF}
+  DataSet.Serialize.Language;
 
 type
   TDataSetSerializeHelper = class Helper for TDataSet
@@ -163,7 +173,13 @@ type
 
 implementation
 
-uses System.SysUtils, DataSet.Serialize.Export, DataSet.Serialize.Import;
+uses
+{$IF DEFINED(FPC)}
+  SysUtils,
+{$ELSE}
+  System.SysUtils,
+{$ENDIF}
+  DataSet.Serialize.Export, DataSet.Serialize.Import;
 
 function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONArray;
 var
@@ -290,4 +306,3 @@ begin
 end;
 
 end.
-

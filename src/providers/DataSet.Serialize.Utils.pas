@@ -1,8 +1,18 @@
 unit DataSet.Serialize.Utils;
 
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
-uses System.DateUtils, System.JSON, Data.DB, DataSet.Serialize.BooleanField, System.SysUtils, System.Classes, System.Character;
+uses
+{$IF DEFINED(FPC)}
+  DB, fpjson, SysUtils, Classes,
+{$ELSE}
+  System.DateUtils, System.JSON, Data.DB, System.SysUtils, System.Classes, System.Character,
+{$ENDIF}
+  DataSet.Serialize.BooleanField;
 
 type
   /// <summary>
@@ -30,7 +40,9 @@ type
     Required: Boolean;
     Visible: Boolean;
     ReadOnly: Boolean;
+    {$IF NOT DEFINED(FPC)}
     AutoGenerateValue: TAutoRefreshFlag;
+    {$ENDIF}
   end;
 
   TDataSetSerializeUtils = class
@@ -87,7 +99,7 @@ type
     /// <returns>
     ///   Returns a JSONValue.
     /// </returns>
-    class function BooleanToJSON(const AValue: Boolean): TJSONValue;
+    class function BooleanToJSON(const AValue: Boolean): {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
     /// <summary>
     ///   Remove the prefix "mt" or "qry" of an child dataset.
     /// </summary>
@@ -188,10 +200,12 @@ begin
       TBCDField(Result).Precision := AFieldStructure.Precision;
     ftFloat: 
       TFloatField(Result).Precision := AFieldStructure.Precision;
+    {$IF NOT DEFINED(FPC)}
     ftSingle: 
       TSingleField(Result).Precision := AFieldStructure.Precision;
     ftExtended: 
       TExtendedField(Result).Precision := AFieldStructure.Precision;
+    {$ENDIF}
     ftCurrency: 
       TCurrencyField(Result).Precision := AFieldStructure.Precision;
     ftFMTBcd: 
@@ -203,19 +217,21 @@ begin
   Result.Required := AFieldStructure.Required;
   Result.Origin := AFieldStructure.Origin;
   Result.DisplayLabel := AFieldStructure.DisplayLabel;
+  {$IF NOT DEFINED(FPC)}
   Result.AutoGenerateValue := AFieldStructure.AutoGenerateValue;
+  {$ENDIF}
   if AFieldStructure.Key then
     Result.ProviderFlags := [pfInKey];
   if (AFieldStructure.FieldType in [ftString, ftWideString]) and (AFieldStructure.Size <= 0) then
     raise EDataSetSerializeException.CreateFmt(SIZE_NOT_DEFINED_FOR_FIELD, [AFieldStructure.FieldName]);
 end;
 
-class function TDataSetSerializeUtils.BooleanToJSON(const AValue: Boolean): TJSONValue;
+class function TDataSetSerializeUtils.BooleanToJSON(const AValue: Boolean): {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
 begin
   if AValue then
-    Result := TJSONTrue.Create
+    Result := {$IF DEFINED(FPC)}TJSONBoolean.Create(True){$ELSE}TJSONTrue.Create{$ENDIF}
   else
-    Result := TJSONFalse.Create;
+    Result := {$IF DEFINED(FPC)}TJSONBoolean.Create(False){$ELSE}TJSONFalse.Create{$ENDIF};
 end;
 
 end.

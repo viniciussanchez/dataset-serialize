@@ -1,5 +1,9 @@
 unit DataSet.Serialize.Config;
 
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
 type
@@ -50,7 +54,12 @@ var
 
 implementation
 
-uses System.SysUtils;
+uses
+{$IF DEFINED(FPC)}
+  SysUtils;
+{$ELSE}
+  System.SysUtils;
+{$ENDIF}
 
 { TDataSetSerializeConfig }
 
