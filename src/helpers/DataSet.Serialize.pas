@@ -280,7 +280,7 @@ end;
 function TDataSetSerializeHelper.ValidateJSON(const AJSONString: string; const ALang: TLanguageType): TJSONArray;
 begin
   if Trim(AJSONString).StartsWith('{') then
-    Result := ValidateJSON(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONObject, ALang)
+    Result := ValidateJSON({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONObject, ALang)
   else
     Result := TJSONArray.Create();
 end;
@@ -288,21 +288,21 @@ end;
 procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('{') then
-    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONObject)
+    LoadFromJSON({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONObject)
   else if Trim(AJSONString).StartsWith('[') then
-    LoadFromJSON(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONArray);
+    LoadFromJSON({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONArray);
 end;
 
 procedure TDataSetSerializeHelper.LoadStructure(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('[') then
-    LoadStructure(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONArray);
+    LoadStructure({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONArray);
 end;
 
 procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('{') then
-    MergeFromJSONObject(TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0) as TJSONObject)
+    MergeFromJSONObject({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONObject)
 end;
 
 end.

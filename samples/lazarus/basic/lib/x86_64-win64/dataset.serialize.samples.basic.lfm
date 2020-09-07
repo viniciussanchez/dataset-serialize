@@ -1,0 +1,17 @@
+object FrmBasic: TFrmBasic
+  Left = 256
+  Height = 240
+  Top = 145
+  Width = 320
+  Caption = 'Samples'
+  LCLVersion = '2.0.10.0'
+  object MemDataset1: TMemDataset
+    FieldDefs = <    
+      item
+        Name = 'MemDataset1Field1'
+        DataType = ftAutoInc
+      end>
+    Left = 144
+    Top = 46
+  end
+end

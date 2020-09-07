@@ -196,7 +196,7 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  Classes, Variants, Generics.Collections, SysUtils, DateUtils,
+  Classes, Variants, Generics.Collections, SysUtils, DateUtils, TypInfo,
 {$ELSE}
   System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, System.Generics.Collections,
   System.Variants, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
@@ -210,7 +210,9 @@ var
   LField: TField;
   LJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
   LNestedDataSet: TDataSet;
+  {$IF NOT DEFINED(FPC)}
   LBooleanValue: Boolean;
+  {$ENDIF}
   LDataSetDetails: TList<TDataSet>;
   LObjectState: string;
   LMasterSource: TDataSource;
@@ -231,8 +233,16 @@ begin
 
   LMasterSource := nil;
   try
+    {$IF DEFINED(FPC)}
+    LObjectState := AJSONObject.Get('object_state', EmptyStr);
+    if LObjectState.Trim.IsEmpty then
+      LObjectState := AJSONObject.Get('objectState', EmptyStr);
+    if not LObjectState.Trim.IsEmpty then
+    begin
+    {$ELSE}
     if AJSONObject.TryGetValue('object_state', LObjectState) or AJSONObject.TryGetValue('objectState', LObjectState) then
     begin
+    {$ENDIF}
       if TUpdateStatus.usInserted.ToString = LObjectState then
       begin
         if ADataSet.State <> dsInsert then
@@ -289,8 +299,16 @@ begin
             Continue;
         if LField.ReadOnly then
           Continue;
+        {$IF DEFINED(FPC)}
+        LJSONValue := AJSONObject.Find(TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName));
+        if not Assigned(LJSONValue) then
+          LJSONValue := AJSONObject.Find(LField.FieldName);
+        if not Assigned(LJSONValue) then
+          Continue;
+        {$ELSE}
         if not (AJSONObject.TryGetValue(TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName), LJSONValue) or (AJSONObject.TryGetValue(LField.FieldName, LJSONValue))) then
           Continue;
+        {$ENDIF}
         if LJSONValue is TJSONNull then
         begin
           LField.Clear;
@@ -298,8 +316,14 @@ begin
         end;
         case LField.DataType of
           TFieldType.ftBoolean:
-            if LJSONValue.TryGetValue<Boolean>(LBooleanValue) then
-              LField.AsBoolean := LBooleanValue;
+            begin
+              {$IF DEFINED(FPC)}
+              LField.AsBoolean := LJSONValue.AsBoolean;
+              {$ELSE}
+              if LJSONValue.TryGetValue<Boolean>(LBooleanValue) then
+                LField.AsBoolean := LBooleanValue;
+              {$ENDIF}
+            end;
           TFieldType.ftInteger, TFieldType.ftSmallint{$IF NOT DEFINED(FPC)}, TFieldType.ftShortint, TFieldType.ftLongWord{$ENDIF}:
             LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
           TFieldType.ftLargeint, TFieldType.ftAutoInc:
@@ -346,8 +370,14 @@ begin
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
+      {$IF DEFINED(FPC)}
+      LJSONValue := AJSONObject.Find(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name));
+      if not Assigned(LJSONValue) then
+        Continue;
+      {$ELSE}
       if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), LJSONValue) then
         Continue;
+      {$ENDIF}
       if LJSONValue is TJSONNull then
         Continue;
       if TUpdateStatus.usUnmodified.ToString = LObjectState then
@@ -416,7 +446,12 @@ begin
     if LField.Required then
     begin
       LFieldNameLowerCamelCase := TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName);
+      {$IF DEFINED(FPC)}
+      LJSONValue := FJSONObject.Get(LFieldNameLowerCamelCase, EmptyStr);
+      if LJSONValue.Trim.Equals(EmptyStr) then
+      {$ELSE}
       if FJSONObject.TryGetValue(LFieldNameLowerCamelCase, LJSONValue) then
+      {$ENDIF}
       begin
         if LJSONValue.Trim.IsEmpty then
         begin
@@ -490,6 +525,7 @@ var
   LIntTemp: Integer;
   LBoolTemp: Boolean;
 begin
+{$IF NOT DEFINED(FPC)}
   if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_DATA_TYPE, LStrTemp) then
     Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), LStrTemp))
   else
@@ -526,6 +562,7 @@ begin
 
   if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_AUTO_GENERATE_VALUE, LStrTemp) then
     Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), LStrTemp));
+{$ENDIF}
 end;
 
 procedure TJSONSerialize.LoadStructure(const ADataSet: TDataSet);
@@ -539,14 +576,34 @@ begin
 end;
 
 function TJSONSerialize.AddFieldNotFound(const AFieldName, ADisplayLabel: string; const ALang: TLanguageType = enUS): TJSONObject;
+var
+  LError: string;
 begin
   Result := TJSONObject.Create;
+  {$IF DEFINED(FPC)}
+  Result.Add('field', AFieldName);
+  {$ELSE}
   Result.AddPair(TJSONPair.Create('field', AFieldName));
+  {$ENDIF}
   case ALang of
     ptBR:
-      Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' não foi informado(a)'));
+      begin
+        LError := ADisplayLabel + ' não foi informado(a)';
+        {$IF DEFINED(FPC)}
+        Result.Add('error', LError);
+        {$ELSE}
+        Result.AddPair(TJSONPair.Create('error', LError));
+        {$ENDIF}
+      end
     else
-      Result.AddPair(TJSONPair.Create('error', ADisplayLabel + ' not informed'));
+      begin
+        LError := ADisplayLabel + ' not informed';
+        {$IF DEFINED(FPC)}
+        Result.Add('error', LError);
+        {$ELSE}
+        Result.AddPair(TJSONPair.Create('error', LError));
+        {$ENDIF}
+      end;
   end;
 end;
 
@@ -571,18 +628,18 @@ end;
 
 procedure TJSONSerialize.JSONArrayToDataSet(const AJSONArray: TJSONArray; const ADataSet: TDataSet; const ADetail: Boolean = False);
 var
-  LJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
+  I: Integer;
 begin
   if (not Assigned(AJSONArray)) or (not Assigned(ADataSet)) then
     Exit;
-  for LJSONValue in AJSONArray do
+  for I := 0 to Pred(AJSONArray.Count) do
   begin
-    if (LJSONValue is TJSONArray) then
-      JSONArrayToDataSet(LJSONValue as TJSONArray, ADataSet, ADetail)
-    else if (LJSONValue is TJSONObject) then
-      JSONObjectToDataSet(LJSONValue as TJSONObject, ADataSet, ADetail)
+    if (AJSONArray.Items[I] is TJSONArray) then
+      JSONArrayToDataSet(AJSONArray.Items[I] as TJSONArray, ADataSet, ADetail)
+    else if (AJSONArray.Items[I] is TJSONObject) then
+      JSONObjectToDataSet(AJSONArray.Items[I] as TJSONObject, ADataSet, ADetail)
     else
-      JSONValueToDataSet(LJSONValue, ADataSet);
+      JSONValueToDataSet(AJSONArray.Items[I], ADataSet);
   end;
   if ADataSet.Active then
     ADataSet.First;
@@ -600,14 +657,14 @@ end;
 
 procedure TJSONSerialize.JSONArrayToStructure(const AJSONArray: TJSONArray; const ADataSet: TDataSet);
 var
-  LJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
+  I: Integer;
 begin
   if ADataSet.Active then
     raise EDataSetSerializeException.Create(DATASET_ACTIVATED);
   if ADataSet.FieldCount > 0 then
     raise EDataSetSerializeException.Create(PREDEFINED_FIELDS);
-  for LJSONValue in AJSONArray do
-    TDataSetSerializeUtils.NewDataSetField(ADataSet, LoadFieldStructure(LJSONValue));
+  for I := 0 to Pred(AJSONArray.Count) do
+    TDataSetSerializeUtils.NewDataSetField(ADataSet, LoadFieldStructure(AJSONArray.Items[I]));
 end;
 
 destructor TJSONSerialize.Destroy;
@@ -628,7 +685,12 @@ begin
   Result := EmptyStr;
   for LField in ADataSet.Fields do
     if pfInKey in LField.ProviderFlags then
-      Result := Result + IfThen(Result.Trim.IsEmpty, EmptyStr, ';') + LField.FieldName;
+    begin
+      if Result.Trim.IsEmpty then
+        Result := Result + LField.FieldName
+      else
+        Result := Result + ';' + LField.FieldName;
+    end;
 end;
 
 function TJSONSerialize.GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
@@ -641,11 +703,27 @@ begin
     begin
       if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
       begin
+        {$IF DEFINED(FPC)}
+        LKeyValue := AJSONObject.Get(TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName), EmptyStr);
+        if LKeyValue.Trim.IsEmpty then
+        {$ELSE}
         if not AJSONObject.TryGetValue(TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName), LKeyValue) then
+        {$ENDIF}
           Continue;
       end
-      else if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
-        Continue;
+      else
+      begin
+        {$IF DEFINED(FPC)}
+        LKeyValue := AJSONObject.Get(LowerCase(LField.FieldName), EmptyStr);
+        if LKeyValue.Trim.IsEmpty then
+          Continue;
+        LKeyValue := AJSONObject.Get(LField.FieldName, EmptyStr);
+        if LKeyValue.Trim.IsEmpty then
+        {$ELSE}
+        if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
+        {$ENDIF}
+          Continue;
+      end;
       SetLength(Result, Length(Result) + 1);
       Result[Pred(Length(Result))] := LKeyValue;
     end;
