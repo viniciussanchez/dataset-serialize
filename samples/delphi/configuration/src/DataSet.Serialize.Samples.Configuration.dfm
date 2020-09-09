@@ -38,7 +38,7 @@ object FrmSamples: TFrmSamples
     Left = 0
     Top = 25
     Width = 984
-    Height = 146
+    Height = 165
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
@@ -156,21 +156,37 @@ object FrmSamples: TFrmSamples
       TabOrder = 9
       OnClick = chkExportEmptyDataSetClick
     end
+    object chkExportChildDataSetAsJsonObject: TCheckBox
+      Left = 10
+      Top = 142
+      Width = 300
+      Height = 17
+      Hint = 
+        'Child dataset needs to have just one record, if child dataset ha' +
+        's more than one record it became an jsonarray again'
+      Caption = 'Export child dataset as json object'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 10
+      OnClick = chkExportChildDataSetAsJsonObjectClick
+    end
   end
   object Panel3: TPanel
     Left = 0
-    Top = 171
+    Top = 190
     Width = 984
-    Height = 390
+    Height = 371
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitTop = 171
+    ExplicitHeight = 390
     object Panel4: TPanel
       AlignWithMargins = True
       Left = 0
       Top = 0
       Width = 200
-      Height = 390
+      Height = 371
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -178,6 +194,7 @@ object FrmSamples: TFrmSamples
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitHeight = 390
       object Panel5: TPanel
         Left = 0
         Top = 0
@@ -201,11 +218,12 @@ object FrmSamples: TFrmSamples
         Left = 0
         Top = 25
         Width = 200
-        Height = 365
+        Height = 346
         Align = alClient
         ItemHeight = 13
         TabOrder = 1
         OnClick = chbFieldsClick
+        ExplicitHeight = 365
       end
     end
     object Panel6: TPanel
@@ -213,7 +231,7 @@ object FrmSamples: TFrmSamples
       Left = 202
       Top = 0
       Width = 439
-      Height = 390
+      Height = 371
       Margins.Left = 2
       Margins.Top = 0
       Margins.Right = 0
@@ -221,6 +239,7 @@ object FrmSamples: TFrmSamples
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitHeight = 390
       object Panel7: TPanel
         Left = 0
         Top = 0
@@ -290,19 +309,20 @@ object FrmSamples: TFrmSamples
       end
       object Button1: TButton
         Left = 0
-        Top = 355
+        Top = 336
         Width = 439
         Height = 35
         Align = alBottom
         Caption = 'ToJSONArray'
         TabOrder = 2
         OnClick = Button1Click
+        ExplicitTop = 355
       end
       object DBGrid2: TDBGrid
         Left = 0
         Top = 177
         Width = 439
-        Height = 178
+        Height = 159
         Align = alClient
         DataSource = dsLog
         Font.Charset = DEFAULT_CHARSET
@@ -339,7 +359,7 @@ object FrmSamples: TFrmSamples
       Left = 643
       Top = 0
       Width = 341
-      Height = 390
+      Height = 371
       Margins.Left = 2
       Margins.Top = 0
       Margins.Right = 0
@@ -347,6 +367,7 @@ object FrmSamples: TFrmSamples
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
+      ExplicitHeight = 390
       object Panel10: TPanel
         Left = 0
         Top = 0
@@ -370,7 +391,7 @@ object FrmSamples: TFrmSamples
         Left = 0
         Top = 25
         Width = 341
-        Height = 365
+        Height = 346
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -381,6 +402,7 @@ object FrmSamples: TFrmSamples
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 1
+        ExplicitHeight = 365
       end
     end
   end
