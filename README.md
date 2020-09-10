@@ -164,6 +164,10 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := True;
 ```
+* Export child DataSet as JSON object (when you have only 1 record)
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject := False;
+```
 * Import only fields visible
 ```pascal
   TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := True;
