@@ -14,7 +14,7 @@ type
     FExportEmptyDataSet: Boolean;
     FFormatCurrency: string;
     FFormatDate: string;
-    FExportChildDataSetAsJsonObject:Boolean;
+    FExportChildDataSetAsJsonObject: Boolean;
   public
     constructor Create;
     property FormatDate: string read FFormatDate write FFormatDate;
@@ -23,7 +23,6 @@ type
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
     property ExportEmptyDataSet: Boolean read FExportEmptyDataSet write FExportEmptyDataSet;
     property ExportChildDataSetAsJsonObject: Boolean read FExportChildDataSetAsJsonObject write FExportChildDataSetAsJsonObject;
-
   end;
 
   TDataSetSerializeConfigImport = class
@@ -104,7 +103,7 @@ begin
   ExportEmptyDataSet := False;
   FFormatCurrency := EmptyStr;
   FFormatDate := 'YYYY-MM-DD';
-  FExportChildDataSetAsJsonObject:= False;
+  FExportChildDataSetAsJsonObject := False;
 end;
 
 { TDataSetSerializeConfigImport }
