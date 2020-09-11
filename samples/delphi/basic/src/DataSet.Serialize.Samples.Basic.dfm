@@ -20,7 +20,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 984
     Height = 561
-    ActivePage = tabEmptyDataSet
+    ActivePage = tabDataSet
     Align = alClient
     MultiLine = True
     TabOrder = 0
@@ -266,6 +266,10 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = '  JSON  '
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel13: TPanel
         Left = 0
         Top = 0
@@ -565,8 +569,6 @@ object FrmSamples: TFrmSamples
         ParentBackground = False
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = -16
-        ExplicitTop = 256
       end
       object DBGrid3: TDBGrid
         Left = 0
@@ -626,7 +628,6 @@ object FrmSamples: TFrmSamples
         ParentBackground = False
         ParentFont = False
         TabOrder = 3
-        ExplicitTop = 8
       end
       object Button7: TButton
         Left = 0
@@ -637,7 +638,6 @@ object FrmSamples: TFrmSamples
         Caption = 'Load from JSON string'
         TabOrder = 4
         OnClick = Button7Click
-        ExplicitTop = 244
       end
     end
   end

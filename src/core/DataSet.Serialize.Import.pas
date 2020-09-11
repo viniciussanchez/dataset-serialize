@@ -196,7 +196,7 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  Classes, Variants, Generics.Collections, SysUtils, DateUtils, TypInfo, base64, memds,
+  Classes, Variants, SysUtils, DateUtils, TypInfo, base64,
 {$ELSE}
   System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, System.Generics.Collections,
   System.Variants, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
@@ -482,7 +482,9 @@ end;
 procedure TJSONSerialize.LoadBlobFieldFromStream(const AField: TField; const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF});
 var
   LStringStream: TStringStream;
+  {$IF NOT DEFINED(FPC)}
   LMemoryStream: TMemoryStream;
+  {$ENDIF}
 begin
   LStringStream := TStringStream.Create((AJSONValue as TJSONString).Value);
   try

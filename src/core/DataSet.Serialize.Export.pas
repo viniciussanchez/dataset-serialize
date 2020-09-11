@@ -55,10 +55,12 @@ type
     ///   Returns a string with the cryptogrammed content in Base64.
     /// </returns>
     function EncodingBlobField(const AField: TField): string;
+    {$IF NOT DEFINED(FPC)}
     /// <summary>
     ///   Verifiy if a DataSet has detail dataset and if has child modification.
     /// </summary>
-    function HasChildModification(const ADataSet: TDataSet): Boolean;    
+    function HasChildModification(const ADataSet: TDataSet): Boolean;
+    {$ENDIF}
   public
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
@@ -100,7 +102,7 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  DateUtils, SysUtils, Classes, Generics.Collections, FmtBCD, TypInfo, base64,
+  DateUtils, SysUtils, Classes, FmtBCD, TypInfo, base64,
 {$ELSE}
   System.DateUtils, Data.FmtBcd, System.SysUtils, System.TypInfo, System.Classes, System.NetEncoding,
   System.Generics.Collections, FireDAC.Comp.DataSet,
@@ -127,12 +129,14 @@ begin
     ADataSet.First;
     while not ADataSet.Eof do
     begin
+      {$IF NOT DEFINED(FPC)}
       if IsChild and FOnlyUpdatedRecords then
         if (ADataSet.UpdateStatus = TUpdateStatus.usUnmodified) and not(HasChildModification(ADataSet)) then
         begin
           ADataSet.Next;
           Continue;
         end;
+      {$ENDIF}
       Result.{$IF DEFINED(FPC)}Add{$ELSE}AddElement{$ENDIF}(DataSetToJSONObject(ADataSet));
       ADataSet.Next;
     end;
@@ -146,8 +150,10 @@ end;
 function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet): TJSONObject;
 var
   LKey: string;
+  {$IF NOT DEFINED(FPC)}
   LNestedDataSet: TDataSet;
   LDataSetDetails: TList<TDataSet>;
+  {$ENDIF}
   LField: TField;
 begin
   Result := TJSONObject.Create;
@@ -250,7 +256,9 @@ end;
 function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
 var
   LMemoryStream: TMemoryStream;
+  {$IF NOT DEFINED(FPC)}
   LStringStream: TStringStream;
+  {$ENDIF}
 begin
   LMemoryStream := TMemoryStream.Create;
   try
@@ -272,6 +280,7 @@ begin
   end;
 end;
 
+{$IF NOT DEFINED(FPC)}
 function TDataSetSerialize.HasChildModification(const ADataSet: TDataSet): Boolean;
 var
   LMasterSource: TDataSource;
@@ -279,7 +288,6 @@ var
   LNestedDataSet: TDataSet;
 begin
   Result := False;
-{$IF NOT DEFINED(FPC)}
   LDataSetDetails := TList<TDataSet>.Create;
   try
     ADataSet.GetDetailDataSets(LDataSetDetails);
@@ -305,8 +313,8 @@ begin
   finally
     LDataSetDetails.Free;
   end;
-{$ENDIF}
 end;
+{$ENDIF}
 
 function TDataSetSerialize.SaveStructure: TJSONArray;
 var

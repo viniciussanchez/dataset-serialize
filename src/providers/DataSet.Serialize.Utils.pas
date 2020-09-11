@@ -128,6 +128,9 @@ var
   LCharacter: Char;
 begin
   I := 0;
+  {$IF DEFINED(FPC)}
+  Result := EmptyStr;
+  {$ENDIF}
   SetLength(Result, Length(AName));
   for LCharacter in AName do
   begin
