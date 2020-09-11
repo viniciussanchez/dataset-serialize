@@ -196,7 +196,7 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  Classes, Variants, Generics.Collections, SysUtils, DateUtils, TypInfo,
+  Classes, Variants, Generics.Collections, SysUtils, DateUtils, TypInfo, base64, memds,
 {$ELSE}
   System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, System.Generics.Collections,
   System.Variants, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
@@ -209,13 +209,15 @@ procedure TJSONSerialize.JSONObjectToDataSet(const AJSONObject: TJSONObject; con
 var
   LField: TField;
   LJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
+  {$IF DEFINED(FPC)}
+  I: Integer;
+  {$ELSE}
   LNestedDataSet: TDataSet;
-  {$IF NOT DEFINED(FPC)}
   LBooleanValue: Boolean;
-  {$ENDIF}
   LDataSetDetails: TList<TDataSet>;
-  LObjectState: string;
   LMasterSource: TDataSource;
+  {$ENDIF}
+  LObjectState: string;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
@@ -229,9 +231,9 @@ begin
       LoadFieldsFromJSON(ADataSet, AJSONObject);
     ADataSet.Open;
   end;
-  {$ENDIF}
 
   LMasterSource := nil;
+  {$ENDIF}
   try
     {$IF DEFINED(FPC)}
     LObjectState := AJSONObject.Get('object_state', EmptyStr);
@@ -292,8 +294,14 @@ begin
 
     if (ADataSet.State in dsEditModes) then
     begin
+      {$IF DEFINED(FPC)}
+      for I := 0 to Pred(ADataSet.FieldCount) do
+      begin
+        LField := ADataSet.Fields[I];
+      {$ELSE}
       for LField in ADataSet.Fields do
       begin
+      {$ENDIF}
         if TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible then
           if not(LField.Visible) then
             Continue;
@@ -340,6 +348,7 @@ begin
              LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
           TFieldType.ftTime:
              LField.AsDateTime := StrToTime(LJSONValue.Value);
+          {$IF NOT DEFINED(FPC)}
           TFieldType.ftDataSet:
             begin
               LNestedDataSet := TDataSetField(LField).NestedDataSet;
@@ -351,6 +360,7 @@ begin
                 JSONArrayToDataSet(LJSONValue as TJSONArray, LNestedDataSet);
               end;
             end;
+          {$ENDIF}
           TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
             LoadBlobFieldFromStream(LField, LJSONValue);
           else
@@ -365,19 +375,14 @@ begin
       TFDDataSet(ADataSet).MasterSource := LMasterSource;
     {$ENDIF}
   end;
+  {$IF NOT DEFINED(FPC)}
   LDataSetDetails := TList<TDataSet>.Create;
   try
     ADataSet.GetDetailDataSets(LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
-      {$IF DEFINED(FPC)}
-      LJSONValue := AJSONObject.Find(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name));
-      if not Assigned(LJSONValue) then
-        Continue;
-      {$ELSE}
       if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), LJSONValue) then
         Continue;
-      {$ENDIF}
       if LJSONValue is TJSONNull then
         Continue;
       if TUpdateStatus.usUnmodified.ToString = LObjectState then
@@ -391,6 +396,7 @@ begin
   finally
     LDataSetDetails.Free;
   end;
+  {$ENDIF}
 end;
 
 {$IF NOT DEFINED(FPC)}
@@ -481,6 +487,9 @@ begin
   LStringStream := TStringStream.Create((AJSONValue as TJSONString).Value);
   try
     LStringStream.Position := 0;
+    {$IF DEFINED(FPC)}
+    TBlobField(AField).AsString := DecodeStringBase64(LStringStream.DataString);
+    {$ELSE}
     LMemoryStream := TMemoryStream.Create;
     try
       TNetEncoding.Base64.Decode(LStringStream, LMemoryStream);
@@ -489,6 +498,7 @@ begin
     finally
       LMemoryStream.Free;
     end;
+    {$ENDIF}
   finally
     LStringStream.Free;
   end;

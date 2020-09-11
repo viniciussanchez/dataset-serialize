@@ -70,3 +70,4 @@ modules/
 
 # Backup folder Lazarus IDE
 backup/
+lib/

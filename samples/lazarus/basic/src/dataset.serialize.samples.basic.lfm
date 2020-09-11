@@ -1,17 +1,551 @@
 object FrmBasic: TFrmBasic
-  Left = 256
-  Height = 240
-  Top = 145
-  Width = 320
+  Left = 313
+  Height = 498
+  Top = 106
+  Width = 882
   Caption = 'Samples'
+  ClientHeight = 498
+  ClientWidth = 882
   LCLVersion = '2.0.10.0'
-  object MemDataset1: TMemDataset
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 498
+    Top = 0
+    Width = 882
+    ActivePage = TabSheet2
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'DataSet'
+      ClientHeight = 470
+      ClientWidth = 874
+      object Panel7: TPanel
+        Left = 0
+        Height = 470
+        Top = 0
+        Width = 874
+        Align = alClient
+        BevelOuter = bvNone
+        ClientHeight = 470
+        ClientWidth = 874
+        ParentBackground = False
+        TabOrder = 0
+        object Splitter1: TSplitter
+          Left = 420
+          Height = 470
+          Top = 0
+          Width = 9
+        end
+        object Panel2: TPanel
+          Left = 429
+          Height = 470
+          Top = 0
+          Width = 445
+          Align = alClient
+          BevelOuter = bvNone
+          ClientHeight = 470
+          ClientWidth = 445
+          ParentBackground = False
+          TabOrder = 0
+          object Panel4: TPanel
+            Left = 0
+            Height = 25
+            Top = 0
+            Width = 445
+            Align = alTop
+            Alignment = taLeftJustify
+            BevelOuter = bvNone
+            Caption = '  JSON'
+            Color = 16091980
+            Font.Color = clWhite
+            Font.Height = -12
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentBackground = False
+            ParentColor = False
+            ParentFont = False
+            TabOrder = 0
+          end
+          object memoDataSet: TMemo
+            Left = 0
+            Height = 445
+            Top = 25
+            Width = 445
+            Align = alClient
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Segoe UI'
+            ParentFont = False
+            ReadOnly = True
+            ScrollBars = ssVertical
+            TabOrder = 1
+          end
+        end
+        object Panel1: TPanel
+          Left = 0
+          Height = 470
+          Top = 0
+          Width = 420
+          Align = alLeft
+          BevelOuter = bvNone
+          ClientHeight = 470
+          ClientWidth = 420
+          ParentBackground = False
+          TabOrder = 1
+          object Panel3: TPanel
+            Left = 0
+            Height = 25
+            Top = 0
+            Width = 420
+            Align = alTop
+            Alignment = taLeftJustify
+            BevelOuter = bvNone
+            Caption = '  Users'
+            Color = 16091980
+            Font.Color = clWhite
+            Font.Height = -12
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentBackground = False
+            ParentColor = False
+            ParentFont = False
+            TabOrder = 0
+          end
+          object Panel5: TPanel
+            Left = 0
+            Height = 55
+            Top = 25
+            Width = 420
+            Align = alTop
+            BevelOuter = bvNone
+            ClientHeight = 55
+            ClientWidth = 420
+            TabOrder = 1
+            object Label2: TLabel
+              Left = 13
+              Height = 15
+              Top = 6
+              Width = 32
+              Caption = 'Name'
+              ParentColor = False
+            end
+            object Label3: TLabel
+              Left = 169
+              Height = 15
+              Top = 6
+              Width = 43
+              Caption = 'Country'
+              ParentColor = False
+            end
+            object edtName: TEdit
+              Left = 13
+              Height = 23
+              Top = 25
+              Width = 150
+              TabOrder = 0
+            end
+            object edtCountry: TEdit
+              Left = 169
+              Height = 23
+              Top = 25
+              Width = 150
+              TabOrder = 1
+            end
+            object Button2: TButton
+              Left = 325
+              Height = 25
+              Top = 23
+              Width = 81
+              Caption = 'Append'
+              OnClick = Button2Click
+              TabOrder = 2
+            end
+          end
+          object DBGrid1: TDBGrid
+            Left = 0
+            Height = 355
+            Top = 80
+            Width = 420
+            Align = alClient
+            Color = clWindow
+            Columns = <            
+              item
+                Title.Caption = 'ID'
+                Width = 70
+                FieldName = 'ID'
+              end            
+              item
+                Title.Caption = 'NAME'
+                Width = 200
+                FieldName = 'NAME'
+              end            
+              item
+                Title.Caption = 'COUNTRY'
+                Width = 100
+                FieldName = 'COUNTRY'
+              end>
+            DataSource = dsUsers
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Segoe UI'
+            ParentFont = False
+            TabOrder = 2
+            TitleFont.Color = clWindowText
+            TitleFont.Height = -11
+            TitleFont.Name = 'Tahoma'
+          end
+          object Panel6: TPanel
+            Left = 0
+            Height = 35
+            Top = 435
+            Width = 420
+            Align = alBottom
+            BevelOuter = bvNone
+            ClientHeight = 35
+            ClientWidth = 420
+            TabOrder = 3
+            object Button4: TButton
+              Left = 0
+              Height = 35
+              Top = 0
+              Width = 140
+              Align = alLeft
+              Caption = 'ToJSONObject'
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Segoe UI'
+              OnClick = Button4Click
+              ParentFont = False
+              TabOrder = 0
+            end
+            object Button1: TButton
+              Left = 140
+              Height = 35
+              Top = 0
+              Width = 140
+              Align = alClient
+              Caption = 'ToJSONArray'
+              OnClick = Button1Click
+              TabOrder = 1
+            end
+            object Button3: TButton
+              Left = 280
+              Height = 35
+              Top = 0
+              Width = 140
+              Align = alRight
+              Caption = 'SaveStructure'
+              OnClick = Button3Click
+              TabOrder = 2
+            end
+          end
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'JSON'
+      ClientHeight = 470
+      ClientWidth = 874
+      object Panel13: TPanel
+        Left = 0
+        Height = 470
+        Top = 0
+        Width = 874
+        Align = alClient
+        BevelOuter = bvNone
+        Caption = 'Panel13'
+        ClientHeight = 470
+        ClientWidth = 874
+        ParentBackground = False
+        TabOrder = 0
+        object Splitter2: TSplitter
+          Left = 420
+          Height = 470
+          Top = 0
+          Width = 9
+        end
+        object Panel10: TPanel
+          Left = 429
+          Height = 470
+          Top = 0
+          Width = 445
+          Align = alClient
+          BevelOuter = bvNone
+          ClientHeight = 470
+          ClientWidth = 445
+          ParentBackground = False
+          TabOrder = 0
+          object Panel11: TPanel
+            Left = 0
+            Height = 25
+            Top = 0
+            Width = 445
+            Align = alTop
+            Alignment = taLeftJustify
+            BevelOuter = bvNone
+            Caption = '  JSON'
+            Color = 16091980
+            Font.Color = clWhite
+            Font.Height = -12
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentBackground = False
+            ParentColor = False
+            ParentFont = False
+            TabOrder = 0
+          end
+          object Panel12: TPanel
+            Left = 0
+            Height = 225
+            Top = 25
+            Width = 445
+            Align = alClient
+            BevelOuter = bvNone
+            ClientHeight = 225
+            ClientWidth = 445
+            TabOrder = 1
+            object memoJSONArray: TMemo
+              Left = 0
+              Height = 190
+              Top = 35
+              Width = 445
+              Align = alClient
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Segoe UI'
+              Lines.Strings = (
+                '['
+                '  {'
+                '    "id": 1,'
+                '    "name": "Mateus Vicente",'
+                '    "country": "Brazil"'
+                '  },'
+                '  {'
+                '    "id": 2,'
+                '    "name": "Vinicius Sanchez",'
+                '    "country": "Brazil"'
+                '  },'
+                '  {'
+                '    "id": 3,'
+                '    "name": "Julio Senha",'
+                '    "country": "Brazil"'
+                '  },'
+                '  {'
+                '    "id": 4,'
+                '    "name": "André Dias",'
+                '    "country": "Brazil"'
+                '  },'
+                '  {'
+                '    "id": 5,'
+                '    "name": "Luis Gustavo",'
+                '    "country": "Brazil"'
+                '  },'
+                '  {'
+                '    "id": 6,'
+                '    "name": "José Junior",'
+                '    "country": "Brazil"'
+                '  },'
+                '  {'
+                '    "id": 7,'
+                '    "name": "Fagner Granella",'
+                '    "country": "Brazil"'
+                '  },'
+                '  {'
+                '    "id": 8,'
+                '    "name": "Eduardo Viana",'
+                '    "country": "Brazil"'
+                '  },'
+                '  {'
+                '    "id": 9,'
+                '    "name": "Alan Echer",'
+                '    "country": "Brazil"'
+                '  }'
+                ']'
+              )
+              ParentFont = False
+              ReadOnly = True
+              ScrollBars = ssVertical
+              TabOrder = 0
+            end
+            object btnLoadJSONArray: TButton
+              Left = 0
+              Height = 35
+              Top = 0
+              Width = 445
+              Align = alTop
+              Caption = 'Load from JSON Array'
+              OnClick = btnLoadJSONArrayClick
+              TabOrder = 1
+            end
+          end
+          object Panel14: TPanel
+            Left = 0
+            Height = 110
+            Top = 250
+            Width = 445
+            Align = alBottom
+            BevelOuter = bvNone
+            ClientHeight = 110
+            ClientWidth = 445
+            TabOrder = 2
+            object memoJSONObject: TMemo
+              Left = 0
+              Height = 75
+              Top = 35
+              Width = 445
+              Align = alClient
+              Lines.Strings = (
+                '{'
+                '  "id": 999,'
+                '  "name": "Caio Ariel",'
+                '  "country": "Brazil"'
+                '}'
+              )
+              ReadOnly = True
+              ScrollBars = ssVertical
+              TabOrder = 0
+            end
+            object Button5: TButton
+              Left = 0
+              Height = 35
+              Top = 0
+              Width = 445
+              Align = alTop
+              Caption = 'Load from JSON Object'
+              OnClick = Button5Click
+              TabOrder = 1
+            end
+          end
+          object Panel15: TPanel
+            Left = 0
+            Height = 110
+            Top = 360
+            Width = 445
+            Align = alBottom
+            BevelOuter = bvNone
+            ClientHeight = 110
+            ClientWidth = 445
+            TabOrder = 3
+            object Button6: TButton
+              Left = 0
+              Height = 35
+              Top = 0
+              Width = 445
+              Align = alTop
+              Caption = 'Merge (Edit current record)'
+              OnClick = Button6Click
+              TabOrder = 0
+            end
+            object memoMerge: TMemo
+              Left = 0
+              Height = 75
+              Top = 35
+              Width = 445
+              Align = alClient
+              Lines.Strings = (
+                '{'
+                '  "name": "Vitor Saves",'
+                '  "country": "United States"'
+                '}'
+              )
+              ReadOnly = True
+              ScrollBars = ssVertical
+              TabOrder = 1
+            end
+          end
+        end
+        object Panel8: TPanel
+          Left = 0
+          Height = 470
+          Top = 0
+          Width = 420
+          Align = alLeft
+          BevelOuter = bvNone
+          ClientHeight = 470
+          ClientWidth = 420
+          ParentBackground = False
+          TabOrder = 1
+          object Panel9: TPanel
+            Left = 0
+            Height = 25
+            Top = 0
+            Width = 420
+            Align = alTop
+            Alignment = taLeftJustify
+            BevelOuter = bvNone
+            Caption = '  Users'
+            Color = 16091980
+            Font.Color = clWhite
+            Font.Height = -12
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentBackground = False
+            ParentColor = False
+            ParentFont = False
+            TabOrder = 0
+          end
+          object DBGrid2: TDBGrid
+            Left = 0
+            Height = 445
+            Top = 25
+            Width = 420
+            Align = alClient
+            Color = clWindow
+            Columns = <            
+              item
+                Title.Caption = 'ID'
+                Width = 60
+                FieldName = 'ID'
+              end            
+              item
+                Title.Caption = 'Name'
+                Width = 150
+                FieldName = 'NAME'
+              end            
+              item
+                Title.Caption = 'COUNTRY'
+                Width = 150
+                FieldName = 'COUNTRY'
+              end>
+            DataSource = dsUsers
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Segoe UI'
+            Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgCancelOnExit]
+            ParentFont = False
+            TabOrder = 1
+            TitleFont.Color = clWindowText
+            TitleFont.Height = -11
+            TitleFont.Name = 'Tahoma'
+          end
+        end
+      end
+    end
+  end
+  object mtUsers: TMemDataset
     FieldDefs = <    
       item
-        Name = 'MemDataset1Field1'
-        DataType = ftAutoInc
+        Name = 'ID'
+        DataType = ftInteger
+        Size = 11
+      end    
+      item
+        Name = 'NAME'
+        DataType = ftString
+        Size = 100
+      end    
+      item
+        Name = 'COUNTRY'
+        DataType = ftString
+        Size = 100
       end>
-    Left = 144
-    Top = 46
+    Left = 579
+    Top = 272
+  end
+  object dsUsers: TDataSource
+    DataSet = mtUsers
+    Left = 579
+    Top = 326
   end
 end

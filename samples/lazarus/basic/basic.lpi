@@ -26,13 +26,16 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="MemDSLaz"/>
+        <PackageName Value="FCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="MemDSLaz"/>
       </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
     </RequiredPackages>
     <Units Count="11">
       <Unit0>
@@ -43,6 +46,7 @@
         <Filename Value="src\dataset.serialize.samples.basic.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FrmBasic"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="DataSet.Serialize.Samples.Basic"/>
       </Unit1>
