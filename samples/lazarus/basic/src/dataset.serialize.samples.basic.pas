@@ -19,13 +19,18 @@ type
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
+    Button7: TButton;
+    dsEmpty: TDataSource;
     DBGrid2: TDBGrid;
+    DBGrid3: TDBGrid;
     dsUsers: TDataSource;
     DBGrid1: TDBGrid;
     edtCountry: TEdit;
     edtName: TEdit;
     Label2: TLabel;
     Label3: TLabel;
+    mtEmpty: TMemDataset;
+    memoEmpty: TMemo;
     memoJSONArray: TMemo;
     memoJSONObject: TMemo;
     memoMerge: TMemo;
@@ -39,6 +44,8 @@ type
     Panel13: TPanel;
     Panel14: TPanel;
     Panel15: TPanel;
+    Panel16: TPanel;
+    Panel17: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
@@ -51,6 +58,7 @@ type
     Splitter2: TSplitter;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
     procedure btnLoadJSONArrayClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -58,6 +66,7 @@ type
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
   end;
 
 var
@@ -72,7 +81,7 @@ implementation
 procedure TFrmBasic.Button2Click(Sender: TObject);
 begin
   if not mtUsers.Active then
-     mtUsers.Active := True;
+    mtUsers.Active := True;
   mtUsers.Append;
   mtUsers.FieldByName('ID').AsInteger := Succ(mtUsers.RecordCount);
   mtUsers.FieldByName('NAME').AsString := edtName.Text;
@@ -130,18 +139,23 @@ end;
 procedure TFrmBasic.Button5Click(Sender: TObject);
 begin
   if not mtUsers.Active then
-     mtUsers.Active := True;
+    mtUsers.Active := True;
   mtUsers.LoadFromJSON(memoJSONObject.Lines.Text);
 end;
 
 procedure TFrmBasic.Button6Click(Sender: TObject);
 begin
   if not mtUsers.Active then
-     mtUsers.Active := True;
+    mtUsers.Active := True;
   if not(mtUsers.Active) or mtUsers.IsEmpty then
     ShowMessage('No selected user to merge!')
   else
     mtUsers.MergeFromJSONObject(memoMerge.Lines.Text);
+end;
+
+procedure TFrmBasic.Button7Click(Sender: TObject);
+begin
+  mtEmpty.LoadFromJSON(memoEmpty.Lines.Text);
 end;
 
 end.

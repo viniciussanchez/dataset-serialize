@@ -120,16 +120,14 @@ type
     ///   The key values of the ADataSet parameter.
     /// </returns>
     function GetKeyValuesDataSet(const ADataSet: TDataSet; const AJSONObject: TJSONObject): TKeyValues;
-    {$IF NOT DEFINED(FPC)}
     /// <summary>
-    ///   Convert JSONPait in FieldName.
+    ///   Convert string in FieldName.
     /// </summary>
-    function JSONPairToFieldName(const AJSONPair: TJSONPair): string;
+    function JSONPairToFieldName(const AValue: string): string;
     /// <summary>
     ///   Load the fields into the dataset.
     /// </summary>
     procedure LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
-    {$ENDIF}
   public
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
@@ -222,16 +220,18 @@ begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
 
-  {$IF NOT DEFINED(FPC)}
   if not(ADataSet.Active) then
   begin
+    {$IF NOT DEFINED(FPC)}
     if not(ADataSet is TFDMemTable)  then
       Exit;
+    {$ENDIF}
     if ((ADataSet.FieldDefs.Count = 0) and (ADataSet.FieldCount = 0)) then
       LoadFieldsFromJSON(ADataSet, AJSONObject);
     ADataSet.Open;
   end;
 
+  {$IF NOT DEFINED(FPC)}
   LMasterSource := nil;
   {$ENDIF}
   try
@@ -399,13 +399,12 @@ begin
   {$ENDIF}
 end;
 
-{$IF NOT DEFINED(FPC)}
-function TJSONSerialize.JSONPairToFieldName(const AJSONPair: TJSONPair): string;
+function TJSONSerialize.JSONPairToFieldName(const AValue: string): string;
 var
   I: Integer;
   LFieldName: string;
 begin
-  Result := AJSONPair.JsonString.Value;
+  Result := AValue;
   if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
     Exit;
   LFieldName := EmptyStr;
@@ -417,7 +416,6 @@ begin
   end;
   Result := LFieldName.ToUpper;      
 end;
-{$ENDIF}
 
 procedure TJSONSerialize.JSONValueToDataSet(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}; const ADataSet: TDataSet);
 begin
@@ -506,20 +504,27 @@ begin
   end;
 end;
 
-{$IF NOT DEFINED(FPC)}
 procedure TJSONSerialize.LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
 var
+  {$IF DEFINED(FPC)}
+  I: Integer;
+  {$ELSE}
   LJSONPair: TJSONPair;
+  {$ENDIF}
 begin
+  {$IF DEFINED(FPC)}
+  for I := 0 to Pred(AJSONObject.Count) do
+  {$ELSE}
   for LJSONPair in AJSONObject do
+  {$ENDIF}
   begin
     with ADataSet.FieldDefs.AddFieldDef do
     begin
-      Name := JSONPairToFieldName(LJSONPair);
-      if Length(LJSONPair.JsonValue.Value) > 4096 then
+      Name := JSONPairToFieldName({$IF DEFINED(FPC)}AJSONObject.Names[I]{$ELSE}LJSONPair.JsonString.Value{$ENDIF});
+      if Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonString.Value{$ENDIF}) > 4096 then
       begin
         DataType := ftBlob;
-        Size := Length(LJSONPair.Value);
+        Size := Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.Value{$ENDIF});
       end
       else
       begin
@@ -529,7 +534,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
 function TJSONSerialize.LoadFieldStructure(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}): TFieldStructure;
 var

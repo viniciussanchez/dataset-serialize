@@ -522,6 +522,100 @@ object FrmBasic: TFrmBasic
         end
       end
     end
+    object TabSheet3: TTabSheet
+      Caption = 'Load empty DataSet'
+      ClientHeight = 470
+      ClientWidth = 874
+      object Panel17: TPanel
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 874
+        Align = alTop
+        Alignment = taLeftJustify
+        BevelOuter = bvNone
+        Caption = '  JSON String'
+        Color = 16091980
+        Font.Color = clWhite
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 0
+      end
+      object memoEmpty: TMemo
+        Left = 0
+        Height = 219
+        Top = 25
+        Width = 874
+        Align = alTop
+        BorderStyle = bsNone
+        Lines.Strings = (
+          '['
+          '  {'
+          '    "ID": 3,'
+          '    "DESCRICAO": "Coca Cola",'
+          '    "CATEGORIA": 1,'
+          '    "PRECO": 2,'
+          '    "CATEGORIA_DESCRICAO": "BEBEDIAS"'
+          '  },'
+          '  {'
+          '    "ID": 1,'
+          '    "DESCRICAO": "RedBull",'
+          '    "CATEGORIA": 1,'
+          '    "PRECO": 2.39,'
+          '    "CATEGORIA_DESCRICAO": "BEBEDIAS"'
+          '  }'
+          ']'
+        )
+        TabOrder = 1
+      end
+      object Panel16: TPanel
+        Left = 0
+        Height = 25
+        Top = 244
+        Width = 874
+        Align = alTop
+        Alignment = taLeftJustify
+        BevelOuter = bvNone
+        Caption = 'DataSet'
+        Color = 16091980
+        Font.Color = clWhite
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 2
+      end
+      object Button7: TButton
+        Left = 0
+        Height = 25
+        Top = 269
+        Width = 874
+        Align = alTop
+        Caption = 'Load from JSON string'
+        OnClick = Button7Click
+        TabOrder = 3
+      end
+      object DBGrid3: TDBGrid
+        Left = 0
+        Height = 176
+        Top = 294
+        Width = 874
+        Align = alClient
+        Color = clWindow
+        Columns = <>
+        DataSource = dsEmpty
+        TabOrder = 4
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Segoe UI'
+      end
+    end
   end
   object mtUsers: TMemDataset
     FieldDefs = <    
@@ -547,5 +641,15 @@ object FrmBasic: TFrmBasic
     DataSet = mtUsers
     Left = 579
     Top = 326
+  end
+  object dsEmpty: TDataSource
+    DataSet = mtEmpty
+    Left = 640
+    Top = 326
+  end
+  object mtEmpty: TMemDataset
+    FieldDefs = <>
+    Left = 640
+    Top = 272
   end
 end
