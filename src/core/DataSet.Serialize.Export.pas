@@ -256,26 +256,22 @@ end;
 function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
 var
   LMemoryStream: TMemoryStream;
-  {$IF NOT DEFINED(FPC)}
   LStringStream: TStringStream;
-  {$ENDIF}
 begin
   LMemoryStream := TMemoryStream.Create;
+  LStringStream := TStringStream.Create;
   try
     TBlobField(AField).SaveToStream(LMemoryStream);
     LMemoryStream.Position := 0;
     {$IF DEFINED(FPC)}
-    Result := EncodeStringBase64(TStringStream(LMemoryStream).DataString);
+    LStringStream.LoadFromStream(LMemoryStream);
+    Result := EncodeStringBase64(LStringStream.DataString);
     {$ELSE}
-    LStringStream := TStringStream.Create;
-    try
-      TNetEncoding.Base64.Encode(LMemoryStream, LStringStream);
-      Result := LStringStream.DataString;
-    finally
-      LStringStream.Free;
-    end;
+    TNetEncoding.Base64.Encode(LMemoryStream, LStringStream);
+    Result := LStringStream.DataString;
     {$ENDIF}
   finally
+    LStringStream.Free;
     LMemoryStream.Free;
   end;
 end;
