@@ -20,8 +20,6 @@ type
 
 implementation
 
-{ TUpdateStatusHelper }
-
 function TUpdateStatusHelper.ToString: string;
 begin
   case Self of

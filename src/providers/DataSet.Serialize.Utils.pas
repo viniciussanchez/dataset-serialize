@@ -110,8 +110,6 @@ implementation
 
 uses DataSet.Serialize.Consts, DataSet.Serialize.Config;
 
-{ TDataSetSerializeUtils }
-
 class function TDataSetSerializeUtils.BooleanFieldToType(const ABooleanField: TBooleanField): TBooleanFieldType;
 var
   I: Integer;

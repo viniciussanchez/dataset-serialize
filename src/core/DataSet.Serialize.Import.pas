@@ -216,6 +216,7 @@ var
   LMasterSource: TDataSource;
   {$ENDIF}
   LObjectState: string;
+  LFormatSettings: TFormatSettings;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
@@ -347,7 +348,12 @@ begin
           TFieldType.ftTimeStamp, TFieldType.ftDateTime:
              LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
           TFieldType.ftTime:
-             LField.AsDateTime := StrToTime(LJSONValue.Value);
+          begin
+             LFormatSettings.TimeSeparator := ':';
+             LFormatSettings.DecimalSeparator := '.';
+             LFormatSettings.ShortTimeFormat := 'hh:mm:ss.zzz';
+             LField.AsDateTime := StrToTime(LJSONValue.Value, LFormatSettings);
+          end;
           {$IF NOT DEFINED(FPC)}
           TFieldType.ftDataSet:
             begin
@@ -414,7 +420,7 @@ begin
       LFieldName := LFieldName + '_';
     LFieldName := LFieldName + Result[I];
   end;
-  Result := LFieldName.ToUpper;      
+  Result := LFieldName.ToUpper;
 end;
 
 procedure TJSONSerialize.JSONValueToDataSet(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}; const ADataSet: TDataSet);

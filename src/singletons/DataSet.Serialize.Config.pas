@@ -63,8 +63,6 @@ uses
   System.SysUtils;
 {$ENDIF}
 
-{ TDataSetSerializeConfig }
-
 constructor TDataSetSerializeConfig.Create;
 begin
   if not Assigned(FExport) then
@@ -94,8 +92,6 @@ begin
   Result := Instancia;
 end;
 
-{ TDataSetSerializeConfigExport }
-
 constructor TDataSetSerializeConfigExport.Create;
 begin
   FExportNullValues := True;
@@ -105,8 +101,6 @@ begin
   FFormatDate := 'YYYY-MM-DD';
   FExportChildDataSetAsJsonObject := False;
 end;
-
-{ TDataSetSerializeConfigImport }
 
 constructor TDataSetSerializeConfigImport.Create;
 begin
