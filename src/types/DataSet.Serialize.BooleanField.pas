@@ -14,8 +14,6 @@ type
 
 implementation
 
-{ TBooleanFieldTypeHelper }
-
 function TBooleanFieldTypeHelper.ToString: string;
 begin
   case Self of

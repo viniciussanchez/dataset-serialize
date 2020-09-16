@@ -51,8 +51,6 @@ implementation
 
 uses System.SysUtils;
 
-{ TDataSetSerializeConfig }
-
 constructor TDataSetSerializeConfig.Create;
 begin
   if not Assigned(FExport) then
@@ -87,8 +85,6 @@ begin
   Result := Instancia;
 end;
 
-{ TDataSetSerializeConfigExport }
-
 constructor TDataSetSerializeConfigExport.Create;
 begin
   FExportNullValues := True;
@@ -96,8 +92,6 @@ begin
   FFormatCurrency := '0.00##';
   FFormatDate := 'YYYY-MM-DD';
 end;
-
-{ TDataSetSerializeConfigImport }
 
 constructor TDataSetSerializeConfigImport.Create;
 begin
