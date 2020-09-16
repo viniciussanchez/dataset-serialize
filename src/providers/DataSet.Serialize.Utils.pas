@@ -1,8 +1,18 @@
 unit DataSet.Serialize.Utils;
 
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
-uses System.DateUtils, System.JSON, Data.DB, DataSet.Serialize.BooleanField, System.SysUtils, System.Classes, System.Character;
+uses
+{$IF DEFINED(FPC)}
+  DB, fpjson, SysUtils, Classes,
+{$ELSE}
+  System.DateUtils, System.JSON, Data.DB, System.SysUtils, System.Classes, System.Character,
+{$ENDIF}
+  DataSet.Serialize.BooleanField;
 
 type
   /// <summary>
@@ -30,13 +40,15 @@ type
     Required: Boolean;
     Visible: Boolean;
     ReadOnly: Boolean;
+    {$IF NOT DEFINED(FPC)}
     AutoGenerateValue: TAutoRefreshFlag;
+    {$ENDIF}
   end;
 
   TDataSetSerializeUtils = class
   public
     /// <summary>
-    ///   Transform field name in lower camel case pattern.
+    ///   Transform name in lower camel case pattern.
     /// </summary>
     /// <param name="AFieldName">
     ///   Field name to format.
@@ -44,7 +56,7 @@ type
     /// <returns>
     ///   Field name in lower camel case format.
     /// </returns>
-    class function FieldNameToLowerCamelCase(const AFieldName: string): string;
+    class function NameToLowerCamelCase(const AFieldName: string): string;
     /// <summary>
     ///   Creates a new field in the DataSet.
     /// </summary>
@@ -87,7 +99,7 @@ type
     /// <returns>
     ///   Returns a JSONValue.
     /// </returns>
-    class function BooleanToJSON(const AValue: Boolean): TJSONValue;
+    class function BooleanToJSON(const AValue: Boolean): {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
     /// <summary>
     ///   Remove the prefix "mt" or "qry" of an child dataset.
     /// </summary>
@@ -114,6 +126,9 @@ var
   LCharacter: Char;
 begin
   I := 0;
+  {$IF DEFINED(FPC)}
+  Result := EmptyStr;
+  {$ENDIF}
   SetLength(Result, Length(AName));
   for LCharacter in AName do
   begin
@@ -130,37 +145,32 @@ begin
     Result := '_' + Result;
 end;
 
-class function TDataSetSerializeUtils.FieldNameToLowerCamelCase(const AFieldName: string): string;
+class function TDataSetSerializeUtils.NameToLowerCamelCase(const AFieldName: string): string;
 var
-  LChar: string;
-  LUnderline: Boolean;
+  I: Integer;
+  LField: TArray<Char>;
 begin
   Result := EmptyStr;
   if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
     Exit(AFieldName.ToLower);
-  LUnderline := False;
-  for LChar in AFieldName do
+  LField := AFieldName.ToCharArray;
+  I := Low(LField);
+  While i <= High(LField) do
   begin
-    if LChar.Equals('_') then
+    if (LField[I] = '_') then
     begin
-      LUnderline := True;
-      Continue;
-    end;
-    if LUnderline then
-    begin
-      LUnderline := False;
-      Result := Result + LChar.ToUpper;
-      Continue;
-    end;
-    Result := Result + LChar.ToLower;
+      Inc(i);
+      Result := Result + UpperCase(LField[I]);
+    end
+    else
+      Result := Result + LowerCase(LField[I]);
+    Inc(i);
   end;
   if Result.IsEmpty then
     Result := AFieldName;
 end;
 
 class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;
-const
-  FIRST_CHAR = 1;
 var
   LPrefix: string;
 begin
@@ -171,10 +181,7 @@ begin
       Result := Copy(ADataSetName, Succ(LPrefix.Length), ADataSetName.Length - LPrefix.Length);
       Break;
     end;
-  if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
-    Result := Result.ToLower
-  else
-    Result[FIRST_CHAR] := Result[FIRST_CHAR].ToLower;
+  Result := Self.NameToLowerCamelCase(Result);
 end;
 
 class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;
@@ -194,10 +201,12 @@ begin
       TBCDField(Result).Precision := AFieldStructure.Precision;
     ftFloat: 
       TFloatField(Result).Precision := AFieldStructure.Precision;
+    {$IF NOT DEFINED(FPC)}
     ftSingle: 
       TSingleField(Result).Precision := AFieldStructure.Precision;
     ftExtended: 
       TExtendedField(Result).Precision := AFieldStructure.Precision;
+    {$ENDIF}
     ftCurrency: 
       TCurrencyField(Result).Precision := AFieldStructure.Precision;
     ftFMTBcd: 
@@ -209,19 +218,21 @@ begin
   Result.Required := AFieldStructure.Required;
   Result.Origin := AFieldStructure.Origin;
   Result.DisplayLabel := AFieldStructure.DisplayLabel;
+  {$IF NOT DEFINED(FPC)}
   Result.AutoGenerateValue := AFieldStructure.AutoGenerateValue;
+  {$ENDIF}
   if AFieldStructure.Key then
     Result.ProviderFlags := [pfInKey];
   if (AFieldStructure.FieldType in [ftString, ftWideString]) and (AFieldStructure.Size <= 0) then
     raise EDataSetSerializeException.CreateFmt(SIZE_NOT_DEFINED_FOR_FIELD, [AFieldStructure.FieldName]);
 end;
 
-class function TDataSetSerializeUtils.BooleanToJSON(const AValue: Boolean): TJSONValue;
+class function TDataSetSerializeUtils.BooleanToJSON(const AValue: Boolean): {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
 begin
   if AValue then
-    Result := TJSONTrue.Create
+    Result := {$IF DEFINED(FPC)}TJSONBoolean.Create(True){$ELSE}TJSONTrue.Create{$ENDIF}
   else
-    Result := TJSONFalse.Create;
+    Result := {$IF DEFINED(FPC)}TJSONBoolean.Create(False){$ELSE}TJSONFalse.Create{$ENDIF};
 end;
 
 end.

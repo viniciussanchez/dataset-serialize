@@ -51,6 +51,14 @@ type
     memoMerge: TMemo;
     DBGrid2: TDBGrid;
     Splitter2: TSplitter;
+    tabEmptyDataSet: TTabSheet;
+    Panel16: TPanel;
+    mtEmpty: TFDMemTable;
+    dsEmpty: TDataSource;
+    DBGrid3: TDBGrid;
+    memoEmpty: TMemo;
+    Panel17: TPanel;
+    Button7: TButton;
     procedure Button2Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -59,12 +67,16 @@ type
     procedure btnLoadJSONArrayClick(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
   end;
 
 var
   FrmSamples: TFrmSamples;
 
 implementation
+
+uses
+  DataSet.Serialize.Utils;
 
 {$R *.dfm}
 
@@ -82,7 +94,11 @@ var
 begin
   LJSONArray := mtUsers.ToJSONArray;
   try
+{$IF COMPILERVERSION < 33}
+    memoDataSet.Lines.Text := LJSONArray.ToJSON;
+{$ELSE}
     memoDataSet.Lines.Text := LJSONArray.Format;
+{$ENDIF}
   finally
     LJSONArray.Free;
   end;
@@ -105,7 +121,11 @@ var
 begin
   LJSONArray := mtUsers.SaveStructure;
   try
+{$IF COMPILERVERSION < 33}
+    memoDataSet.Lines.Text := LJSONArray.ToJSON;
+{$ELSE}
     memoDataSet.Lines.Text := LJSONArray.Format;
+{$ENDIF}
   finally
     LJSONArray.Free;
   end;
@@ -117,7 +137,11 @@ var
 begin
   LJSONObject := mtUsers.ToJSONObject;
   try
+{$IF COMPILERVERSION < 33}
+    memoDataSet.Lines.Text := LJSONObject.ToJSON;
+{$ELSE}
     memoDataSet.Lines.Text := LJSONObject.Format;
+{$ENDIF}
   finally
     LJSONObject.Free;
   end;
@@ -134,6 +158,11 @@ begin
     ShowMessage('No selected user to merge!')
   else
     mtUsers.MergeFromJSONObject(memoMerge.Lines.Text);
+end;
+
+procedure TFrmSamples.Button7Click(Sender: TObject);
+begin
+  mtEmpty.LoadFromJSON(memoEmpty.Lines.Text);
 end;
 
 procedure TFrmSamples.FormCreate(Sender: TObject);

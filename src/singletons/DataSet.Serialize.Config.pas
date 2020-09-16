@@ -1,5 +1,9 @@
 unit DataSet.Serialize.Config;
 
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
 type
@@ -7,14 +11,18 @@ type
   private
     FExportNullValues: Boolean;
     FExportOnlyFieldsVisible: Boolean;
+    FExportEmptyDataSet: Boolean;
     FFormatCurrency: string;
     FFormatDate: string;
+    FExportChildDataSetAsJsonObject: Boolean;
   public
     constructor Create;
     property FormatDate: string read FFormatDate write FFormatDate;
     property FormatCurrency: string read FFormatCurrency write FFormatCurrency;
     property ExportOnlyFieldsVisible: Boolean read FExportOnlyFieldsVisible write FExportOnlyFieldsVisible;
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
+    property ExportEmptyDataSet: Boolean read FExportEmptyDataSet write FExportEmptyDataSet;
+    property ExportChildDataSetAsJsonObject: Boolean read FExportChildDataSetAsJsonObject write FExportChildDataSetAsJsonObject;
   end;
 
   TDataSetSerializeConfigImport = class
@@ -40,7 +48,6 @@ type
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
     property Import: TDataSetSerializeConfigImport read FImport write FImport;
     class function GetInstance: TDataSetSerializeConfig;
-    class function NewInstance: TObject; override;
     destructor Destroy; override;
   end;
 
@@ -49,7 +56,12 @@ var
 
 implementation
 
-uses System.SysUtils;
+uses
+{$IF DEFINED(FPC)}
+  SysUtils;
+{$ELSE}
+  System.SysUtils;
+{$ENDIF}
 
 constructor TDataSetSerializeConfig.Create;
 begin
@@ -70,14 +82,9 @@ end;
 
 class function TDataSetSerializeConfig.GetInstance: TDataSetSerializeConfig;
 begin
-  Result := TDataSetSerializeConfig.Create;
-end;
-
-class function TDataSetSerializeConfig.NewInstance: TObject;
-begin
   if not Assigned(Instancia) then
   begin
-    Instancia := TDataSetSerializeConfig(inherited NewInstance);
+    Instancia := TDataSetSerializeConfig.Create;
     Instancia.LowerCamelCase := True;
     Instancia.DataSetPrefix := ['mt', 'qry'];
     Instancia.DateInputIsUTC := True;
@@ -89,8 +96,10 @@ constructor TDataSetSerializeConfigExport.Create;
 begin
   FExportNullValues := True;
   FExportOnlyFieldsVisible := True;
-  FFormatCurrency := '0.00##';
+  ExportEmptyDataSet := False;
+  FFormatCurrency := EmptyStr;
   FFormatDate := 'YYYY-MM-DD';
+  FExportChildDataSetAsJsonObject := False;
 end;
 
 constructor TDataSetSerializeConfigImport.Create;

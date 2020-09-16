@@ -40,6 +40,14 @@ type
     Panel10: TPanel;
     Button1: TButton;
     memoJSON: TMemo;
+    chkExportEmptyDataSet: TCheckBox;
+    dsLog: TDataSource;
+    mtLog: TFDMemTable;
+    mtLogID_USER: TIntegerField;
+    mtLogID: TIntegerField;
+    mtLogLOG: TStringField;
+    DBGrid2: TDBGrid;
+    chkExportChildDataSetAsJsonObject: TCheckBox;
     procedure chkDateInputIsUTCClick(Sender: TObject);
     procedure chkExportNullValuesClick(Sender: TObject);
     procedure chkExportOnlyFieldsVisibleClick(Sender: TObject);
@@ -50,6 +58,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure chbFieldsClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure chkExportEmptyDataSetClick(Sender: TObject);
+    procedure chkExportChildDataSetAsJsonObjectClick(Sender: TObject);
   private
     procedure LoadFields;
     procedure LoadUsers;
@@ -78,7 +88,9 @@ var
 begin
   LJSONArray := mtUsers.ToJSONArray;
   try
-    memoJSON.Lines.Text := LJSONArray.Format;
+
+    memoJSON.Lines.Text :=  {$IFDEF CompilerVersion > 32} LJSONArray.Format {$ELSE} LJSONArray.ToJSON {$ENDIF};
+
   finally
     LJSONArray.Free;
   end;
@@ -94,6 +106,11 @@ begin
   TDataSetSerializeConfig.GetInstance.DateInputIsUTC := chkDateInputIsUTC.Checked;
 end;
 
+procedure TFrmSamples.chkExportEmptyDataSetClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet := chkExportEmptyDataSet.Checked;
+end;
+
 procedure TFrmSamples.chkExportNullValuesClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := chkExportNullValues.Checked;
@@ -102,6 +119,11 @@ end;
 procedure TFrmSamples.chkExportOnlyFieldsVisibleClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := chkExportOnlyFieldsVisible.Checked;
+end;
+
+procedure TFrmSamples.chkExportChildDataSetAsJsonObjectClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject := chkExportChildDataSetAsJsonObject.Checked;
 end;
 
 procedure TFrmSamples.chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
@@ -135,10 +157,21 @@ procedure TFrmSamples.LoadUsers;
 begin
   if not mtUsers.Active then
     mtUsers.Open;
-  mtUsers.AppendRecord([1, 'Mateus Vicente', '13/04/1998', 15000.00]);
+
+  if not mtLog.Active then
+    mtLog.Open;
+
+  mtUsers.AppendRecord([1, 'Mateus Vicente', '13/04/1998', 14999.99]);
   mtUsers.AppendRecord([2, 'Vinicius Sanchez', '03/08/1995', Null]);
   mtUsers.AppendRecord([3, 'Julio Senha', '04/06/1985', 27000.00]);
   mtUsers.AppendRecord([4, 'Fagner Granela', Null, 105000.00]);
+
+  mtLog.AppendRecord([1, 1, 'Login']);
+  mtLog.AppendRecord([2, 1, 'Logout']);
+  mtLog.AppendRecord([3, 2, 'Login']);
+  mtLog.AppendRecord([4, 2, 'Logout']);
+  mtLog.AppendRecord([5, 2, 'Login']);
+  mtLog.AppendRecord([6, 4, 'Login']);
 end;
 
 end.

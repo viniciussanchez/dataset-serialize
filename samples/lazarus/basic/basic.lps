@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Default"/>
+    <Units Count="23">
+      <Unit0>
+        <Filename Value="basic.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="38" Y="8"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrmBasic"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="DataSet.Serialize.Samples.Basic"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="144"/>
+        <CursorPos X="117" Y="150"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\..\src\types\DataSet.Serialize.BooleanField.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="11" Y="5"/>
+        <UsageCount Value="28"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\..\src\types\DataSet.Serialize.Language.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="12" Y="2"/>
+        <UsageCount Value="28"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\..\src\types\DataSet.Serialize.UpdatedStatus.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="45" Y="3"/>
+        <UsageCount Value="28"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\..\src\singletons\DataSet.Serialize.Config.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="34"/>
+        <CursorPos X="5" Y="43"/>
+        <UsageCount Value="28"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\..\src\providers\DataSet.Serialize.Consts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="8" Y="2"/>
+        <UsageCount Value="28"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\..\src\providers\DataSet.Serialize.Utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="125"/>
+        <CursorPos X="19" Y="134"/>
+        <UsageCount Value="28"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\..\src\helpers\DataSet.Serialize.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="242"/>
+        <CursorPos X="3" Y="248"/>
+        <UsageCount Value="28"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Export.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="40"/>
+        <CursorPos X="31" Y="48"/>
+        <UsageCount Value="28"/>
+        <Bookmarks Count="1">
+          <Item0 X="17" Y="327" ID="2"/>
+        </Bookmarks>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="516"/>
+        <CursorPos X="73" Y="524"/>
+        <UsageCount Value="28"/>
+        <Bookmarks Count="2">
+          <Item0 X="33" Y="130" ID="1"/>
+          <Item1 X="44" Y="507" ID="2"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\packages\fcl-db\src\base\db.pas"/>
+        <UnitName Value="DB"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="42" Y="2"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\packages\fcl-json\src\fpjson.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="37"/>
+        <CursorPos X="3" Y="48"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\rtl\win\sysutils.pp"/>
+        <UnitName Value="SysUtils"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="13"/>
+        <CursorPos X="39" Y="17"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\packages\rtl-objpas\src\inc\variants.pp"/>
+        <UnitName Value="Variants"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="10"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\packages\rtl-objpas\src\inc\dateutils.pp"/>
+        <UnitName Value="DateUtils"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="33"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\packages\fcl-base\src\base64.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="10"/>
+        <CursorPos X="12" Y="25"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\rtl\objpas\fgl.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="921"/>
+        <CursorPos Y="930"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\packages\rtl-generics\src\generics.collections.pas"/>
+        <UnitName Value="Generics.Collections"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="135"/>
+        <CursorPos X="52" Y="144"/>
+        <UsageCount Value="10"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\rtl\objpas\typinfo.pp"/>
+        <UnitName Value="TypInfo"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="13"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\packages\rtl-objpas\src\inc\fmtbcd.pp"/>
+        <UnitName Value="FmtBCD"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="130"/>
+        <CursorPos X="12" Y="139"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\packages\fcl-db\src\memds\memds.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="22"/>
+        <CursorPos X="29" Y="26"/>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="D:\Programas\lazarus\fpc\3.2.0\source\rtl\inc\systemh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="456"/>
+        <CursorPos X="3" Y="465"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="126" Column="51" TopLine="119"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="407" Column="3" TopLine="400"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="130" Column="33" TopLine="123"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="507" Column="44" TopLine="497"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="511" Column="22" TopLine="503"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="510" Column="6" TopLine="501"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="126" Column="28" TopLine="120"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="130" Column="33" TopLine="120"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="511" Column="18" TopLine="497"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="510" Column="6" TopLine="497"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="126" Column="33" TopLine="123"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="402" Column="60" TopLine="399"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="407" Column="22" TopLine="399"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="515" Column="44" TopLine="504"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="126" Column="40" TopLine="123"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="405" Column="27" TopLine="404"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="130" Column="33" TopLine="122"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="516" Column="26" TopLine="510"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="507" Column="26" TopLine="532"/>
+      </Position19>
+      <Position20>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="89" Column="32" TopLine="86"/>
+      </Position20>
+      <Position21>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="90" Column="32" TopLine="87"/>
+      </Position21>
+      <Position22>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="91" Column="32" TopLine="88"/>
+      </Position22>
+      <Position23>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="92" Column="32" TopLine="89"/>
+      </Position23>
+      <Position24>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="93" Column="32" TopLine="90"/>
+      </Position24>
+      <Position25>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="94" Column="32" TopLine="91"/>
+      </Position25>
+      <Position26>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="95" Column="32" TopLine="92"/>
+      </Position26>
+      <Position27>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="96" Column="32" TopLine="93"/>
+      </Position27>
+      <Position28>
+        <Filename Value="src\dataset.serialize.samples.basic.pas"/>
+        <Caret Line="98" Column="32" TopLine="95"/>
+      </Position28>
+      <Position29>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="378" Column="44" TopLine="353"/>
+      </Position29>
+      <Position30>
+        <Filename Value="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
+        <Caret Line="130" Column="33" TopLine="122"/>
+      </Position30>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

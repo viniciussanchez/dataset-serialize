@@ -33,27 +33,25 @@ object FrmSamples: TFrmSamples
     ParentBackground = False
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 420
   end
   object Panel1: TPanel
     Left = 0
     Top = 25
     Width = 984
-    Height = 230
+    Height = 165
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 31
     object Label1: TLabel
-      Left = 10
-      Top = 130
+      Left = 466
+      Top = 8
       Width = 248
       Height = 13
       Caption = 'Format date (for export field type equals ftDate):'
     end
     object Label4: TLabel
-      Left = 10
-      Top = 178
+      Left = 466
+      Top = 56
       Width = 289
       Height = 13
       Caption = 'Format currency (for export field type equals ftCurrency):'
@@ -103,16 +101,16 @@ object FrmSamples: TFrmSamples
       OnClick = chkFieldNameLowerCamelCasePatternClick
     end
     object edtFormatDate: TEdit
-      Left = 10
-      Top = 149
+      Left = 466
+      Top = 27
       Width = 326
       Height = 21
       TabOrder = 4
       Text = 'YYYY-MM-DD'
     end
     object btnApplyFormatDate: TButton
-      Left = 342
-      Top = 147
+      Left = 798
+      Top = 25
       Width = 58
       Height = 25
       Caption = 'Apply'
@@ -120,16 +118,16 @@ object FrmSamples: TFrmSamples
       OnClick = btnApplyFormatDateClick
     end
     object edtFormatCurrency: TEdit
-      Left = 10
-      Top = 197
+      Left = 466
+      Top = 75
       Width = 326
       Height = 21
       TabOrder = 6
       Text = '0.00##'
     end
     object btnFormatCurrency: TButton
-      Left = 342
-      Top = 195
+      Left = 798
+      Top = 73
       Width = 58
       Height = 25
       Caption = 'Apply'
@@ -147,25 +145,48 @@ object FrmSamples: TFrmSamples
       TabOrder = 8
       OnClick = chkImportOnlyFieldsVisibleClick
     end
+    object chkExportEmptyDataSet: TCheckBox
+      Left = 10
+      Top = 121
+      Width = 300
+      Height = 17
+      Caption = 'Export empty dataset'
+      Checked = True
+      State = cbChecked
+      TabOrder = 9
+      OnClick = chkExportEmptyDataSetClick
+    end
+    object chkExportChildDataSetAsJsonObject: TCheckBox
+      Left = 10
+      Top = 142
+      Width = 300
+      Height = 17
+      Hint = 
+        'Child dataset needs to have just one record, if child dataset ha' +
+        's more than one record it became an jsonarray again'
+      Caption = 'Export child dataset as json object'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 10
+      OnClick = chkExportChildDataSetAsJsonObjectClick
+    end
   end
   object Panel3: TPanel
     Left = 0
-    Top = 255
+    Top = 190
     Width = 984
-    Height = 306
+    Height = 371
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 352
-    ExplicitTop = 392
-    ExplicitWidth = 185
-    ExplicitHeight = 41
+    ExplicitTop = 171
+    ExplicitHeight = 390
     object Panel4: TPanel
       AlignWithMargins = True
       Left = 0
       Top = 0
       Width = 200
-      Height = 306
+      Height = 371
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -173,8 +194,7 @@ object FrmSamples: TFrmSamples
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitTop = 25
-      ExplicitHeight = 281
+      ExplicitHeight = 390
       object Panel5: TPanel
         Left = 0
         Top = 0
@@ -193,19 +213,17 @@ object FrmSamples: TFrmSamples
         ParentBackground = False
         ParentFont = False
         TabOrder = 0
-        ExplicitTop = 8
-        ExplicitWidth = 185
       end
       object chbFields: TCheckListBox
         Left = 0
         Top = 25
         Width = 200
-        Height = 281
+        Height = 346
         Align = alClient
         ItemHeight = 13
         TabOrder = 1
         OnClick = chbFieldsClick
-        ExplicitHeight = 251
+        ExplicitHeight = 365
       end
     end
     object Panel6: TPanel
@@ -213,7 +231,7 @@ object FrmSamples: TFrmSamples
       Left = 202
       Top = 0
       Width = 439
-      Height = 306
+      Height = 371
       Margins.Left = 2
       Margins.Top = 0
       Margins.Right = 0
@@ -221,9 +239,7 @@ object FrmSamples: TFrmSamples
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 210
-      ExplicitTop = 30
-      ExplicitHeight = 271
+      ExplicitHeight = 390
       object Panel7: TPanel
         Left = 0
         Top = 0
@@ -242,14 +258,13 @@ object FrmSamples: TFrmSamples
         ParentBackground = False
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 200
       end
       object DBGrid1: TDBGrid
         Left = 0
         Top = 25
         Width = 439
-        Height = 246
-        Align = alClient
+        Height = 152
+        Align = alTop
         DataSource = dsUsers
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -294,14 +309,49 @@ object FrmSamples: TFrmSamples
       end
       object Button1: TButton
         Left = 0
-        Top = 271
+        Top = 336
         Width = 439
         Height = 35
         Align = alBottom
         Caption = 'ToJSONArray'
         TabOrder = 2
         OnClick = Button1Click
-        ExplicitTop = 25
+        ExplicitTop = 355
+      end
+      object DBGrid2: TDBGrid
+        Left = 0
+        Top = 177
+        Width = 439
+        Height = 159
+        Align = alClient
+        DataSource = dsLog
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        ParentFont = False
+        TabOrder = 3
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'ID'
+            Title.Caption = 'Id'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'LOG'
+            Title.Caption = 'Log'
+            Width = 324
+            Visible = True
+          end>
       end
     end
     object Panel8: TPanel
@@ -309,7 +359,7 @@ object FrmSamples: TFrmSamples
       Left = 643
       Top = 0
       Width = 341
-      Height = 306
+      Height = 371
       Margins.Left = 2
       Margins.Top = 0
       Margins.Right = 0
@@ -317,10 +367,7 @@ object FrmSamples: TFrmSamples
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitLeft = 0
-      ExplicitTop = 25
-      ExplicitWidth = 200
-      ExplicitHeight = 281
+      ExplicitHeight = 390
       object Panel10: TPanel
         Left = 0
         Top = 0
@@ -339,15 +386,12 @@ object FrmSamples: TFrmSamples
         ParentBackground = False
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = 1
-        ExplicitTop = 1
-        ExplicitWidth = 325
       end
       object memoJSON: TMemo
         Left = 0
         Top = 25
         Width = 341
-        Height = 281
+        Height = 346
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -358,8 +402,7 @@ object FrmSamples: TFrmSamples
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 1
-        ExplicitWidth = 542
-        ExplicitHeight = 508
+        ExplicitHeight = 365
       end
     end
   end
@@ -392,6 +435,36 @@ object FrmSamples: TFrmSamples
     end
     object mtUsersSALARY: TCurrencyField
       FieldName = 'SALARY'
+    end
+  end
+  object dsLog: TDataSource
+    DataSet = mtLog
+    Left = 840
+    Top = 431
+  end
+  object mtLog: TFDMemTable
+    IndexFieldNames = 'ID_USER'
+    MasterSource = dsUsers
+    MasterFields = 'ID'
+    DetailFields = 'ID_USER'
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 896
+    Top = 431
+    object mtLogID: TIntegerField
+      FieldName = 'ID'
+    end
+    object mtLogID_USER: TIntegerField
+      FieldName = 'ID_USER'
+    end
+    object mtLogLOG: TStringField
+      FieldName = 'LOG'
+      Size = 250
     end
   end
 end
