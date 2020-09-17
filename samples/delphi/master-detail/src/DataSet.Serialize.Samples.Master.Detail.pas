@@ -66,10 +66,14 @@ type
     mtArray: TFDMemTable;
     mtUsersARRAY: TDataSetField;
     mtArrayVALUE: TIntegerField;
+    Panel14: TPanel;
+    btnExportArrayValue: TButton;
+    memoExportArrayValue: TMemo;
     procedure btnLoadFromJSONArrayClick(Sender: TObject);
     procedure btnExportJSONArrayClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnLoadArrayFromJSONArrayClick(Sender: TObject);
+    procedure btnExportArrayValueClick(Sender: TObject);
   private
     procedure InitializaMasterDetail;
     procedure HideKeyFields;
@@ -81,6 +85,21 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TFrmSamples.btnExportArrayValueClick(Sender: TObject);
+var
+  LJSONArray: TJSONArray;
+begin
+  if not mtUsers.IsEmpty then
+  begin
+    LJSONArray := mtUsers.ToJSONArray;
+    try
+      memoExportArrayValue.Lines.Text := LJSONArray.Format(2);
+    finally
+      LJSONArray.Free;
+    end;
+  end;
+end;
 
 procedure TFrmSamples.btnExportJSONArrayClick(Sender: TObject);
 var
