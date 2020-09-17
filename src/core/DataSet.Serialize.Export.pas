@@ -129,15 +129,61 @@ begin
     ADataSet.First;
     while not ADataSet.Eof do
     begin
-      {$IF NOT DEFINED(FPC)}
+      {$IF DEFINED(FPC)}
+      Result.Add(DataSetToJSONObject(ADataSet));
+      {$ELSE}
       if IsChild and FOnlyUpdatedRecords then
         if (ADataSet.UpdateStatus = TUpdateStatus.usUnmodified) and not(HasChildModification(ADataSet)) then
         begin
           ADataSet.Next;
           Continue;
         end;
+      if (ADataSet.FieldCount = 1) then
+      begin
+        case ADataSet.Fields[0].DataType of
+          TFieldType.ftBoolean:
+        begin
+          case TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(ADataSet.Fields[0])) of
+            bfUnknown, bfBoolean:
+              Result.Add(ADataSet.Fields[0].AsBoolean);
+            else
+              Result.Add(ADataSet.Fields[0].AsInteger);
+          end;
+        end;
+          TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint:
+            Result.Add(ADataSet.Fields[0].AsInteger);
+          TFieldType.ftLongWord, TFieldType.ftAutoInc, TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
+            Result.Add(ADataSet.Fields[0].AsWideString);
+          TFieldType.ftLargeint:
+            Result.Add(ADataSet.Fields[0].AsLargeInt);
+          TFieldType.ftSingle, TFieldType.ftFloat:
+            Result.Add(ADataSet.Fields[0].AsFloat);
+          TFieldType.ftDateTime:
+               Result.Add(FormatDateTime('yyyy-mm-dd hh:mm:ss.zzz', ADataSet.Fields[0].AsDateTime));
+           TFieldType.ftTimeStamp:
+               Result.Add(DateToISO8601(ADataSet.Fields[0].AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
+           TFieldType.ftTime:
+               Result.Add(FormatDateTime('hh:mm:ss.zzz', ADataSet.Fields[0].AsDateTime));
+           TFieldType.ftDate:
+               Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, ADataSet.Fields[0].AsDateTime));
+          TFieldType.ftCurrency:
+            begin
+              if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
+                Result.Add(ADataSet.Fields[0].AsCurrency)
+              else
+                Result.Add(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, ADataSet.Fields[0].AsCurrency));
+            end;
+          TFieldType.ftFMTBcd, TFieldType.ftBCD:
+            Result.Add(BcdToDouble(ADataSet.Fields[0].AsBcd));
+          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob, TFieldType.ftStream:
+            Result.Add(EncodingBlobField(ADataSet.Fields[0]));
+          else
+            raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [ADataSet.Fields[0].FieldName]);
+        end;
+      end
+      else
+        Result.AddElement(DataSetToJSONObject(ADataSet));
       {$ENDIF}
-      Result.{$IF DEFINED(FPC)}Add{$ELSE}AddElement{$ENDIF}(DataSetToJSONObject(ADataSet));
       ADataSet.Next;
     end;
   finally

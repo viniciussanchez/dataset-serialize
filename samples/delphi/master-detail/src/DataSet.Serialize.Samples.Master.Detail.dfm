@@ -20,7 +20,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 984
     Height = 561
-    ActivePage = tabNestedJSON
+    ActivePage = tabArrayValue
     Align = alClient
     MultiLine = True
     TabOrder = 0
@@ -181,6 +181,8 @@ object FrmSamples: TFrmSamples
             ReadOnly = True
             ScrollBars = ssVertical
             TabOrder = 1
+            ExplicitLeft = 3
+            ExplicitTop = -6
           end
         end
         object Panel5: TPanel
@@ -453,7 +455,7 @@ object FrmSamples: TFrmSamples
           AlignWithMargins = True
           Left = 252
           Top = 0
-          Width = 722
+          Width = 472
           Height = 533
           Margins.Left = 2
           Margins.Top = 0
@@ -462,18 +464,20 @@ object FrmSamples: TFrmSamples
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
+          ExplicitWidth = 722
           object Panel16: TPanel
             Left = 0
             Top = 150
-            Width = 722
+            Width = 472
             Height = 383
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 0
+            ExplicitWidth = 722
             object Panel17: TPanel
               Left = 0
               Top = 0
-              Width = 722
+              Width = 472
               Height = 25
               Align = alTop
               Alignment = taLeftJustify
@@ -488,11 +492,12 @@ object FrmSamples: TFrmSamples
               ParentBackground = False
               ParentFont = False
               TabOrder = 0
+              ExplicitWidth = 722
             end
             object DBGrid5: TDBGrid
               Left = 0
               Top = 25
-              Width = 722
+              Width = 472
               Height = 358
               Align = alClient
               DataSource = dsArray
@@ -515,15 +520,16 @@ object FrmSamples: TFrmSamples
           object Panel18: TPanel
             Left = 0
             Top = 0
-            Width = 722
+            Width = 472
             Height = 150
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 1
+            ExplicitWidth = 722
             object Panel19: TPanel
               Left = 0
               Top = 0
-              Width = 722
+              Width = 472
               Height = 25
               Align = alTop
               Alignment = taLeftJustify
@@ -538,11 +544,12 @@ object FrmSamples: TFrmSamples
               ParentBackground = False
               ParentFont = False
               TabOrder = 0
+              ExplicitWidth = 722
             end
             object DBGrid6: TDBGrid
               Left = 0
               Top = 25
-              Width = 722
+              Width = 472
               Height = 125
               Align = alClient
               DataSource = dsUsers
@@ -567,6 +574,35 @@ object FrmSamples: TFrmSamples
                   Visible = True
                 end>
             end
+          end
+        end
+        object Panel14: TPanel
+          Left = 726
+          Top = 0
+          Width = 250
+          Height = 533
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 2
+          object btnExportArrayValue: TButton
+            Left = 0
+            Top = 498
+            Width = 250
+            Height = 35
+            Align = alBottom
+            Caption = 'Export to JSONArray'
+            TabOrder = 0
+            OnClick = btnExportArrayValueClick
+          end
+          object memoExportArrayValue: TMemo
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 498
+            Align = alClient
+            ReadOnly = True
+            ScrollBars = ssVertical
+            TabOrder = 1
           end
         end
       end
