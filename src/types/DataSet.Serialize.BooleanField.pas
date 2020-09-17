@@ -1,5 +1,9 @@
 unit DataSet.Serialize.BooleanField;
 
+{$IF DEFINED(FPC)}
+{$MODE DELPHI}{$H+}
+{$ENDIF}
+
 interface
 
 type
@@ -13,8 +17,6 @@ type
   end;
 
 implementation
-
-{ TBooleanFieldTypeHelper }
 
 function TBooleanFieldTypeHelper.ToString: string;
 begin
