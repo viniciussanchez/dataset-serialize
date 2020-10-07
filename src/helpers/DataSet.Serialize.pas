@@ -27,6 +27,38 @@ type
     ///   Exports only childs records from child datasets.
     /// </param>
     /// <returns>
+    ///   Returns a JSON string containing the record data.
+    /// </returns>
+    /// <remarks>
+    ///   Invisible fields will not be generated.
+    /// </remarks>
+    function ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): string;
+    /// <summary>
+    ///   Creates an array of JSON objects with all DataSet records.
+    /// </summary>
+    /// <param name="AOnlyUpdatedRecords">
+    ///   Exports only inserted, modified and deleted data from childs dataset.
+    /// </param>
+    /// <param name="AChildRecords">
+    ///   Exports only childs records from child datasets.
+    /// </param>
+    /// <returns>
+    ///   Returns a JSON string with all records from the DataSet.
+    /// </returns>
+    /// <remarks>
+    ///   Invisible fields will not be generated.
+    /// </remarks>
+    function ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): string;
+    /// <summary>
+    ///   Creates a JSON object with the data from the current record of DataSet.
+    /// </summary>
+    /// <param name="AOnlyUpdatedRecords">
+    ///   Exports only inserted, modified and deleted data from childs dataset.
+    /// </param>
+    /// <param name="AChildRecords">
+    ///   Exports only childs records from child datasets.
+    /// </param>
+    /// <returns>
     ///   Returns a JSON object containing the record data.
     /// </returns>
     /// <remarks>
@@ -202,6 +234,30 @@ begin
     Result := LDataSetSerialize.ToJSONObject;
   finally
     LDataSetSerialize.Free;
+  end;
+end;
+
+function TDataSetSerializeHelper.ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): string;
+var
+  LJSONObject: TJSONObject;
+begin
+  LJSONObject := Self.ToJSONObject(AOnlyUpdatedRecords, AChildRecords);
+  try
+    Result := LJSONObject.ToString;
+  finally
+    LJSONObject.Free;
+  end;
+end;
+
+function TDataSetSerializeHelper.ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): string;
+var
+  LJSONArray: TJSONArray;
+begin
+  LJSONArray := Self.ToJSONArray(AOnlyUpdatedRecords, AChildRecords);
+  try
+    Result := LJSONArray.ToString;
+  finally
+    LJSONArray.Free;
   end;
 end;
 

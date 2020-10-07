@@ -605,7 +605,6 @@ object FrmSamples: TFrmSamples
           '  }'
           ']')
         TabOrder = 2
-        ExplicitTop = 19
       end
       object Panel17: TPanel
         Left = 0
