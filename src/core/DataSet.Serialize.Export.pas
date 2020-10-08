@@ -316,7 +316,7 @@ begin
     {$ELSE}
       LBase64Encoding := TBase64Encoding.Create(0);
       try
-        TNetEncoding.Base64.Encode(LMemoryStream, LStringStream);
+        LBase64Encoding.Encode(LMemoryStream, LStringStream);
       finally
         LBase64Encoding.Free;
       end;
