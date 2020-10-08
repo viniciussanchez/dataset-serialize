@@ -303,6 +303,7 @@ function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
 var
   LMemoryStream: TMemoryStream;
   LStringStream: TStringStream;
+  LBase64Encoding: TBase64Encoding;
 begin
   LMemoryStream := TMemoryStream.Create;
   LStringStream := TStringStream.Create;
@@ -313,7 +314,12 @@ begin
     LStringStream.LoadFromStream(LMemoryStream);
     Result := EncodeStringBase64(LStringStream.DataString);
     {$ELSE}
-    TNetEncoding.Base64.Encode(LMemoryStream, LStringStream);
+      LBase64Encoding := TBase64Encoding.Create(0);
+      try
+        TNetEncoding.Base64.Encode(LMemoryStream, LStringStream);
+      finally
+        LBase64Encoding.Free;
+      end;
     Result := LStringStream.DataString;
     {$ENDIF}
   finally
