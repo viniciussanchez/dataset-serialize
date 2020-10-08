@@ -10,6 +10,7 @@ type
   TDataSetSerializeConfigExport = class
   private
     FExportNullValues: Boolean;
+    FExportNullAsEmptyString: Boolean;
     FExportOnlyFieldsVisible: Boolean;
     FExportEmptyDataSet: Boolean;
     FFormatCurrency: string;
@@ -21,6 +22,7 @@ type
     property FormatCurrency: string read FFormatCurrency write FFormatCurrency;
     property ExportOnlyFieldsVisible: Boolean read FExportOnlyFieldsVisible write FExportOnlyFieldsVisible;
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
+    property ExportNullAsEmptyString: Boolean read FExportNullAsEmptyString write FExportNullAsEmptyString;
     property ExportEmptyDataSet: Boolean read FExportEmptyDataSet write FExportEmptyDataSet;
     property ExportChildDataSetAsJsonObject: Boolean read FExportChildDataSetAsJsonObject write FExportChildDataSetAsJsonObject;
   end;
@@ -107,6 +109,7 @@ end;
 constructor TDataSetSerializeConfigExport.Create;
 begin
   FExportNullValues := True;
+  FExportNullAsEmptyString:= False;
   FExportOnlyFieldsVisible := True;
   ExportEmptyDataSet := False;
   FFormatCurrency := EmptyStr;
