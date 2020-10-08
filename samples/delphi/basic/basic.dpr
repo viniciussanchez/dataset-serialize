@@ -16,6 +16,7 @@ uses
 {$R *.res}
 
 begin
+
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmSamples, FrmSamples);
