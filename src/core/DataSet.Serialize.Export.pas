@@ -303,7 +303,9 @@ function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
 var
   LMemoryStream: TMemoryStream;
   LStringStream: TStringStream;
+  {$IF NOT DEFINED(FPC)}
   LBase64Encoding: TBase64Encoding;
+  {$ENDIF}
 begin
   LMemoryStream := TMemoryStream.Create;
   LStringStream := TStringStream.Create;
