@@ -104,11 +104,11 @@ uses
 {$IF DEFINED(FPC)}
   DateUtils, SysUtils, Classes, FmtBCD, TypInfo, base64,
 {$ELSE}
-  System.DateUtils, Data.FmtBcd, System.SysUtils, System.TypInfo, System.Classes, System.NetEncoding,
-  System.Generics.Collections, FireDAC.Comp.DataSet,
+  System.DateUtils, Data.FmtBcd, System.SysUtils, System.TypInfo, System.Classes, System.NetEncoding, System.Generics.Collections,
+  FireDAC.Comp.DataSet,
 {$ENDIF}
-  DataSet.Serialize.BooleanField, DataSet.Serialize.Utils, DataSet.Serialize.Consts,
-  DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
+  DataSet.Serialize.BooleanField, DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus,
+  DataSet.Serialize.Config;
 
 { TDataSetSerialize }
 
@@ -316,12 +316,12 @@ begin
     LStringStream.LoadFromStream(LMemoryStream);
     Result := EncodeStringBase64(LStringStream.DataString);
     {$ELSE}
-      LBase64Encoding := TBase64Encoding.Create(0);
-      try
-        LBase64Encoding.Encode(LMemoryStream, LStringStream);
-      finally
-        LBase64Encoding.Free;
-      end;
+    LBase64Encoding := TBase64Encoding.Create(0);
+    try
+      LBase64Encoding.Encode(LMemoryStream, LStringStream);
+    finally
+      LBase64Encoding.Free;
+    end;
     Result := LStringStream.DataString;
     {$ENDIF}
   finally

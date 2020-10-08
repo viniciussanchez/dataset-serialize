@@ -83,7 +83,7 @@ end;
 
 class function TDataSetSerializeConfig.GetDefaultInstance: TDataSetSerializeConfig;
 begin
-  if FInstance = nil then
+  if not Assigned(FInstance) then
   begin
     FInstance := TDataSetSerializeConfig.Create;
     FInstance.LowerCamelCase := True;
@@ -100,7 +100,7 @@ end;
 
 class destructor TDataSetSerializeConfig.UnInitialize;
 begin
-  if FInstance <> nil then
+  if Assigned(FInstance) then
     FreeAndNil(FInstance);
 end;
 
