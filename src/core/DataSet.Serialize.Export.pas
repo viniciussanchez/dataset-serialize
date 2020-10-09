@@ -214,7 +214,10 @@ begin
     if LField.IsNull then
     begin
       if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
-        Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONNull.Create);
+        if TDataSetSerializeConfig.GetInstance.Export.ExportNullAsEmptyString then
+          Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, '')
+        else
+          Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONNull.Create);
       Continue;
     end;
     case LField.DataType of
