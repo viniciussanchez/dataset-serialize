@@ -7,6 +7,8 @@ unit DataSet.Serialize.Config;
 interface
 
 type
+  TCaseNameDefinition = ( cndNoSetting, cndToLower, cndToUpper, cndToLowerCamelCase );
+
   TDataSetSerializeConfigExport = class
   private
     FExportNullValues: Boolean;
@@ -42,7 +44,10 @@ type
     FDateInputIsUTC: Boolean;
     FExport: TDataSetSerializeConfigExport;
     FImport: TDataSetSerializeConfigImport;
+    FCaseNameDefinition: TCaseNameDefinition;
     class var FInstance: TDataSetSerializeConfig;
+
+    procedure SetCaseNameDefinition(const Value: TCaseNameDefinition);
   protected
     class function GetDefaultInstance: TDataSetSerializeConfig;
   public
@@ -50,6 +55,7 @@ type
     destructor Destroy; override;
     property DataSetPrefix: TArray<string> read FDataSetPrefix write FDataSetPrefix;
     property LowerCamelCase: Boolean read FLowerCamelCase write FLowerCamelCase;
+    property CaseNameDefinition: TCaseNameDefinition read FCaseNameDefinition write SetCaseNameDefinition;
     property DateInputIsUTC: Boolean read FDateInputIsUTC write FDateInputIsUTC;
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
     property Import: TDataSetSerializeConfigImport read FImport write FImport;
@@ -89,6 +95,7 @@ begin
   begin
     FInstance := TDataSetSerializeConfig.Create;
     FInstance.LowerCamelCase := True;
+    FInstance.CaseNameDefinition := cndNoSetting;
     FInstance.DataSetPrefix := ['mt', 'qry'];
     FInstance.DateInputIsUTC := True;
   end;
@@ -98,6 +105,13 @@ end;
 class function TDataSetSerializeConfig.GetInstance: TDataSetSerializeConfig;
 begin
   Result := TDataSetSerializeConfig.GetDefaultInstance;
+end;
+
+procedure TDataSetSerializeConfig.SetCaseNameDefinition(
+  const Value: TCaseNameDefinition);
+begin
+  FCaseNameDefinition := Value;
+  FLowerCamelCase := FCaseNameDefinition = cndToLowerCamelCase;
 end;
 
 class destructor TDataSetSerializeConfig.UnInitialize;

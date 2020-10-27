@@ -211,6 +211,12 @@ begin
       if not(LField.Visible) then
         Continue;
     LKey := TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName);
+
+    case TDataSetSerializeConfig.GetInstance.CaseNameDefinition of
+      cndToLower: LKey:=LField.FieldName.ToLower;
+      cndToUpper: LKey:=LField.FieldName.ToUpper;
+    end;
+
     if LField.IsNull then
     begin
       if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
