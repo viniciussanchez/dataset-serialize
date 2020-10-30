@@ -107,7 +107,7 @@ type
     /// <summary>
     ///   Get field data type from a JSONValue
     /// </summary>
-    class function GetDataType(const AJSONValue: TJSONValue): TFieldType;
+    class function GetDataType(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}): TFieldType;
   end;
 
 implementation
@@ -188,12 +188,16 @@ begin
   Result := Self.NameToLowerCamelCase(Result);
 end;
 
-class function TDataSetSerializeUtils.GetDataType(const AJSONValue: TJSONValue): TFieldType;
+class function TDataSetSerializeUtils.GetDataType(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}): TFieldType;
 begin
   Result := ftString;
   if AJSONValue is TJSONNumber then
     Result := ftFloat
+  {$IF DEFINED(FPC)}
+  else if AJSONValue is TJSONBoolean then
+  {$ELSE}
   else if (AJSONValue is TJSONTrue) or (AJSONValue is TJSONFalse) then
+  {$ENDIF}
     Result := ftBoolean;
 end;
 

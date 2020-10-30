@@ -5,7 +5,7 @@ unit DataSet.Serialize.Samples.Basic;
 interface
 
 uses Classes, SysUtils, memds, DB, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, StdCtrls, DBGrids, fpjson, DataSet.Serialize;
+  ExtCtrls, StdCtrls, DBGrids, fpjson, DataSet.Serialize, TypInfo;
 
 type
 
@@ -29,6 +29,7 @@ type
     edtName: TEdit;
     Label2: TLabel;
     Label3: TLabel;
+    mmDataType: TMemo;
     mtEmpty: TMemDataset;
     memoEmpty: TMemo;
     memoJSONArray: TMemo;
@@ -154,8 +155,12 @@ begin
 end;
 
 procedure TFrmBasic.Button7Click(Sender: TObject);
+var
+  LField: TField;
 begin
   mtEmpty.LoadFromJSON(memoEmpty.Lines.Text);
+  for LField in mtEmpty.Fields do
+    mmDataType.Lines.Add(Format('Field: %s - %s', [LField.FieldName, GetEnumName(System.TypeInfo(TFieldType), Ord(LField.DataType))]));
 end;
 
 end.
