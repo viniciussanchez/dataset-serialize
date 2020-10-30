@@ -104,6 +104,10 @@ type
     ///   Remove the prefix "mt" or "qry" of an child dataset.
     /// </summary>
     class function FormatDataSetName(const ADataSetName: string): string;
+    /// <summary>
+    ///   Get field data type from a JSONValue
+    /// </summary>
+    class function GetDataType(const AJSONValue: TJSONValue): TFieldType;
   end;
 
 implementation
@@ -182,6 +186,15 @@ begin
       Break;
     end;
   Result := Self.NameToLowerCamelCase(Result);
+end;
+
+class function TDataSetSerializeUtils.GetDataType(const AJSONValue: TJSONValue): TFieldType;
+begin
+  Result := ftString;
+  if AJSONValue is TJSONNumber then
+    Result := ftFloat
+  else if (AJSONValue is TJSONTrue) or (AJSONValue is TJSONFalse) then
+    Result := ftBoolean;
 end;
 
 class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;
