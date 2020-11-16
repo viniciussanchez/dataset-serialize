@@ -387,6 +387,9 @@ begin
     LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(FIELD_PROPERTY_SIZE, {$IF DEFINED(FPC)}LField.Size{$ELSE}TJSONNumber.Create(LField.Size){$ENDIF});
     LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(FIELD_PROPERTY_ORIGIN, TJSONString.Create(LField.ORIGIN));
 
+    if IsPublishedProp(LField, 'Precision') then
+      LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(FIELD_PROPERTY_PRECISION, {$IF DEFINED(FPC)}TFloatField(LField).Precision{$ELSE}TJSONNumber.Create(TFloatField(LField).Precision){$ENDIF});
+
     {$IF DEFINED(FPC)}
     LJSONObject.Add(FIELD_PROPERTY_KEY, pfInKey in LField.ProviderFlags);
     LJSONObject.Add(FIELD_PROPERTY_REQUIRED, LField.Required);

@@ -20,7 +20,7 @@ object FrmSamples: TFrmSamples
     Top = 0
     Width = 984
     Height = 561
-    ActivePage = tabEmptyDataSet
+    ActivePage = tabDataSet
     Align = alClient
     MultiLine = True
     TabOrder = 0
