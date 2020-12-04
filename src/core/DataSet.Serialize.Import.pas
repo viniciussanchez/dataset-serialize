@@ -527,15 +527,16 @@ begin
     with ADataSet.FieldDefs.AddFieldDef do
     begin
       Name := JSONPairToFieldName({$IF DEFINED(FPC)}AJSONObject.Names[I]{$ELSE}LJSONPair.JsonString.Value{$ENDIF});
-      if Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonString.Value{$ENDIF}) > 4096 then
+      DataType := TDataSetSerializeUtils.GetDataType({$IF DEFINED(FPC)}AJSONObject.Items[I]{$ELSE}LJSONPair.JsonValue{$ENDIF});
+      if DataType = ftString then
       begin
-        DataType := ftBlob;
-        Size := Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.Value{$ENDIF});
-      end
-      else
-      begin
-        DataType := ftString;
-        Size := 4096;
+        if Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF}) > 4096 then
+        begin
+          DataType := ftBlob;
+          Size := Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF});
+        end
+        else
+          Size := 4096;
       end;
     end;
   end;

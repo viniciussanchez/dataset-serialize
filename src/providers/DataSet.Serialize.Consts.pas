@@ -23,6 +23,7 @@ const
   FIELD_PROPERTY_VISIBLE = 'visible';
   FIELD_PROPERTY_READ_ONLY = 'readOnly';
   FIELD_PROPERTY_AUTO_GENERATE_VALUE = 'autoGenerateValue';
+  FIELD_PROPERTY_PRECISION = 'precision';
 
 implementation
 

@@ -1,7 +1,7 @@
 object FrmBasic: TFrmBasic
-  Left = 313
+  Left = 366
   Height = 498
-  Top = 106
+  Top = 214
   Width = 882
   Caption = 'Samples'
   ClientHeight = 498
@@ -12,9 +12,9 @@ object FrmBasic: TFrmBasic
     Height = 498
     Top = 0
     Width = 882
-    ActivePage = TabSheet1
+    ActivePage = TabSheet3
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'DataSet'
@@ -557,16 +557,18 @@ object FrmBasic: TFrmBasic
           '  {'
           '    "ID": 3,'
           '    "DESCRICAO": "Coca Cola",'
-          '    "CATEGORIA": 1,'
-          '    "PRECO": 2,'
-          '    "CATEGORIA_DESCRICAO": "BEBEDIAS"'
+          '    "ATIVO": true,'
+          '    "PRECO": 2.50,'
+          '    "CADASTRO": "03/08/1995",'
+          '    "OBSERVACAO": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test tetest test test test test test test test test test test test test test test test test test test test test test test"'
           '  },'
           '  {'
           '    "ID": 1,'
           '    "DESCRICAO": "RedBull",'
-          '    "CATEGORIA": 1,'
+          '    "ATIVO": false,'
           '    "PRECO": 2.39,'
-          '    "CATEGORIA_DESCRICAO": "BEBEDIAS"'
+          '    "CADASTRO": "21/04/1996",'
+          '    "OBSERVACAO": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test est test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test est test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test tetest test test test test test test test test test test test test test test test test test test test test test test"'
           '  }'
           ']'
         )
@@ -605,7 +607,7 @@ object FrmBasic: TFrmBasic
         Left = 0
         Height = 176
         Top = 294
-        Width = 874
+        Width = 570
         Align = alClient
         Color = clWindow
         Columns = <>
@@ -614,6 +616,14 @@ object FrmBasic: TFrmBasic
         TitleFont.Color = clWindowText
         TitleFont.Height = -11
         TitleFont.Name = 'Segoe UI'
+      end
+      object mmDataType: TMemo
+        Left = 570
+        Height = 176
+        Top = 294
+        Width = 304
+        Align = alRight
+        TabOrder = 5
       end
     end
   end

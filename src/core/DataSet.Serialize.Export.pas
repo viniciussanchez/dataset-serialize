@@ -104,11 +104,11 @@ uses
 {$IF DEFINED(FPC)}
   DateUtils, SysUtils, Classes, FmtBCD, TypInfo, base64,
 {$ELSE}
-  System.DateUtils, Data.FmtBcd, System.SysUtils, System.TypInfo, System.Classes, System.NetEncoding,
-  System.Generics.Collections, FireDAC.Comp.DataSet,
+  System.DateUtils, Data.FmtBcd, System.SysUtils, System.TypInfo, System.Classes, System.NetEncoding, System.Generics.Collections,
+  FireDAC.Comp.DataSet,
 {$ENDIF}
-  DataSet.Serialize.BooleanField, DataSet.Serialize.Utils, DataSet.Serialize.Consts,
-  DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
+  DataSet.Serialize.BooleanField, DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus,
+  DataSet.Serialize.Config;
 
 { TDataSetSerialize }
 
@@ -214,7 +214,10 @@ begin
     if LField.IsNull then
     begin
       if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
-        Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONNull.Create);
+        if TDataSetSerializeConfig.GetInstance.Export.ExportNullAsEmptyString then
+          Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, '')
+        else
+          Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONNull.Create);
       Continue;
     end;
     case LField.DataType of
@@ -303,6 +306,9 @@ function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
 var
   LMemoryStream: TMemoryStream;
   LStringStream: TStringStream;
+  {$IF NOT DEFINED(FPC)}
+  LBase64Encoding: TBase64Encoding;
+  {$ENDIF}
 begin
   LMemoryStream := TMemoryStream.Create;
   LStringStream := TStringStream.Create;
@@ -313,7 +319,12 @@ begin
     LStringStream.LoadFromStream(LMemoryStream);
     Result := EncodeStringBase64(LStringStream.DataString);
     {$ELSE}
-    TNetEncoding.Base64.Encode(LMemoryStream, LStringStream);
+    LBase64Encoding := TBase64Encoding.Create(0);
+    try
+      LBase64Encoding.Encode(LMemoryStream, LStringStream);
+    finally
+      LBase64Encoding.Free;
+    end;
     Result := LStringStream.DataString;
     {$ENDIF}
   finally
@@ -375,6 +386,9 @@ begin
     LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(FIELD_PROPERTY_DATA_TYPE, TJSONString.Create(GetEnumName(TypeInfo(TFieldType), Integer(LField.DataType))));
     LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(FIELD_PROPERTY_SIZE, {$IF DEFINED(FPC)}LField.Size{$ELSE}TJSONNumber.Create(LField.Size){$ENDIF});
     LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(FIELD_PROPERTY_ORIGIN, TJSONString.Create(LField.ORIGIN));
+
+    if IsPublishedProp(LField, 'Precision') then
+      LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(FIELD_PROPERTY_PRECISION, {$IF DEFINED(FPC)}TFloatField(LField).Precision{$ELSE}TJSONNumber.Create(TFloatField(LField).Precision){$ENDIF});
 
     {$IF DEFINED(FPC)}
     LJSONObject.Add(FIELD_PROPERTY_KEY, pfInKey in LField.ProviderFlags);

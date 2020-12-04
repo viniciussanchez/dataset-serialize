@@ -59,6 +59,7 @@ type
     memoEmpty: TMemo;
     Panel17: TPanel;
     Button7: TButton;
+    mmDataType: TMemo;
     procedure Button2Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -75,8 +76,7 @@ var
 
 implementation
 
-uses
-  DataSet.Serialize.Utils;
+uses DataSet.Serialize.Utils, System.TypInfo;
 
 {$R *.dfm}
 
@@ -161,8 +161,12 @@ begin
 end;
 
 procedure TFrmSamples.Button7Click(Sender: TObject);
+var
+  LField: TField;
 begin
   mtEmpty.LoadFromJSON(memoEmpty.Lines.Text);
+  for LField in mtEmpty.Fields do
+    mmDataType.Lines.Add(Format('Field: %s - %s', [LField.FieldName, GetEnumName(System.TypeInfo(TFieldType), Ord(LField.DataType))]));
 end;
 
 procedure TFrmSamples.FormCreate(Sender: TObject);
