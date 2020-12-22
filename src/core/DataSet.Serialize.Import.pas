@@ -427,6 +427,8 @@ procedure TJSONSerialize.JSONValueToDataSet(const AJSONValue: {$IF DEFINED(FPC)}
 begin
   if ADataSet.Fields.Count <> 1 then
     raise EDataSetSerializeException.Create(Format(INVALID_FIELD_COUNT, [ADataSet.Name]));
+  if not ADataSet.Active then
+    ADataSet.Open;
   ADataSet.Append;
   ADataSet.Fields.Fields[0].AsString := AJSONValue.Value;
   ADataSet.Post;
