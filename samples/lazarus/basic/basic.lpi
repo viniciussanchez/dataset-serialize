@@ -96,7 +96,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="src;..\..\..\src\types;..\..\..\src\core;..\..\..\src\singletons;..\..\..\src\providers;..\..\..\src\helpers"/>
+      <OtherUnitFiles Value="src;..\..\..\src"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

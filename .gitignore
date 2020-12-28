@@ -1,10 +1,10 @@
 # Uncomment these types if you want even more clean repository. But be careful.
 # It can make harm to an existing project source. Read explanations below.
-#
+
 # Resource files are binaries containing manifest, project icon and version info.
 # They can not be viewed as text or compared by diff-tools. Consider replacing them with .rc files.
-#*.res
-#
+*.res
+
 # Type library file (binary). In old Delphi versions it should be stored.
 # Since Delphi 2009 it is produced from .ridl file and can safely be ignored.
 #*.tlb

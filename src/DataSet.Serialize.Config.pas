@@ -1,7 +1,7 @@
 unit DataSet.Serialize.Config;
 
 {$IF DEFINED(FPC)}
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 {$ENDIF}
 
 interface

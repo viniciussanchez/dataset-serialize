@@ -1,18 +1,17 @@
 unit DataSet.Serialize.Utils;
 
 {$IF DEFINED(FPC)}
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 {$ENDIF}
 
 interface
 
 uses
 {$IF DEFINED(FPC)}
-  DB, fpjson, SysUtils, Classes,
+  DB, fpjson, SysUtils, Classes;
 {$ELSE}
-  System.DateUtils, System.JSON, Data.DB, System.SysUtils, System.Classes, System.Character,
+  System.DateUtils, System.JSON, Data.DB, System.SysUtils, System.Classes, System.Character;
 {$ENDIF}
-  DataSet.Serialize.BooleanField;
 
 type
   /// <summary>
@@ -71,16 +70,6 @@ type
     /// </returns>
     class function NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;
     /// <summary>
-    ///   Converts a boolean to a TBooleanFieldType.
-    /// </summary>
-    /// <param name="ABooleanField">
-    ///   Boolean field type.
-    /// </param>
-    /// <returns>
-    ///   Returns a valid boolean field type.
-    /// </returns>
-    class function BooleanFieldToType(const ABooleanField: TBooleanField): TBooleanFieldType;
-    /// <summary>
     ///   Creates a valid name for the field added to the DataSet.
     /// </summary>
     /// <param name="AName">
@@ -113,16 +102,6 @@ type
 implementation
 
 uses DataSet.Serialize.Consts, DataSet.Serialize.Config;
-
-class function TDataSetSerializeUtils.BooleanFieldToType(const ABooleanField: TBooleanField): TBooleanFieldType;
-var
-  I: Integer;
-begin
-  Result := bfUnknown;
-  for I := Ord(low(TBooleanFieldType)) to Ord(high(TBooleanFieldType)) do
-    if LowerCase(TBooleanFieldType(I).ToString).Equals(LowerCase(ABooleanField.Origin.Trim)) then
-      Exit(TBooleanFieldType(I));
-end;
 
 class function TDataSetSerializeUtils.CreateValidIdentifier(const AName: string): string;
 var

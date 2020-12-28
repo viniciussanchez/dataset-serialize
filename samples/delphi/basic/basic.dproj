@@ -102,15 +102,14 @@
             <Form>FrmSamples</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\..\src\types\DataSet.Serialize.BooleanField.pas"/>
-        <DCCReference Include="..\..\..\src\types\DataSet.Serialize.Language.pas"/>
-        <DCCReference Include="..\..\..\src\types\DataSet.Serialize.UpdatedStatus.pas"/>
-        <DCCReference Include="..\..\..\src\singletons\DataSet.Serialize.Config.pas"/>
-        <DCCReference Include="..\..\..\src\providers\DataSet.Serialize.Consts.pas"/>
-        <DCCReference Include="..\..\..\src\providers\DataSet.Serialize.Utils.pas"/>
-        <DCCReference Include="..\..\..\src\helpers\DataSet.Serialize.pas"/>
-        <DCCReference Include="..\..\..\src\core\DataSet.Serialize.Import.pas"/>
-        <DCCReference Include="..\..\..\src\core\DataSet.Serialize.Export.pas"/>
+        <DCCReference Include="..\..\..\src\DataSet.Serialize.Config.pas"/>
+        <DCCReference Include="..\..\..\src\DataSet.Serialize.Consts.pas"/>
+        <DCCReference Include="..\..\..\src\DataSet.Serialize.Export.pas"/>
+        <DCCReference Include="..\..\..\src\DataSet.Serialize.Import.pas"/>
+        <DCCReference Include="..\..\..\src\DataSet.Serialize.Language.pas"/>
+        <DCCReference Include="..\..\..\src\DataSet.Serialize.pas"/>
+        <DCCReference Include="..\..\..\src\DataSet.Serialize.UpdatedStatus.pas"/>
+        <DCCReference Include="..\..\..\src\DataSet.Serialize.Utils.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
