@@ -18,11 +18,6 @@ boss install github.com/viniciussanchez/dataset-serialize
 If you choose to install manually, simply add the following folders to your project, in *Project > Options > Resource Compiler > Directories and Conditionals > Include file search path*
 ```
 ../dataset-serialize/src
-../dataset-serialize/src/core
-../dataset-serialize/src/helpers
-../dataset-serialize/src/providers
-../dataset-serialize/src/singletons
-../dataset-serialize/src/types
 ```
 
 ## Getting Started
