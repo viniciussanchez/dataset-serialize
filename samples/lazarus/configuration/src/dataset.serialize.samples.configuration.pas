@@ -14,15 +14,16 @@ type
 
   TFrmSamples = class(TForm)
     btnApplyFormatDate: TButton;
+    btnCaseNameDefinition: TButton;
     btnFormatCurrency: TButton;
     Button1: TButton;
+    cbxCaseNameDefinition: TComboBox;
     chbFields: TCheckListBox;
     chkDateInputIsUTC: TCheckBox;
     chkExportChildDataSetAsJsonObject: TCheckBox;
     chkExportEmptyDataSet: TCheckBox;
     chkExportNullValues: TCheckBox;
     chkExportOnlyFieldsVisible: TCheckBox;
-    chkFieldNameLowerCamelCasePattern: TCheckBox;
     chkImportOnlyFieldsVisible: TCheckBox;
     DBGrid1: TDBGrid;
     DBGrid2: TDBGrid;
@@ -31,6 +32,7 @@ type
     edtFormatCurrency: TEdit;
     edtFormatDate: TEdit;
     Label1: TLabel;
+    Label2: TLabel;
     Label4: TLabel;
     mtUsers: TMemDataset;
     mtLog: TMemDataset;
@@ -45,6 +47,7 @@ type
     Panel8: TPanel;
     Panel9: TPanel;
     procedure btnApplyFormatDateClick(Sender: TObject);
+    procedure btnCaseNameDefinitionClick(Sender: TObject);
     procedure btnFormatCurrencyClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure chbFieldsClick(Sender: TObject);
@@ -53,7 +56,6 @@ type
     procedure chkExportEmptyDataSetChange(Sender: TObject);
     procedure chkExportNullValuesChange(Sender: TObject);
     procedure chkExportOnlyFieldsVisibleChange(Sender: TObject);
-    procedure chkFieldNameLowerCamelCasePatternChange(Sender: TObject);
     procedure chkImportOnlyFieldsVisibleChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -80,6 +82,11 @@ end;
 procedure TFrmSamples.btnApplyFormatDateClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.FormatDate := edtFormatDate.Text;
+end;
+
+procedure TFrmSamples.btnCaseNameDefinitionClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := TCaseNameDefinition(cbxCaseNameDefinition.ItemIndex);
 end;
 
 procedure TFrmSamples.btnFormatCurrencyClick(Sender: TObject);
@@ -122,11 +129,6 @@ end;
 procedure TFrmSamples.chkExportOnlyFieldsVisibleChange(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := chkExportOnlyFieldsVisible.Checked;
-end;
-
-procedure TFrmSamples.chkFieldNameLowerCamelCasePatternChange(Sender: TObject);
-begin
-  TDataSetSerializeConfig.GetInstance.LowerCamelCase := chkFieldNameLowerCamelCasePattern.Checked;
 end;
 
 procedure TFrmSamples.chkImportOnlyFieldsVisibleChange(Sender: TObject);

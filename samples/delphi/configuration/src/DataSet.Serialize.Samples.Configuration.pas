@@ -17,7 +17,6 @@ type
     chkDateInputIsUTC: TCheckBox;
     chkExportNullValues: TCheckBox;
     chkExportOnlyFieldsVisible: TCheckBox;
-    chkFieldNameLowerCamelCasePattern: TCheckBox;
     edtFormatDate: TEdit;
     btnApplyFormatDate: TButton;
     edtFormatCurrency: TEdit;
@@ -48,10 +47,12 @@ type
     mtLogLOG: TStringField;
     DBGrid2: TDBGrid;
     chkExportChildDataSetAsJsonObject: TCheckBox;
+    Label2: TLabel;
+    cbxCaseNameDefinition: TComboBox;
+    btnCaseNameDefinition: TButton;
     procedure chkDateInputIsUTCClick(Sender: TObject);
     procedure chkExportNullValuesClick(Sender: TObject);
     procedure chkExportOnlyFieldsVisibleClick(Sender: TObject);
-    procedure chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
     procedure chkImportOnlyFieldsVisibleClick(Sender: TObject);
     procedure btnApplyFormatDateClick(Sender: TObject);
     procedure btnFormatCurrencyClick(Sender: TObject);
@@ -60,6 +61,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure chkExportEmptyDataSetClick(Sender: TObject);
     procedure chkExportChildDataSetAsJsonObjectClick(Sender: TObject);
+    procedure btnCaseNameDefinitionClick(Sender: TObject);
   private
     procedure LoadFields;
     procedure LoadUsers;
@@ -75,6 +77,11 @@ implementation
 procedure TFrmSamples.btnApplyFormatDateClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.FormatDate := edtFormatDate.Text;
+end;
+
+procedure TFrmSamples.btnCaseNameDefinitionClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := TCaseNameDefinition(cbxCaseNameDefinition.ItemIndex);
 end;
 
 procedure TFrmSamples.btnFormatCurrencyClick(Sender: TObject);
@@ -122,11 +129,6 @@ end;
 procedure TFrmSamples.chkExportChildDataSetAsJsonObjectClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject := chkExportChildDataSetAsJsonObject.Checked;
-end;
-
-procedure TFrmSamples.chkFieldNameLowerCamelCasePatternClick(Sender: TObject);
-begin
-  TDataSetSerializeConfig.GetInstance.LowerCamelCase := chkFieldNameLowerCamelCasePattern.Checked;
 end;
 
 procedure TFrmSamples.chkImportOnlyFieldsVisibleClick(Sender: TObject);

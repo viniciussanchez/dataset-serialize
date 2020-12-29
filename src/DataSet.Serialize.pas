@@ -17,6 +17,7 @@ uses
 type
   TLanguageType = DataSet.Serialize.Language.TLanguageType;
   TDataSetSerializeConfig = DataSet.Serialize.Config.TDataSetSerializeConfig;
+  TCaseNameDefinition = DataSet.Serialize.Config.TCaseNameDefinition;
 
   TDataSetSerializeHelper = class Helper for TDataSet
   public

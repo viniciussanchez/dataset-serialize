@@ -1,7 +1,7 @@
 object FrmSamples: TFrmSamples
-  Left = 706
+  Left = 542
   Height = 600
-  Top = 289
+  Top = 238
   Width = 1000
   Caption = 'DataSet-Serialize - Samples'
   ClientHeight = 600
@@ -86,23 +86,12 @@ object FrmSamples: TFrmSamples
       State = cbChecked
       TabOrder = 2
     end
-    object chkFieldNameLowerCamelCasePattern: TCheckBox
-      Left = 10
-      Height = 19
-      Top = 75
-      Width = 223
-      Caption = 'Field name in lowerCamelCase pattern'
-      Checked = True
-      OnChange = chkFieldNameLowerCamelCasePatternChange
-      State = cbChecked
-      TabOrder = 3
-    end
     object edtFormatDate: TEdit
       Left = 466
       Height = 23
       Top = 27
       Width = 326
-      TabOrder = 4
+      TabOrder = 3
       Text = 'YYYY-MM-DD'
     end
     object btnApplyFormatDate: TButton
@@ -112,14 +101,14 @@ object FrmSamples: TFrmSamples
       Width = 58
       Caption = 'Apply'
       OnClick = btnApplyFormatDateClick
-      TabOrder = 5
+      TabOrder = 4
     end
     object edtFormatCurrency: TEdit
       Left = 466
       Height = 23
       Top = 75
       Width = 326
-      TabOrder = 6
+      TabOrder = 5
       Text = '0.00##'
     end
     object btnFormatCurrency: TButton
@@ -129,41 +118,75 @@ object FrmSamples: TFrmSamples
       Width = 58
       Caption = 'Apply'
       OnClick = btnFormatCurrencyClick
-      TabOrder = 7
+      TabOrder = 6
     end
     object chkImportOnlyFieldsVisible: TCheckBox
       Left = 10
       Height = 19
-      Top = 98
+      Top = 80
       Width = 149
       Caption = 'Import only fields visible'
       Checked = True
       OnChange = chkImportOnlyFieldsVisibleChange
       State = cbChecked
-      TabOrder = 8
+      TabOrder = 7
     end
     object chkExportEmptyDataSet: TCheckBox
       Left = 10
       Height = 19
-      Top = 121
+      Top = 103
       Width = 132
       Caption = 'Export empty dataset'
       Checked = True
       OnChange = chkExportEmptyDataSetChange
       State = cbChecked
-      TabOrder = 9
+      TabOrder = 8
     end
     object chkExportChildDataSetAsJsonObject: TCheckBox
       Left = 10
       Height = 19
       Hint = 'Child dataset needs to have just one record, if child dataset has more than one record it became an jsonarray again'
-      Top = 142
+      Top = 124
       Width = 199
       Caption = 'Export child dataset as json object'
       OnChange = chkExportChildDataSetAsJsonObjectChange
       ParentShowHint = False
       ShowHint = True
+      TabOrder = 9
+    end
+    object Label2: TLabel
+      Left = 466
+      Height = 15
+      Top = 102
+      Width = 115
+      Caption = 'Case name definition:'
+      ParentColor = False
+    end
+    object cbxCaseNameDefinition: TComboBox
+      Left = 466
+      Height = 23
+      Top = 121
+      Width = 326
+      ItemHeight = 15
+      ItemIndex = 3
+      Items.Strings = (
+        'None'
+        'lower case'
+        'UPPER CASE'
+        'lowerCamelCase'
+      )
+      Style = csDropDownList
       TabOrder = 10
+      Text = 'lowerCamelCase'
+    end
+    object btnCaseNameDefinition: TButton
+      Left = 798
+      Height = 25
+      Top = 119
+      Width = 58
+      Caption = 'Apply'
+      OnClick = btnCaseNameDefinitionClick
+      TabOrder = 11
     end
   end
   object Panel3: TPanel

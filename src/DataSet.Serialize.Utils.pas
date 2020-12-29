@@ -47,15 +47,15 @@ type
   TDataSetSerializeUtils = class
   public
     /// <summary>
-    ///   Transform name in lower camel case pattern.
+    ///   Format field name to case name definition.
     /// </summary>
     /// <param name="AFieldName">
     ///   Field name to format.
     /// </param>
     /// <returns>
-    ///   Field name in lower camel case format.
+    ///   Formatted field name.
     /// </returns>
-    class function NameToLowerCamelCase(const AFieldName: string): string;
+    class function FormatCaseNameDefinition(const AFieldName: string): string;
     /// <summary>
     ///   Creates a new field in the DataSet.
     /// </summary>
@@ -128,29 +128,38 @@ begin
     Result := '_' + Result;
 end;
 
-class function TDataSetSerializeUtils.NameToLowerCamelCase(const AFieldName: string): string;
+class function TDataSetSerializeUtils.FormatCaseNameDefinition(const AFieldName: string): string;
 var
   I: Integer;
   LField: TArray<Char>;
 begin
   Result := EmptyStr;
-  if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
-    Exit(AFieldName.ToLower);
-  LField := AFieldName.ToCharArray;
-  I := Low(LField);
-  While i <= High(LField) do
-  begin
-    if (LField[I] = '_') then
-    begin
-      Inc(i);
-      Result := Result + UpperCase(LField[I]);
-    end
-    else
-      Result := Result + LowerCase(LField[I]);
-    Inc(i);
-  end;
-  if Result.IsEmpty then
+  case TDataSetSerializeConfig.GetInstance.CaseNameDefinition of
+    cndLower:
+      Result := AFieldName.ToLower;
+    cndUpper:
+      Result := AFieldName.ToUpper;
+    cndLowerCamelCase:
+      begin
+        LField := AFieldName.ToCharArray;
+        I := Low(LField);
+        While i <= High(LField) do
+        begin
+          if (LField[I] = '_') then
+          begin
+            Inc(I);
+            Result := Result + UpperCase(LField[I]);
+          end
+          else
+            Result := Result + LowerCase(LField[I]);
+          Inc(I);
+        end;
+        if Result.IsEmpty then
+          Result := AFieldName;
+      end
+  else
     Result := AFieldName;
+  end;
 end;
 
 class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;
@@ -164,7 +173,7 @@ begin
       Result := Copy(ADataSetName, Succ(LPrefix.Length), ADataSetName.Length - LPrefix.Length);
       Break;
     end;
-  Result := Self.NameToLowerCamelCase(Result);
+  Result := Self.FormatCaseNameDefinition(Result);
 end;
 
 class function TDataSetSerializeUtils.GetDataType(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}): TFieldType;

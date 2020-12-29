@@ -202,7 +202,7 @@ begin
     if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible then
       if not(LField.Visible) then
         Continue;
-    LKey := TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName);
+    LKey := TDataSetSerializeUtils.FormatCaseNameDefinition(LField.FieldName);
     if LField.IsNull then
     begin
       if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
@@ -256,12 +256,7 @@ begin
     end;
   end;
   if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
-  begin
-    if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
-      Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('objectState', TJSONString.Create(ADataSet.UpdateStatus.ToString))
-    else
-      Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('object_state', TJSONString.Create(ADataSet.UpdateStatus.ToString));
-  end;
+    Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatCaseNameDefinition('object_state'), TJSONString.Create(ADataSet.UpdateStatus.ToString));
   {$IF NOT DEFINED(FPC)}
   if FChildRecord then
   begin
