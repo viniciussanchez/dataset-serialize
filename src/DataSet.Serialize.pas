@@ -12,9 +12,12 @@ uses
 {$ELSE}
   System.JSON, Data.DB,
 {$ENDIF}
-  DataSet.Serialize.Language;
+  DataSet.Serialize.Language, DataSet.Serialize.Config;
 
 type
+  TLanguageType = DataSet.Serialize.Language.TLanguageType;
+  TDataSetSerializeConfig = DataSet.Serialize.Config.TDataSetSerializeConfig;
+
   TDataSetSerializeHelper = class Helper for TDataSet
   public
     /// <summary>
