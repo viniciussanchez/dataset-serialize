@@ -30,7 +30,7 @@ begin
     usDeleted:
       Result := 'DELETED';
   else
-    Result := 'UNOMODIFIED';
+    Result := 'UNMODIFIED';
   end;
 end;
 
