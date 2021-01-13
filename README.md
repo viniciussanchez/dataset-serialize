@@ -1,4 +1,4 @@
-<a href="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.jpg">
+<a href="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.png">
   <img alt="DataSet-Serialize" height="120" src="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.jpg">
 </a>  
 
