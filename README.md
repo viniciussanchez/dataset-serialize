@@ -1,5 +1,5 @@
 <a href="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.png">
-  <img alt="DataSet-Serialize" height="120" src="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.jpg">
+  <img alt="DataSet-Serialize" height="120" src="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.png">
 </a>  
 
 # DataSet Serialize for Delphi and Lazarus (FPC)
