@@ -247,7 +247,7 @@ var
 begin
   LJSONObject := Self.ToJSONObject(AOnlyUpdatedRecords, AChildRecords);
   try
-    Result := LJSONObject.ToString;
+    Result := {$IF DEFINED(FPC)}LJSONObject.AsJSON{$ELSE}LJSONObject.ToString{$ENDIF};
   finally
     LJSONObject.Free;
   end;
@@ -259,7 +259,7 @@ var
 begin
   LJSONArray := Self.ToJSONArray(AOnlyUpdatedRecords, AChildRecords);
   try
-    Result := LJSONArray.ToString;
+    Result := {$IF DEFINED(FPC)}LJSONArray.AsJSON{$ELSE}LJSONArray.ToString{$ENDIF};
   finally
     LJSONArray.Free;
   end;
