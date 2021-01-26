@@ -14,6 +14,8 @@ type
 
   TFrmSamples = class(TForm)
     btnApplyFormatDate: TButton;
+    btnApplyFormatDateTime: TButton;
+    btnApplyFormatTime: TButton;
     btnCaseNameDefinition: TButton;
     btnFormatCurrency: TButton;
     Button1: TButton;
@@ -31,9 +33,13 @@ type
     dsUsers: TDataSource;
     edtFormatCurrency: TEdit;
     edtFormatDate: TEdit;
+    edtFormatDateTime: TEdit;
+    edtFormatTime: TEdit;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
     Label4: TLabel;
+    Label5: TLabel;
     mtUsers: TMemDataset;
     mtLog: TMemDataset;
     memoJSON: TMemo;
@@ -47,6 +53,8 @@ type
     Panel8: TPanel;
     Panel9: TPanel;
     procedure btnApplyFormatDateClick(Sender: TObject);
+    procedure btnApplyFormatDateTimeClick(Sender: TObject);
+    procedure btnApplyFormatTimeClick(Sender: TObject);
     procedure btnCaseNameDefinitionClick(Sender: TObject);
     procedure btnFormatCurrencyClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -82,6 +90,16 @@ end;
 procedure TFrmSamples.btnApplyFormatDateClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.FormatDate := edtFormatDate.Text;
+end;
+
+procedure TFrmSamples.btnApplyFormatDateTimeClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.FormatDateTime := edtFormatDateTime.Text;
+end;
+
+procedure TFrmSamples.btnApplyFormatTimeClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.FormatTime := edtFormatTime.Text;
 end;
 
 procedure TFrmSamples.btnCaseNameDefinitionClick(Sender: TObject);

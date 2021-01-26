@@ -38,7 +38,7 @@ object FrmSamples: TFrmSamples
     ClientWidth = 1000
     TabOrder = 1
     object Label1: TLabel
-      Left = 466
+      Left = 240
       Height = 15
       Top = 8
       Width = 254
@@ -46,7 +46,7 @@ object FrmSamples: TFrmSamples
       ParentColor = False
     end
     object Label4: TLabel
-      Left = 466
+      Left = 240
       Height = 15
       Top = 56
       Width = 301
@@ -87,15 +87,15 @@ object FrmSamples: TFrmSamples
       TabOrder = 2
     end
     object edtFormatDate: TEdit
-      Left = 466
+      Left = 240
       Height = 23
       Top = 27
-      Width = 326
+      Width = 289
       TabOrder = 3
       Text = 'YYYY-MM-DD'
     end
     object btnApplyFormatDate: TButton
-      Left = 798
+      Left = 536
       Height = 25
       Top = 25
       Width = 58
@@ -104,15 +104,15 @@ object FrmSamples: TFrmSamples
       TabOrder = 4
     end
     object edtFormatCurrency: TEdit
-      Left = 466
+      Left = 240
       Height = 23
       Top = 75
-      Width = 326
+      Width = 289
       TabOrder = 5
       Text = '0.00##'
     end
     object btnFormatCurrency: TButton
-      Left = 798
+      Left = 536
       Height = 25
       Top = 73
       Width = 58
@@ -155,7 +155,7 @@ object FrmSamples: TFrmSamples
       TabOrder = 9
     end
     object Label2: TLabel
-      Left = 466
+      Left = 240
       Height = 15
       Top = 102
       Width = 115
@@ -163,10 +163,10 @@ object FrmSamples: TFrmSamples
       ParentColor = False
     end
     object cbxCaseNameDefinition: TComboBox
-      Left = 466
+      Left = 240
       Height = 23
       Top = 121
-      Width = 326
+      Width = 289
       ItemHeight = 15
       ItemIndex = 3
       Items.Strings = (
@@ -180,13 +180,63 @@ object FrmSamples: TFrmSamples
       Text = 'lowerCamelCase'
     end
     object btnCaseNameDefinition: TButton
-      Left = 798
+      Left = 536
       Height = 25
       Top = 119
       Width = 58
       Caption = 'Apply'
       OnClick = btnCaseNameDefinitionClick
       TabOrder = 11
+    end
+    object edtFormatDateTime: TEdit
+      Left = 608
+      Height = 23
+      Top = 75
+      Width = 289
+      TabOrder = 12
+      Text = 'yyyy-mm-dd hh:nn:ss.zzz'
+    end
+    object Label5: TLabel
+      Left = 608
+      Height = 15
+      Top = 56
+      Width = 307
+      Caption = 'Format DateTime (for export field type equals ftDateTime):'
+      ParentColor = False
+    end
+    object edtFormatTime: TEdit
+      Left = 608
+      Height = 23
+      Top = 27
+      Width = 289
+      TabOrder = 13
+      Text = 'hh:nn:ss.zzz'
+    end
+    object Label3: TLabel
+      Left = 608
+      Height = 15
+      Top = 8
+      Width = 257
+      Caption = 'Format time (for export field type equals ftTime):'
+      ParentColor = False
+    end
+    object btnApplyFormatTime: TButton
+      Left = 903
+      Height = 25
+      Top = 25
+      Width = 58
+      Caption = 'Apply'
+      OnClick = btnApplyFormatTimeClick
+      TabOrder = 14
+    end
+    object btnApplyFormatDateTime: TButton
+      Left = 903
+      Height = 25
+      Top = 73
+      Width = 58
+      Caption = 'Apply'
+      OnClick = btnApplyFormatDateTimeClick
+      TabOrder = 15
     end
   end
   object Panel3: TPanel
