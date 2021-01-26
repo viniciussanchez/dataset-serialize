@@ -43,30 +43,44 @@ object FrmSamples: TFrmSamples
     BevelOuter = bvNone
     TabOrder = 1
     object Label1: TLabel
-      Left = 466
+      Left = 242
       Top = 8
       Width = 248
       Height = 13
       Caption = 'Format date (for export field type equals ftDate):'
     end
     object Label4: TLabel
-      Left = 466
+      Left = 242
       Top = 56
       Width = 289
       Height = 13
       Caption = 'Format currency (for export field type equals ftCurrency):'
     end
     object Label2: TLabel
-      Left = 466
+      Left = 242
       Top = 102
       Width = 112
       Height = 13
       Caption = 'Case name definition:'
     end
+    object Label3: TLabel
+      Left = 601
+      Top = 8
+      Width = 247
+      Height = 13
+      Caption = 'Format time (for export field type equals ftTime):'
+    end
+    object Label5: TLabel
+      Left = 601
+      Top = 56
+      Width = 297
+      Height = 13
+      Caption = 'Format DateTime (for export field type equals ftDateTime):'
+    end
     object chkDateInputIsUTC: TCheckBox
       Left = 10
       Top = 6
-      Width = 300
+      Width = 207
       Height = 17
       Caption = 'Date input is UTC (time zone)'
       Checked = True
@@ -77,7 +91,7 @@ object FrmSamples: TFrmSamples
     object chkExportNullValues: TCheckBox
       Left = 10
       Top = 29
-      Width = 300
+      Width = 207
       Height = 17
       Caption = 'Export null values'
       Checked = True
@@ -88,7 +102,7 @@ object FrmSamples: TFrmSamples
     object chkExportOnlyFieldsVisible: TCheckBox
       Left = 10
       Top = 52
-      Width = 300
+      Width = 207
       Height = 17
       Caption = 'Export only fields visible'
       Checked = True
@@ -97,15 +111,15 @@ object FrmSamples: TFrmSamples
       OnClick = chkExportOnlyFieldsVisibleClick
     end
     object edtFormatDate: TEdit
-      Left = 466
+      Left = 242
       Top = 27
-      Width = 326
+      Width = 289
       Height = 21
       TabOrder = 3
       Text = 'YYYY-MM-DD'
     end
     object btnApplyFormatDate: TButton
-      Left = 798
+      Left = 537
       Top = 25
       Width = 58
       Height = 25
@@ -114,15 +128,15 @@ object FrmSamples: TFrmSamples
       OnClick = btnApplyFormatDateClick
     end
     object edtFormatCurrency: TEdit
-      Left = 466
+      Left = 242
       Top = 75
-      Width = 326
+      Width = 289
       Height = 21
       TabOrder = 5
       Text = '0.00##'
     end
     object btnFormatCurrency: TButton
-      Left = 798
+      Left = 537
       Top = 73
       Width = 58
       Height = 25
@@ -133,7 +147,7 @@ object FrmSamples: TFrmSamples
     object chkImportOnlyFieldsVisible: TCheckBox
       Left = 10
       Top = 77
-      Width = 300
+      Width = 207
       Height = 17
       Caption = 'Import only fields visible'
       Checked = True
@@ -144,7 +158,7 @@ object FrmSamples: TFrmSamples
     object chkExportEmptyDataSet: TCheckBox
       Left = 10
       Top = 100
-      Width = 300
+      Width = 207
       Height = 17
       Caption = 'Export empty dataset'
       Checked = True
@@ -155,7 +169,7 @@ object FrmSamples: TFrmSamples
     object chkExportChildDataSetAsJsonObject: TCheckBox
       Left = 10
       Top = 121
-      Width = 300
+      Width = 207
       Height = 17
       Hint = 
         'Child dataset needs to have just one record, if child dataset ha' +
@@ -167,9 +181,9 @@ object FrmSamples: TFrmSamples
       OnClick = chkExportChildDataSetAsJsonObjectClick
     end
     object cbxCaseNameDefinition: TComboBox
-      Left = 466
+      Left = 242
       Top = 121
-      Width = 326
+      Width = 289
       Height = 21
       Style = csDropDownList
       ItemIndex = 3
@@ -182,13 +196,47 @@ object FrmSamples: TFrmSamples
         'lowerCamelCase')
     end
     object btnCaseNameDefinition: TButton
-      Left = 798
+      Left = 537
       Top = 119
       Width = 58
       Height = 25
       Caption = 'Apply'
       TabOrder = 11
       OnClick = btnCaseNameDefinitionClick
+    end
+    object btnApplyFormatTime: TButton
+      Left = 896
+      Top = 25
+      Width = 58
+      Height = 25
+      Caption = 'Apply'
+      TabOrder = 12
+      OnClick = btnApplyFormatTimeClick
+    end
+    object edtFormatTime: TEdit
+      Left = 601
+      Top = 27
+      Width = 289
+      Height = 21
+      TabOrder = 13
+      Text = 'hh:nn:ss.zzz'
+    end
+    object edtFormatDateTime: TEdit
+      Left = 601
+      Top = 75
+      Width = 289
+      Height = 21
+      TabOrder = 14
+      Text = 'yyyy-mm-dd hh:nn:ss.zzz'
+    end
+    object btnApplyFormatDateTime: TButton
+      Left = 896
+      Top = 73
+      Width = 58
+      Height = 25
+      Caption = 'Apply'
+      TabOrder = 15
+      OnClick = btnApplyFormatDateTimeClick
     end
   end
   object Panel3: TPanel

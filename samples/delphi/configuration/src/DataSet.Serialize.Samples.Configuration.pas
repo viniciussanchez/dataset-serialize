@@ -50,6 +50,12 @@ type
     Label2: TLabel;
     cbxCaseNameDefinition: TComboBox;
     btnCaseNameDefinition: TButton;
+    btnApplyFormatTime: TButton;
+    edtFormatTime: TEdit;
+    Label3: TLabel;
+    Label5: TLabel;
+    edtFormatDateTime: TEdit;
+    btnApplyFormatDateTime: TButton;
     procedure chkDateInputIsUTCClick(Sender: TObject);
     procedure chkExportNullValuesClick(Sender: TObject);
     procedure chkExportOnlyFieldsVisibleClick(Sender: TObject);
@@ -62,6 +68,8 @@ type
     procedure chkExportEmptyDataSetClick(Sender: TObject);
     procedure chkExportChildDataSetAsJsonObjectClick(Sender: TObject);
     procedure btnCaseNameDefinitionClick(Sender: TObject);
+    procedure btnApplyFormatTimeClick(Sender: TObject);
+    procedure btnApplyFormatDateTimeClick(Sender: TObject);
   private
     procedure LoadFields;
     procedure LoadUsers;
@@ -77,6 +85,16 @@ implementation
 procedure TFrmSamples.btnApplyFormatDateClick(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.FormatDate := edtFormatDate.Text;
+end;
+
+procedure TFrmSamples.btnApplyFormatDateTimeClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.FormatDateTime := edtFormatDateTime.Text;
+end;
+
+procedure TFrmSamples.btnApplyFormatTimeClick(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.FormatTime := edtFormatTime.Text;
 end;
 
 procedure TFrmSamples.btnCaseNameDefinitionClick(Sender: TObject);
