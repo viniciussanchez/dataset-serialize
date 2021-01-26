@@ -17,10 +17,14 @@ type
     FExportEmptyDataSet: Boolean;
     FFormatCurrency: string;
     FFormatDate: string;
+    FFormatTime: string;
+    FFormatDateTime: string;
     FExportChildDataSetAsJsonObject: Boolean;
   public
     constructor Create;
     property FormatDate: string read FFormatDate write FFormatDate;
+    property FormatTime: string read FFormatTime write FFormatTime;
+    property FormatDateTime: string read FFormatDateTime write FFormatDateTime;
     property FormatCurrency: string read FFormatCurrency write FFormatCurrency;
     property ExportOnlyFieldsVisible: Boolean read FExportOnlyFieldsVisible write FExportOnlyFieldsVisible;
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
@@ -116,6 +120,8 @@ begin
   ExportEmptyDataSet := False;
   FFormatCurrency := EmptyStr;
   FFormatDate := 'YYYY-MM-DD';
+  FFormatTime := 'hh:nn:ss.zzz';
+  FFormatDateTime := 'yyyy-mm-dd hh:nn:ss.zzz';
   FExportChildDataSetAsJsonObject := False;
 end;
 

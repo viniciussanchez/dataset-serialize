@@ -151,11 +151,11 @@ begin
           TFieldType.ftSingle, TFieldType.ftFloat:
             Result.Add(ADataSet.Fields[0].AsFloat);
           TFieldType.ftDateTime:
-               Result.Add(FormatDateTime('yyyy-mm-dd hh:mm:ss.zzz', ADataSet.Fields[0].AsDateTime));
+               Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, ADataSet.Fields[0].AsDateTime));
            TFieldType.ftTimeStamp:
                Result.Add(DateToISO8601(ADataSet.Fields[0].AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
            TFieldType.ftTime:
-               Result.Add(FormatDateTime('hh:mm:ss.zzz', ADataSet.Fields[0].AsDateTime));
+               Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, ADataSet.Fields[0].AsDateTime));
            TFieldType.ftDate:
                Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, ADataSet.Fields[0].AsDateTime));
           TFieldType.ftCurrency:
