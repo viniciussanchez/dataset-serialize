@@ -341,7 +341,7 @@ begin
             LField.AsCurrency := StrToCurr(LJSONValue.Value);
           TFieldType.ftFloat, TFieldType.ftFMTBcd, TFieldType.ftBCD{$IF NOT DEFINED(FPC)}, TFieldType.ftSingle{$ENDIF}:
             LField.AsFloat := StrToFloat(LJSONValue.Value);
-          TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
+          TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
             LField.AsString := LJSONValue.Value;
           TFieldType.ftDate:
              LField.AsDateTime := DateOf(ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
