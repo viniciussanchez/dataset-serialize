@@ -221,7 +221,7 @@ begin
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsWideString{$ELSE}TJSONNumber.Create(LField.AsWideString){$ENDIF});
       TFieldType.ftLargeint:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsLargeInt{$ELSE}TJSONNumber.Create(LField.AsLargeInt){$ENDIF});
-      {$IF NOT DEFINED(FPC)}TFieldType.ftSingle,TFieldType.ftExtended, {$ENDIF}TFieldType.ftFloat:
+      {$IF NOT DEFINED(FPC)}TFieldType.ftSingle, {$ENDIF}TFieldType.ftFloat:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF});
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
