@@ -226,11 +226,11 @@ begin
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftDateTime:
-           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime('yyyy-mm-dd hh:mm:ss.zzz', LField.AsDateTime)));
+           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, LField.AsDateTime)));
        TFieldType.ftTimeStamp:
            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
        TFieldType.ftTime:
-           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime('hh:mm:ss.zzz', LField.AsDateTime)));
+           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, LField.AsDateTime)));
        TFieldType.ftDate:
            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
       TFieldType.ftCurrency:
