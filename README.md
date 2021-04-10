@@ -173,8 +173,8 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```
 * Case name definition
 ```pascal
-  // cndNone, cndLower, cndUpper, cndLowerCamelCase
-  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := cndLowerCamelCase;
+  // TCaseNameDefinition = (cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase, cndCamelCase);
+  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := cndCamelCase;
 ```
 * Format date (for export field type equals ftDate)
 ```pascal
