@@ -7,7 +7,7 @@ unit DataSet.Serialize.Config;
 interface
 
 type
-  TCaseNameDefinition = (cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase, cndCamelCase);
+  TCaseNameDefinition = (cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase);
 
   TDataSetSerializeConfigExport = class
   private
@@ -94,7 +94,7 @@ begin
   if not Assigned(FInstance) then
   begin
     FInstance := TDataSetSerializeConfig.Create;
-    FInstance.CaseNameDefinition := cndCamelCase;
+    FInstance.CaseNameDefinition := cndLowerCamelCase;
     FInstance.DataSetPrefix := ['mt', 'qry'];
     FInstance.DateInputIsUTC := True;
   end;
