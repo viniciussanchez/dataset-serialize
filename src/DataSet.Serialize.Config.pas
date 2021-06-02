@@ -7,7 +7,7 @@ unit DataSet.Serialize.Config;
 interface
 
 type
-  TCaseNameDefinition = (cndNone, cndLower, cndUpper, cndLowerCamelCase);
+  TCaseNameDefinition = (cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase);
 
   TDataSetSerializeConfigExport = class
   private

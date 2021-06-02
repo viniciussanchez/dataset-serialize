@@ -129,9 +129,48 @@ begin
 end;
 
 class function TDataSetSerializeUtils.FormatCaseNameDefinition(const AFieldName: string): string;
-var
-  I: Integer;
-  LField: TArray<Char>;
+  Function prdUpperCamelCase(Value: String): String;
+  var
+    I: Integer;
+    liBaixo: Integer;
+    LField: TArray<Char>;
+  begin
+    LField := Value.ToCharArray;
+    I := Low(LField);
+    liBaixo := I;
+    While I <= High(LField) do
+    begin
+      if (liBaixo = I) then
+        Result := Result + UpperCase(LField[I])
+      else
+        Result := Result + LField[I];
+      Inc(I);
+    end;
+    if Result.IsEmpty then
+      Result := Value;
+  end;
+
+  Function CamelCase(Value: String): String;
+  var
+    I: Integer;
+    LField: TArray<Char>;
+  begin
+    LField := Value.ToCharArray;
+    I := Low(LField);
+    While i <= High(LField) do
+    begin
+      if (LField[I] = '_') then
+      begin
+        Inc(I);
+        Result := Result + UpperCase(LField[I]);
+      end
+      else
+        Result := Result + LowerCase(LField[I]);
+      Inc(I);
+    end;
+    if Result.IsEmpty then
+      Result := Value;
+  end;
 begin
   Result := EmptyStr;
   case TDataSetSerializeConfig.GetInstance.CaseNameDefinition of
@@ -140,27 +179,14 @@ begin
     cndUpper:
       Result := AFieldName.ToUpper;
     cndLowerCamelCase:
-      begin
-        LField := AFieldName.ToCharArray;
-        I := Low(LField);
-        While i <= High(LField) do
-        begin
-          if (LField[I] = '_') then
-          begin
-            Inc(I);
-            Result := Result + UpperCase(LField[I]);
-          end
-          else
-            Result := Result + LowerCase(LField[I]);
-          Inc(I);
-        end;
-        if Result.IsEmpty then
-          Result := AFieldName;
-      end
+      Result := CamelCase(AFieldName);
+    cndUpperCamelCase:
+      Result := prdUpperCamelCase(CamelCase(AFieldName));
   else
     Result := AFieldName;
   end;
 end;
+
 
 class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;
 var
