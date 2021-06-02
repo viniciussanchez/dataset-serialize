@@ -193,7 +193,8 @@ object FrmSamples: TFrmSamples
         'None'
         'lower case'
         'UPPER CASE'
-        'lowerCamelCase')
+        'lowerCamelCase'
+        'UpperCamelCase')
     end
     object btnCaseNameDefinition: TButton
       Left = 537
