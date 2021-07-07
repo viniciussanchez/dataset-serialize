@@ -181,8 +181,6 @@ object FrmSamples: TFrmSamples
             ReadOnly = True
             ScrollBars = ssVertical
             TabOrder = 1
-            ExplicitLeft = 3
-            ExplicitTop = -6
           end
         end
         object Panel5: TPanel
@@ -464,7 +462,6 @@ object FrmSamples: TFrmSamples
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitWidth = 722
           object Panel16: TPanel
             Left = 0
             Top = 150
@@ -473,7 +470,6 @@ object FrmSamples: TFrmSamples
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 0
-            ExplicitWidth = 722
             object Panel17: TPanel
               Left = 0
               Top = 0
@@ -492,7 +488,6 @@ object FrmSamples: TFrmSamples
               ParentBackground = False
               ParentFont = False
               TabOrder = 0
-              ExplicitWidth = 722
             end
             object DBGrid5: TDBGrid
               Left = 0
@@ -525,7 +520,6 @@ object FrmSamples: TFrmSamples
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 1
-            ExplicitWidth = 722
             object Panel19: TPanel
               Left = 0
               Top = 0
@@ -544,7 +538,6 @@ object FrmSamples: TFrmSamples
               ParentBackground = False
               ParentFont = False
               TabOrder = 0
-              ExplicitWidth = 722
             end
             object DBGrid6: TDBGrid
               Left = 0

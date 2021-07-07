@@ -26,18 +26,27 @@ type
     /// <param name="ADataSet">
     ///   Refers to the DataSet that you want to export the record.
     /// </param>
+    /// <param name="AValue">
+    ///   Only export the value when there is only 1 field in the DataSet.
+    /// </param>
     /// <returns>
     ///   Returns a JSON object containing the record data.
     /// </returns>
     /// <remarks>
     ///   Invisible or null fields will not be exported.
     /// </remarks>
-    function DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = true): TJSONObject;
+    function DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
     /// <param name="ADataSet">
     ///   Refers to the DataSet that you want to export the records.
+    /// </param>
+    /// <param name="IsChild">
+    ///   Inform if it's child records.
+    /// </param>
+    /// <param name="IsValue">
+    ///   Inform if it's to export only field values (when there is only 1 field in the DataSet).
     /// </param>
     /// <returns>
     ///   Returns a JSONArray with all records from the DataSet.
@@ -45,7 +54,7 @@ type
     /// <remarks>
     ///   Invisible or null fields will not be exported.
     /// </remarks>
-    function DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const isValue: Boolean = true ): TJSONArray;
+    function DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const IsValue: Boolean = True): TJSONArray;
     /// <summary>
     ///   Encrypts a blob field in Base64.
     /// </summary>
@@ -66,7 +75,7 @@ type
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
     /// </summary>
-    constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = true);
+    constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True);
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -117,7 +126,7 @@ begin
   Result := DataSetToJSONObject(FDataSet);
 end;
 
-function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const isValue: Boolean = true): TJSONArray;
+function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const IsValue: Boolean = True): TJSONArray;
 var
   LBookMark: TBookmark;
 begin
@@ -138,7 +147,7 @@ begin
           ADataSet.Next;
           Continue;
         end;
-      if (ADataSet.FieldCount = 1)  and (isValue)  then
+      if (ADataSet.FieldCount = 1)  and (IsValue)  then
       begin
         case ADataSet.Fields[0].DataType of
           TFieldType.ftBoolean:
@@ -175,7 +184,7 @@ begin
         end;
       end
       else
-        Result.AddElement(DataSetToJSONObject(ADataSet));
+        Result.AddElement(DataSetToJSONObject(ADataSet, IsValue));
       {$ENDIF}
       ADataSet.Next;
     end;
@@ -186,7 +195,7 @@ begin
   end;
 end;
 
-function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = true): TJSONObject;
+function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
 var
   LKey: string;
   {$IF NOT DEFINED(FPC)}
@@ -247,7 +256,7 @@ begin
       TFieldType.ftDataSet:
         begin
           LNestedDataSet := TDataSetField(LField).NestedDataSet;
-          Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet, AValue));
+          Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet, False, AValue));
         end;
       {$ENDIF}
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
@@ -397,7 +406,7 @@ begin
   end;
 end;
 
-constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = true);
+constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True);
 begin
   FDataSet := ADataSet;
   FOnlyUpdatedRecords := AOnlyUpdatedRecords;

@@ -78,13 +78,16 @@ type
     /// <param name="AChildRecords">
     ///   Exports only childs records from child datasets.
     /// </param>
+    /// <param name="AValueRecords">
+    ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
+    /// </param>
     /// <returns>
     ///   Returns a JSONArray with all records from the DataSet.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = true): TJSONArray;
+    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONArray;
     /// <summary>
     ///   Responsible for exporting the structure of a DataSet in JSON Array format.
     /// </summary>
@@ -217,7 +220,7 @@ uses
 {$ENDIF}
   DataSet.Serialize.Export, DataSet.Serialize.Import;
 
-function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = true): TJSONArray;
+function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONArray;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin

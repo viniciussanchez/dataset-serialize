@@ -113,7 +113,7 @@ var
 begin
   LJSONArray := mtUsers.ToJSONArray;
   try
-    memoJSON.Lines.Text := {$IFDEF CompilerVersion > 32}LJSONArray.Format{$ELSE}LJSONArray.ToJSON{$ENDIF};
+    memoJSON.Lines.Text := {$IFDEF CompilerVersion < 33}LJSONArray.ToJSON{$ELSE}LJSONArray.Format{$ENDIF};
   finally
     LJSONArray.Free;
   end;
