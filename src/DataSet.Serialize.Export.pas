@@ -71,6 +71,10 @@ type
     /// </summary>
     function HasChildModification(const ADataSet: TDataSet): Boolean;
     {$ENDIF}
+    /// <summary>
+    ///   Verifify if a DataSet has at least one visible field.
+    /// </summary>
+    function HasVisibleFields(const ADataSet: TDataSet): Boolean;
   public
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
@@ -277,13 +281,19 @@ begin
       begin
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
-        if TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet or (LNestedDataSet.RecordCount > 0) then
+        try
+          if (not TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet) and (LNestedDataSet.RecordCount = 0) then
+            Continue;
+          if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible and (not HasVisibleFields(LNestedDataSet)) then
+            Continue;
           if TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject and (LNestedDataSet.RecordCount = 1) then
             Result.AddPair(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJsonObject(LNestedDataSet))
           else
             Result.AddPair(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet, True));
-        if FOnlyUpdatedRecords then
-          TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+        finally
+          if FOnlyUpdatedRecords then
+            TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+        end;
       end;
     finally
       LDataSetDetails.Free;
@@ -320,6 +330,18 @@ begin
   finally
     LStringStream.Free;
     LMemoryStream.Free;
+  end;
+end;
+
+function TDataSetSerialize.HasVisibleFields(const ADataSet: TDataSet): Boolean;
+var
+  LField: TField;
+begin
+  Result := False;
+  for LField in ADataSet.Fields do
+  begin
+    if LField.Visible then
+      Exit(True);
   end;
 end;
 
