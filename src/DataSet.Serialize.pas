@@ -1,7 +1,7 @@
 unit DataSet.Serialize;
 
 {$IF DEFINED(FPC)}
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 {$ENDIF}
 
 interface
@@ -12,9 +12,13 @@ uses
 {$ELSE}
   System.JSON, Data.DB,
 {$ENDIF}
-  DataSet.Serialize.Language;
+  DataSet.Serialize.Language, DataSet.Serialize.Config;
 
 type
+  TLanguageType = DataSet.Serialize.Language.TLanguageType;
+  TDataSetSerializeConfig = DataSet.Serialize.Config.TDataSetSerializeConfig;
+  TCaseNameDefinition = DataSet.Serialize.Config.TCaseNameDefinition;
+
   TDataSetSerializeHelper = class Helper for TDataSet
   public
     /// <summary>
@@ -74,13 +78,16 @@ type
     /// <param name="AChildRecords">
     ///   Exports only childs records from child datasets.
     /// </param>
+    /// <param name="AValueRecords">
+    ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
+    /// </param>
     /// <returns>
     ///   Returns a JSONArray with all records from the DataSet.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONArray;
+    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONArray;
     /// <summary>
     ///   Responsible for exporting the structure of a DataSet in JSON Array format.
     /// </summary>
@@ -213,11 +220,11 @@ uses
 {$ENDIF}
   DataSet.Serialize.Export, DataSet.Serialize.Import;
 
-function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONArray;
+function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONArray;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords);
   try
     Result := LDataSetSerialize.ToJSONArray;
   finally
@@ -243,7 +250,7 @@ var
 begin
   LJSONObject := Self.ToJSONObject(AOnlyUpdatedRecords, AChildRecords);
   try
-    Result := LJSONObject.ToString;
+    Result := {$IF DEFINED(FPC)}LJSONObject.AsJSON{$ELSE}LJSONObject.ToString{$ENDIF};
   finally
     LJSONObject.Free;
   end;
@@ -255,7 +262,7 @@ var
 begin
   LJSONArray := Self.ToJSONArray(AOnlyUpdatedRecords, AChildRecords);
   try
-    Result := LJSONArray.ToString;
+    Result := {$IF DEFINED(FPC)}LJSONArray.AsJSON{$ELSE}LJSONArray.ToString{$ENDIF};
   finally
     LJSONArray.Free;
   end;

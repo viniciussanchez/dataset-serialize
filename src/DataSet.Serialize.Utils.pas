@@ -1,18 +1,17 @@
 unit DataSet.Serialize.Utils;
 
 {$IF DEFINED(FPC)}
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 {$ENDIF}
 
 interface
 
 uses
 {$IF DEFINED(FPC)}
-  DB, fpjson, SysUtils, Classes,
+  DB, fpjson, SysUtils, Classes;
 {$ELSE}
-  System.DateUtils, System.JSON, Data.DB, System.SysUtils, System.Classes, System.Character,
+  System.DateUtils, System.JSON, Data.DB, System.SysUtils, System.Classes, System.Character;
 {$ENDIF}
-  DataSet.Serialize.BooleanField;
 
 type
   /// <summary>
@@ -48,15 +47,15 @@ type
   TDataSetSerializeUtils = class
   public
     /// <summary>
-    ///   Transform name in lower camel case pattern.
+    ///   Format field name to case name definition.
     /// </summary>
     /// <param name="AFieldName">
     ///   Field name to format.
     /// </param>
     /// <returns>
-    ///   Field name in lower camel case format.
+    ///   Formatted field name.
     /// </returns>
-    class function NameToLowerCamelCase(const AFieldName: string): string;
+    class function FormatCaseNameDefinition(const AFieldName: string): string;
     /// <summary>
     ///   Creates a new field in the DataSet.
     /// </summary>
@@ -70,16 +69,6 @@ type
     ///   Return a new field.
     /// </returns>
     class function NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;
-    /// <summary>
-    ///   Converts a boolean to a TBooleanFieldType.
-    /// </summary>
-    /// <param name="ABooleanField">
-    ///   Boolean field type.
-    /// </param>
-    /// <returns>
-    ///   Returns a valid boolean field type.
-    /// </returns>
-    class function BooleanFieldToType(const ABooleanField: TBooleanField): TBooleanFieldType;
     /// <summary>
     ///   Creates a valid name for the field added to the DataSet.
     /// </summary>
@@ -114,16 +103,6 @@ implementation
 
 uses DataSet.Serialize.Consts, DataSet.Serialize.Config;
 
-class function TDataSetSerializeUtils.BooleanFieldToType(const ABooleanField: TBooleanField): TBooleanFieldType;
-var
-  I: Integer;
-begin
-  Result := bfUnknown;
-  for I := Ord(low(TBooleanFieldType)) to Ord(high(TBooleanFieldType)) do
-    if LowerCase(TBooleanFieldType(I).ToString).Equals(LowerCase(ABooleanField.Origin.Trim)) then
-      Exit(TBooleanFieldType(I));
-end;
-
 class function TDataSetSerializeUtils.CreateValidIdentifier(const AName: string): string;
 var
   I: Integer;
@@ -149,29 +128,45 @@ begin
     Result := '_' + Result;
 end;
 
-class function TDataSetSerializeUtils.NameToLowerCamelCase(const AFieldName: string): string;
+class function TDataSetSerializeUtils.FormatCaseNameDefinition(const AFieldName: string): string;
 var
   I: Integer;
+  LCaseNameDefinition: TCaseNameDefinition;
   LField: TArray<Char>;
 begin
   Result := EmptyStr;
-  if not TDataSetSerializeConfig.GetInstance.LowerCamelCase then
-    Exit(AFieldName.ToLower);
-  LField := AFieldName.ToCharArray;
-  I := Low(LField);
-  While i <= High(LField) do
-  begin
-    if (LField[I] = '_') then
-    begin
-      Inc(i);
-      Result := Result + UpperCase(LField[I]);
-    end
-    else
-      Result := Result + LowerCase(LField[I]);
-    Inc(i);
-  end;
-  if Result.IsEmpty then
+  LCaseNameDefinition := TDataSetSerializeConfig.GetInstance.CaseNameDefinition;
+  case LCaseNameDefinition of
+    cndLower:
+      Result := AFieldName.ToLower;
+    cndUpper:
+      Result := AFieldName.ToUpper;
+    cndLowerCamelCase, cndUpperCamelCase:
+      begin
+        LField := AFieldName.ToCharArray;
+        I := Low(LField);
+        While i <= High(LField) do
+        begin
+          if (LField[I] = '_') then
+          begin
+            Inc(I);
+            Result := Result + UpperCase(LField[I]);
+          end
+          else
+          begin
+            if (LCaseNameDefinition = cndUpperCamelCase) and (I = 0) then
+              Result := Result + UpperCase(LField[I])
+            else
+              Result := Result + LowerCase(LField[I]);
+          end;
+          Inc(I);
+        end;
+        if Result.IsEmpty then
+          Result := AFieldName;
+      end
+  else
     Result := AFieldName;
+  end;
 end;
 
 class function TDataSetSerializeUtils.FormatDataSetName(const ADataSetName: string): string;
@@ -185,7 +180,7 @@ begin
       Result := Copy(ADataSetName, Succ(LPrefix.Length), ADataSetName.Length - LPrefix.Length);
       Break;
     end;
-  Result := Self.NameToLowerCamelCase(Result);
+  Result := Self.FormatCaseNameDefinition(Result);
 end;
 
 class function TDataSetSerializeUtils.GetDataType(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}): TFieldType;

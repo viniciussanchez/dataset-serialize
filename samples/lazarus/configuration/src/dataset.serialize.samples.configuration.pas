@@ -1,75 +1,71 @@
 unit DataSet.Serialize.Samples.Configuration;
 
+{$mode objfpc}{$H+}
+
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, DataSet.Serialize.Config, FireDAC.Stan.Intf,
-  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.CheckLst, Vcl.Grids, Vcl.DBGrids, System.JSON, DataSet.Serialize;
+  Classes, SysUtils, DB, memds, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  StdCtrls, CheckLst, DBGrids;
 
 type
+
+  { TFrmSamples }
+
   TFrmSamples = class(TForm)
-    Panel9: TPanel;
-    Panel1: TPanel;
-    Label1: TLabel;
-    Label4: TLabel;
+    btnApplyFormatDate: TButton;
+    btnApplyFormatDateTime: TButton;
+    btnApplyFormatTime: TButton;
+    btnCaseNameDefinition: TButton;
+    btnFormatCurrency: TButton;
+    Button1: TButton;
+    cbxCaseNameDefinition: TComboBox;
+    chbFields: TCheckListBox;
     chkDateInputIsUTC: TCheckBox;
+    chkExportChildDataSetAsJsonObject: TCheckBox;
+    chkExportEmptyDataSet: TCheckBox;
     chkExportNullValues: TCheckBox;
     chkExportOnlyFieldsVisible: TCheckBox;
-    edtFormatDate: TEdit;
-    btnApplyFormatDate: TButton;
-    edtFormatCurrency: TEdit;
-    btnFormatCurrency: TButton;
     chkImportOnlyFieldsVisible: TCheckBox;
-    Panel3: TPanel;
+    DBGrid1: TDBGrid;
+    DBGrid2: TDBGrid;
+    dsLog: TDataSource;
     dsUsers: TDataSource;
-    mtUsers: TFDMemTable;
-    mtUsersID: TIntegerField;
-    mtUsersNAME: TStringField;
-    mtUsersDATE_BIRTH: TDateField;
-    mtUsersSALARY: TCurrencyField;
+    edtFormatCurrency: TEdit;
+    edtFormatDate: TEdit;
+    edtFormatDateTime: TEdit;
+    edtFormatTime: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    mtUsers: TMemDataset;
+    mtLog: TMemDataset;
+    memoJSON: TMemo;
+    Panel1: TPanel;
+    Panel10: TPanel;
+    Panel3: TPanel;
     Panel4: TPanel;
     Panel5: TPanel;
-    chbFields: TCheckListBox;
     Panel6: TPanel;
     Panel7: TPanel;
-    DBGrid1: TDBGrid;
     Panel8: TPanel;
-    Panel10: TPanel;
-    Button1: TButton;
-    memoJSON: TMemo;
-    chkExportEmptyDataSet: TCheckBox;
-    dsLog: TDataSource;
-    mtLog: TFDMemTable;
-    mtLogID_USER: TIntegerField;
-    mtLogID: TIntegerField;
-    mtLogLOG: TStringField;
-    DBGrid2: TDBGrid;
-    chkExportChildDataSetAsJsonObject: TCheckBox;
-    Label2: TLabel;
-    cbxCaseNameDefinition: TComboBox;
-    btnCaseNameDefinition: TButton;
-    btnApplyFormatTime: TButton;
-    edtFormatTime: TEdit;
-    Label3: TLabel;
-    Label5: TLabel;
-    edtFormatDateTime: TEdit;
-    btnApplyFormatDateTime: TButton;
-    procedure chkDateInputIsUTCClick(Sender: TObject);
-    procedure chkExportNullValuesClick(Sender: TObject);
-    procedure chkExportOnlyFieldsVisibleClick(Sender: TObject);
-    procedure chkImportOnlyFieldsVisibleClick(Sender: TObject);
+    Panel9: TPanel;
     procedure btnApplyFormatDateClick(Sender: TObject);
-    procedure btnFormatCurrencyClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure chbFieldsClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure chkExportEmptyDataSetClick(Sender: TObject);
-    procedure chkExportChildDataSetAsJsonObjectClick(Sender: TObject);
-    procedure btnCaseNameDefinitionClick(Sender: TObject);
-    procedure btnApplyFormatTimeClick(Sender: TObject);
     procedure btnApplyFormatDateTimeClick(Sender: TObject);
+    procedure btnApplyFormatTimeClick(Sender: TObject);
+    procedure btnCaseNameDefinitionClick(Sender: TObject);
+    procedure btnFormatCurrencyClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure chbFieldsClick(Sender: TObject);
+    procedure chkDateInputIsUTCChange(Sender: TObject);
+    procedure chkExportChildDataSetAsJsonObjectChange(Sender: TObject);
+    procedure chkExportEmptyDataSetChange(Sender: TObject);
+    procedure chkExportNullValuesChange(Sender: TObject);
+    procedure chkExportOnlyFieldsVisibleChange(Sender: TObject);
+    procedure chkImportOnlyFieldsVisibleChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     procedure LoadFields;
     procedure LoadUsers;
@@ -80,7 +76,16 @@ var
 
 implementation
 
-{$R *.dfm}
+{$R *.lfm}
+
+{ TFrmSamples }
+
+uses DataSet.Serialize, DataSet.Serialize.Config, fpjson;
+
+procedure TFrmSamples.chkDateInputIsUTCChange(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.DateInputIsUTC := chkDateInputIsUTC.Checked;
+end;
 
 procedure TFrmSamples.btnApplyFormatDateClick(Sender: TObject);
 begin
@@ -113,7 +118,7 @@ var
 begin
   LJSONArray := mtUsers.ToJSONArray;
   try
-    memoJSON.Lines.Text := {$IFDEF CompilerVersion < 33}LJSONArray.ToJSON{$ELSE}LJSONArray.Format{$ENDIF};
+    memoJSON.Lines.Text := LJSONArray.FormatJSON();
   finally
     LJSONArray.Free;
   end;
@@ -124,40 +129,35 @@ begin
   mtUsers.FieldByName(chbFields.Items[chbFields.ItemIndex]).Visible := chbFields.Checked[chbFields.ItemIndex];
 end;
 
-procedure TFrmSamples.chkDateInputIsUTCClick(Sender: TObject);
-begin
-  TDataSetSerializeConfig.GetInstance.DateInputIsUTC := chkDateInputIsUTC.Checked;
-end;
-
-procedure TFrmSamples.chkExportEmptyDataSetClick(Sender: TObject);
-begin
-  TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet := chkExportEmptyDataSet.Checked;
-end;
-
-procedure TFrmSamples.chkExportNullValuesClick(Sender: TObject);
-begin
-  TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := chkExportNullValues.Checked;
-end;
-
-procedure TFrmSamples.chkExportOnlyFieldsVisibleClick(Sender: TObject);
-begin
-  TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := chkExportOnlyFieldsVisible.Checked;
-end;
-
-procedure TFrmSamples.chkExportChildDataSetAsJsonObjectClick(Sender: TObject);
+procedure TFrmSamples.chkExportChildDataSetAsJsonObjectChange(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject := chkExportChildDataSetAsJsonObject.Checked;
 end;
 
-procedure TFrmSamples.chkImportOnlyFieldsVisibleClick(Sender: TObject);
+procedure TFrmSamples.chkExportEmptyDataSetChange(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet := chkExportEmptyDataSet.Checked;
+end;
+
+procedure TFrmSamples.chkExportNullValuesChange(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := chkExportNullValues.Checked;
+end;
+
+procedure TFrmSamples.chkExportOnlyFieldsVisibleChange(Sender: TObject);
+begin
+  TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := chkExportOnlyFieldsVisible.Checked;
+end;
+
+procedure TFrmSamples.chkImportOnlyFieldsVisibleChange(Sender: TObject);
 begin
   TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := chkImportOnlyFieldsVisible.Checked;
 end;
 
 procedure TFrmSamples.FormCreate(Sender: TObject);
 begin
-  LoadFields;
   LoadUsers;
+  LoadFields;
 end;
 
 procedure TFrmSamples.LoadFields;
@@ -193,3 +193,4 @@ begin
 end;
 
 end.
+

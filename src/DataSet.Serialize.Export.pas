@@ -1,7 +1,7 @@
 unit DataSet.Serialize.Export;
 
 {$IF DEFINED(FPC)}
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 {$ENDIF}
 
 interface
@@ -19,11 +19,15 @@ type
     FDataSet: TDataSet;
     FOnlyUpdatedRecords: Boolean;
     FChildRecord: Boolean;
+    FValueRecord: Boolean;
     /// <summary>
     ///   Creates a JSON object with the data from the current record of DataSet.
     /// </summary>
     /// <param name="ADataSet">
     ///   Refers to the DataSet that you want to export the record.
+    /// </param>
+    /// <param name="AValue">
+    ///   Only export the value when there is only 1 field in the DataSet.
     /// </param>
     /// <returns>
     ///   Returns a JSON object containing the record data.
@@ -31,12 +35,18 @@ type
     /// <remarks>
     ///   Invisible or null fields will not be exported.
     /// </remarks>
-    function DataSetToJSONObject(const ADataSet: TDataSet): TJSONObject;
+    function DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
     /// <param name="ADataSet">
     ///   Refers to the DataSet that you want to export the records.
+    /// </param>
+    /// <param name="IsChild">
+    ///   Inform if it's child records.
+    /// </param>
+    /// <param name="IsValue">
+    ///   Inform if it's to export only field values (when there is only 1 field in the DataSet).
     /// </param>
     /// <returns>
     ///   Returns a JSONArray with all records from the DataSet.
@@ -44,7 +54,7 @@ type
     /// <remarks>
     ///   Invisible or null fields will not be exported.
     /// </remarks>
-    function DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean = False): TJSONArray;
+    function DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const IsValue: Boolean = True): TJSONArray;
     /// <summary>
     ///   Encrypts a blob field in Base64.
     /// </summary>
@@ -65,7 +75,7 @@ type
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
     /// </summary>
-    constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True);
+    constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True);
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -107,8 +117,7 @@ uses
   System.DateUtils, Data.FmtBcd, System.SysUtils, System.TypInfo, System.Classes, System.NetEncoding, System.Generics.Collections,
   FireDAC.Comp.DataSet,
 {$ENDIF}
-  DataSet.Serialize.BooleanField, DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus,
-  DataSet.Serialize.Config;
+  DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
 
 { TDataSetSerialize }
 
@@ -117,7 +126,7 @@ begin
   Result := DataSetToJSONObject(FDataSet);
 end;
 
-function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean): TJSONArray;
+function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const IsValue: Boolean = True): TJSONArray;
 var
   LBookMark: TBookmark;
 begin
@@ -138,18 +147,11 @@ begin
           ADataSet.Next;
           Continue;
         end;
-      if (ADataSet.FieldCount = 1) then
+      if (ADataSet.FieldCount = 1)  and (IsValue)  then
       begin
         case ADataSet.Fields[0].DataType of
           TFieldType.ftBoolean:
-        begin
-          case TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(ADataSet.Fields[0])) of
-            bfUnknown, bfBoolean:
-              Result.Add(ADataSet.Fields[0].AsBoolean);
-            else
-              Result.Add(ADataSet.Fields[0].AsInteger);
-          end;
-        end;
+            Result.Add(ADataSet.Fields[0].AsBoolean);
           TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint:
             Result.Add(ADataSet.Fields[0].AsInteger);
           TFieldType.ftLongWord, TFieldType.ftAutoInc, TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
@@ -159,11 +161,11 @@ begin
           TFieldType.ftSingle, TFieldType.ftFloat:
             Result.Add(ADataSet.Fields[0].AsFloat);
           TFieldType.ftDateTime:
-               Result.Add(FormatDateTime('yyyy-mm-dd hh:mm:ss.zzz', ADataSet.Fields[0].AsDateTime));
+               Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, ADataSet.Fields[0].AsDateTime));
            TFieldType.ftTimeStamp:
                Result.Add(DateToISO8601(ADataSet.Fields[0].AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
            TFieldType.ftTime:
-               Result.Add(FormatDateTime('hh:mm:ss.zzz', ADataSet.Fields[0].AsDateTime));
+               Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, ADataSet.Fields[0].AsDateTime));
            TFieldType.ftDate:
                Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, ADataSet.Fields[0].AsDateTime));
           TFieldType.ftCurrency:
@@ -182,7 +184,7 @@ begin
         end;
       end
       else
-        Result.AddElement(DataSetToJSONObject(ADataSet));
+        Result.AddElement(DataSetToJSONObject(ADataSet, IsValue));
       {$ENDIF}
       ADataSet.Next;
     end;
@@ -193,7 +195,7 @@ begin
   end;
 end;
 
-function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet): TJSONObject;
+function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
 var
   LKey: string;
   {$IF NOT DEFINED(FPC)}
@@ -210,7 +212,7 @@ begin
     if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible then
       if not(LField.Visible) then
         Continue;
-    LKey := TDataSetSerializeUtils.NameToLowerCamelCase(LField.FieldName);
+    LKey := TDataSetSerializeUtils.FormatCaseNameDefinition(LField.FieldName);
     if LField.IsNull then
     begin
       if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
@@ -222,30 +224,23 @@ begin
     end;
     case LField.DataType of
       TFieldType.ftBoolean:
-        begin
-          case TDataSetSerializeUtils.BooleanFieldToType(TBooleanField(LField)) of
-            bfUnknown, bfBoolean:
-              Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TDataSetSerializeUtils.BooleanToJSON(LField.AsBoolean));
-            else
-              Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsInteger{$ELSE}TJSONNumber.Create(LField.AsInteger){$ENDIF});
-          end;
-        end;
-      TFieldType.ftInteger, TFieldType.ftSmallint{$IF NOT DEFINED(FPC)}, TFieldType.ftShortint{$ENDIF}:
+        Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TDataSetSerializeUtils.BooleanToJSON(LField.AsBoolean));
+      TFieldType.ftInteger, TFieldType.ftSmallint{$IF NOT DEFINED(FPC)}, TFieldType.ftShortint, TFieldType.ftWord, TFieldType.ftByte{$ENDIF}:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsInteger{$ELSE}TJSONNumber.Create(LField.AsInteger){$ENDIF});
       {$IF NOT DEFINED(FPC)}TFieldType.ftLongWord, {$ENDIF}TFieldType.ftAutoInc:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsWideString{$ELSE}TJSONNumber.Create(LField.AsWideString){$ENDIF});
       TFieldType.ftLargeint:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsLargeInt{$ELSE}TJSONNumber.Create(LField.AsLargeInt){$ENDIF});
-      {$IF NOT DEFINED(FPC)}TFieldType.ftSingle, {$ENDIF}TFieldType.ftFloat:
+      {$IF NOT DEFINED(FPC)}TFieldType.ftSingle, TFieldType.ftExtended, {$ENDIF}TFieldType.ftFloat:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF});
-      TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
+      TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftDateTime:
-           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime('yyyy-mm-dd hh:mm:ss.zzz', LField.AsDateTime)));
+           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, LField.AsDateTime)));
        TFieldType.ftTimeStamp:
            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
        TFieldType.ftTime:
-           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime('hh:mm:ss.zzz', LField.AsDateTime)));
+           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, LField.AsDateTime)));
        TFieldType.ftDate:
            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
       TFieldType.ftCurrency:
@@ -261,7 +256,7 @@ begin
       TFieldType.ftDataSet:
         begin
           LNestedDataSet := TDataSetField(LField).NestedDataSet;
-          Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet));
+          Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet, False, AValue));
         end;
       {$ENDIF}
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
@@ -271,12 +266,7 @@ begin
     end;
   end;
   if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
-  begin
-    if TDataSetSerializeConfig.GetInstance.LowerCamelCase then
-      Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('objectState', TJSONString.Create(ADataSet.UpdateStatus.ToString))
-    else
-      Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('object_state', TJSONString.Create(ADataSet.UpdateStatus.ToString));
-  end;
+    Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatCaseNameDefinition('object_state'), TJSONString.Create(ADataSet.UpdateStatus.ToString));
   {$IF NOT DEFINED(FPC)}
   if FChildRecord then
   begin
@@ -416,16 +406,17 @@ begin
   end;
 end;
 
-constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True);
+constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True);
 begin
   FDataSet := ADataSet;
   FOnlyUpdatedRecords := AOnlyUpdatedRecords;
   FChildRecord := AChildRecords;
+  FValueRecord := AValueRecords;
 end;
 
 function TDataSetSerialize.ToJSONArray: TJSONArray;
 begin
-  Result := DataSetToJSONArray(FDataSet);
+  Result := DataSetToJSONArray(FDataSet, FChildRecord, FValueRecord);
 end;
 
 end.

@@ -1,7 +1,7 @@
 unit DataSet.Serialize.UpdatedStatus;
 
 {$IF DEFINED(FPC)}
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 {$ENDIF}
 
 interface
@@ -29,8 +29,8 @@ begin
       Result := 'INSERTED';
     usDeleted:
       Result := 'DELETED';
-    else
-      Result := 'UNOMODIFIED';
+  else
+    Result := 'UNMODIFIED';
   end;
 end;
 

@@ -1,0 +1,494 @@
+object FrmSamples: TFrmSamples
+  Left = 542
+  Height = 600
+  Top = 238
+  Width = 1000
+  Caption = 'DataSet-Serialize - Samples'
+  ClientHeight = 600
+  ClientWidth = 1000
+  OnCreate = FormCreate
+  LCLVersion = '2.0.10.0'
+  object Panel9: TPanel
+    Left = 0
+    Height = 25
+    Top = 0
+    Width = 1000
+    Align = alTop
+    Alignment = taLeftJustify
+    BevelOuter = bvNone
+    Caption = '  Configuration'
+    Color = 16091980
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = [fsBold]
+    ParentBackground = False
+    ParentColor = False
+    ParentFont = False
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 165
+    Top = 25
+    Width = 1000
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 165
+    ClientWidth = 1000
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 240
+      Height = 15
+      Top = 8
+      Width = 254
+      Caption = 'Format date (for export field type equals ftDate):'
+      ParentColor = False
+    end
+    object Label4: TLabel
+      Left = 240
+      Height = 15
+      Top = 56
+      Width = 301
+      Caption = 'Format currency (for export field type equals ftCurrency):'
+      ParentColor = False
+    end
+    object chkDateInputIsUTC: TCheckBox
+      Left = 10
+      Height = 19
+      Top = 6
+      Width = 174
+      Caption = 'Date input is UTC (time zone)'
+      Checked = True
+      OnChange = chkDateInputIsUTCChange
+      State = cbChecked
+      TabOrder = 0
+    end
+    object chkExportNullValues: TCheckBox
+      Left = 10
+      Height = 19
+      Top = 29
+      Width = 113
+      Caption = 'Export null values'
+      Checked = True
+      OnChange = chkExportNullValuesChange
+      State = cbChecked
+      TabOrder = 1
+    end
+    object chkExportOnlyFieldsVisible: TCheckBox
+      Left = 10
+      Height = 19
+      Top = 52
+      Width = 147
+      Caption = 'Export only fields visible'
+      Checked = True
+      OnChange = chkExportOnlyFieldsVisibleChange
+      State = cbChecked
+      TabOrder = 2
+    end
+    object edtFormatDate: TEdit
+      Left = 240
+      Height = 23
+      Top = 27
+      Width = 289
+      TabOrder = 3
+      Text = 'YYYY-MM-DD'
+    end
+    object btnApplyFormatDate: TButton
+      Left = 536
+      Height = 25
+      Top = 25
+      Width = 58
+      Caption = 'Apply'
+      OnClick = btnApplyFormatDateClick
+      TabOrder = 4
+    end
+    object edtFormatCurrency: TEdit
+      Left = 240
+      Height = 23
+      Top = 75
+      Width = 289
+      TabOrder = 5
+      Text = '0.00##'
+    end
+    object btnFormatCurrency: TButton
+      Left = 536
+      Height = 25
+      Top = 73
+      Width = 58
+      Caption = 'Apply'
+      OnClick = btnFormatCurrencyClick
+      TabOrder = 6
+    end
+    object chkImportOnlyFieldsVisible: TCheckBox
+      Left = 10
+      Height = 19
+      Top = 80
+      Width = 149
+      Caption = 'Import only fields visible'
+      Checked = True
+      OnChange = chkImportOnlyFieldsVisibleChange
+      State = cbChecked
+      TabOrder = 7
+    end
+    object chkExportEmptyDataSet: TCheckBox
+      Left = 10
+      Height = 19
+      Top = 103
+      Width = 132
+      Caption = 'Export empty dataset'
+      Checked = True
+      OnChange = chkExportEmptyDataSetChange
+      State = cbChecked
+      TabOrder = 8
+    end
+    object chkExportChildDataSetAsJsonObject: TCheckBox
+      Left = 10
+      Height = 19
+      Hint = 'Child dataset needs to have just one record, if child dataset has more than one record it became an jsonarray again'
+      Top = 124
+      Width = 199
+      Caption = 'Export child dataset as json object'
+      OnChange = chkExportChildDataSetAsJsonObjectChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 9
+    end
+    object Label2: TLabel
+      Left = 240
+      Height = 15
+      Top = 102
+      Width = 115
+      Caption = 'Case name definition:'
+      ParentColor = False
+    end
+    object cbxCaseNameDefinition: TComboBox
+      Left = 240
+      Height = 23
+      Top = 121
+      Width = 289
+      ItemHeight = 15
+      ItemIndex = 3
+      Items.Strings = (
+        'None'
+        'lower case'
+        'UPPER CASE'
+        'lowerCamelCase'
+      )
+      Style = csDropDownList
+      TabOrder = 10
+      Text = 'lowerCamelCase'
+    end
+    object btnCaseNameDefinition: TButton
+      Left = 536
+      Height = 25
+      Top = 119
+      Width = 58
+      Caption = 'Apply'
+      OnClick = btnCaseNameDefinitionClick
+      TabOrder = 11
+    end
+    object edtFormatDateTime: TEdit
+      Left = 608
+      Height = 23
+      Top = 75
+      Width = 289
+      TabOrder = 12
+      Text = 'yyyy-mm-dd hh:nn:ss.zzz'
+    end
+    object Label5: TLabel
+      Left = 608
+      Height = 15
+      Top = 56
+      Width = 307
+      Caption = 'Format DateTime (for export field type equals ftDateTime):'
+      ParentColor = False
+    end
+    object edtFormatTime: TEdit
+      Left = 608
+      Height = 23
+      Top = 27
+      Width = 289
+      TabOrder = 13
+      Text = 'hh:nn:ss.zzz'
+    end
+    object Label3: TLabel
+      Left = 608
+      Height = 15
+      Top = 8
+      Width = 257
+      Caption = 'Format time (for export field type equals ftTime):'
+      ParentColor = False
+    end
+    object btnApplyFormatTime: TButton
+      Left = 903
+      Height = 25
+      Top = 25
+      Width = 58
+      Caption = 'Apply'
+      OnClick = btnApplyFormatTimeClick
+      TabOrder = 14
+    end
+    object btnApplyFormatDateTime: TButton
+      Left = 903
+      Height = 25
+      Top = 73
+      Width = 58
+      Caption = 'Apply'
+      OnClick = btnApplyFormatDateTimeClick
+      TabOrder = 15
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Height = 410
+    Top = 190
+    Width = 1000
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 410
+    ClientWidth = 1000
+    TabOrder = 2
+    object Panel4: TPanel
+      Left = 0
+      Height = 410
+      Top = 0
+      Width = 200
+      Align = alLeft
+      BevelOuter = bvNone
+      ClientHeight = 410
+      ClientWidth = 200
+      TabOrder = 0
+      object Panel5: TPanel
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 200
+        Align = alTop
+        Alignment = taLeftJustify
+        BevelOuter = bvNone
+        Caption = '  Fields visbile'
+        Color = 16091980
+        Font.Color = clWhite
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 0
+      end
+      object chbFields: TCheckListBox
+        Left = 0
+        Height = 385
+        Top = 25
+        Width = 200
+        Align = alClient
+        ItemHeight = 0
+        OnClick = chbFieldsClick
+        TabOrder = 1
+      end
+    end
+    object Panel6: TPanel
+      Left = 200
+      Height = 410
+      Top = 0
+      Width = 439
+      Align = alLeft
+      BevelOuter = bvNone
+      ClientHeight = 410
+      ClientWidth = 439
+      TabOrder = 1
+      object Panel7: TPanel
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 439
+        Align = alTop
+        Alignment = taLeftJustify
+        BevelOuter = bvNone
+        Caption = '  Records'
+        Color = 16091980
+        Font.Color = clWhite
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 0
+      end
+      object DBGrid1: TDBGrid
+        Left = 0
+        Height = 152
+        Top = 25
+        Width = 439
+        Align = alTop
+        Color = clWindow
+        Columns = <        
+          item
+            Title.Caption = 'ID'
+            FieldName = 'ID'
+          end        
+          item
+            Title.Caption = 'Name'
+            Width = 120
+            FieldName = 'NAME'
+          end        
+          item
+            Title.Caption = 'Birthday'
+            Width = 100
+            FieldName = 'DATE_BIRTH'
+          end        
+          item
+            Title.Caption = 'Salary'
+            Width = 100
+            FieldName = 'SALARY'
+          end>
+        DataSource = dsUsers
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgCancelOnExit]
+        ParentFont = False
+        TabOrder = 1
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+      end
+      object Button1: TButton
+        Left = 0
+        Height = 35
+        Top = 375
+        Width = 439
+        Align = alBottom
+        Caption = 'ToJSONArray'
+        OnClick = Button1Click
+        TabOrder = 2
+      end
+      object DBGrid2: TDBGrid
+        Left = 0
+        Height = 198
+        Top = 177
+        Width = 439
+        Align = alClient
+        Color = clWindow
+        Columns = <        
+          item
+            Title.Caption = 'Id'
+            FieldName = 'ID'
+          end        
+          item
+            Title.Caption = 'Log'
+            Width = 324
+            FieldName = 'LOG'
+          end>
+        DataSource = dsLog
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgCancelOnExit]
+        ParentFont = False
+        TabOrder = 3
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+      end
+    end
+    object Panel8: TPanel
+      Left = 639
+      Height = 410
+      Top = 0
+      Width = 361
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 410
+      ClientWidth = 361
+      TabOrder = 2
+      object Panel10: TPanel
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 361
+        Align = alTop
+        Alignment = taLeftJustify
+        BevelOuter = bvNone
+        Caption = '  JSON'
+        Color = 16091980
+        Font.Color = clWhite
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 0
+      end
+      object memoJSON: TMemo
+        Left = 0
+        Height = 385
+        Top = 25
+        Width = 361
+        Align = alClient
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssVertical
+        TabOrder = 1
+      end
+    end
+  end
+  object dsUsers: TDataSource
+    DataSet = mtUsers
+    Left = 704
+    Top = 368
+  end
+  object dsLog: TDataSource
+    DataSet = mtLog
+    Left = 704
+    Top = 424
+  end
+  object mtUsers: TMemDataset
+    FieldDefs = <    
+      item
+        Name = 'ID'
+        DataType = ftAutoInc
+      end    
+      item
+        Name = 'NAME'
+        DataType = ftString
+        Size = 100
+      end    
+      item
+        Name = 'DATE_BIRTH'
+        DataType = ftDate
+      end    
+      item
+        Name = 'SALARY'
+        DataType = ftCurrency
+        Precision = 15
+      end>
+    Left = 752
+    Top = 368
+  end
+  object mtLog: TMemDataset
+    FieldDefs = <    
+      item
+        Name = 'ID'
+        DataType = ftInteger
+      end    
+      item
+        Name = 'ID_USER'
+        DataType = ftInteger
+      end    
+      item
+        Name = 'LOG'
+        DataType = ftString
+        Size = 250
+      end>
+    Left = 752
+    Top = 424
+  end
+end

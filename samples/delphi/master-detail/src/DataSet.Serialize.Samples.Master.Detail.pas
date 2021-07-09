@@ -94,7 +94,7 @@ begin
   begin
     LJSONArray := mtUsers.ToJSONArray;
     try
-      memoExportArrayValue.Lines.Text := LJSONArray.Format(2);
+      memoExportArrayValue.Lines.Text := {$IFDEF CompilerVersion < 33}LJSONArray.ToJSON{$ELSE}LJSONArray.Format{$ENDIF};
     finally
       LJSONArray.Free;
     end;
@@ -109,7 +109,7 @@ begin
   begin
     LJSONArray := mtCountries.ToJSONArray;
     try
-      memoExportedDataSetNested.Lines.Text := LJSONArray.Format(2);
+      memoExportedDataSetNested.Lines.Text := {$IFDEF CompilerVersion < 33}LJSONArray.ToJSON{$ELSE}LJSONArray.Format{$ENDIF};
     finally
       LJSONArray.Free;
     end;

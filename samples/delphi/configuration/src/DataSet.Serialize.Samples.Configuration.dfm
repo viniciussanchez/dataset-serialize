@@ -43,23 +43,44 @@ object FrmSamples: TFrmSamples
     BevelOuter = bvNone
     TabOrder = 1
     object Label1: TLabel
-      Left = 466
+      Left = 242
       Top = 8
       Width = 248
       Height = 13
       Caption = 'Format date (for export field type equals ftDate):'
     end
     object Label4: TLabel
-      Left = 466
+      Left = 242
       Top = 56
       Width = 289
       Height = 13
       Caption = 'Format currency (for export field type equals ftCurrency):'
     end
+    object Label2: TLabel
+      Left = 242
+      Top = 102
+      Width = 112
+      Height = 13
+      Caption = 'Case name definition:'
+    end
+    object Label3: TLabel
+      Left = 601
+      Top = 8
+      Width = 247
+      Height = 13
+      Caption = 'Format time (for export field type equals ftTime):'
+    end
+    object Label5: TLabel
+      Left = 601
+      Top = 56
+      Width = 297
+      Height = 13
+      Caption = 'Format DateTime (for export field type equals ftDateTime):'
+    end
     object chkDateInputIsUTC: TCheckBox
       Left = 10
       Top = 6
-      Width = 300
+      Width = 207
       Height = 17
       Caption = 'Date input is UTC (time zone)'
       Checked = True
@@ -70,7 +91,7 @@ object FrmSamples: TFrmSamples
     object chkExportNullValues: TCheckBox
       Left = 10
       Top = 29
-      Width = 300
+      Width = 207
       Height = 17
       Caption = 'Export null values'
       Checked = True
@@ -81,7 +102,7 @@ object FrmSamples: TFrmSamples
     object chkExportOnlyFieldsVisible: TCheckBox
       Left = 10
       Top = 52
-      Width = 300
+      Width = 207
       Height = 17
       Caption = 'Export only fields visible'
       Checked = True
@@ -89,77 +110,66 @@ object FrmSamples: TFrmSamples
       TabOrder = 2
       OnClick = chkExportOnlyFieldsVisibleClick
     end
-    object chkFieldNameLowerCamelCasePattern: TCheckBox
-      Left = 10
-      Top = 75
-      Width = 300
-      Height = 17
-      Caption = 'Field name in lowerCamelCase pattern'
-      Checked = True
-      State = cbChecked
-      TabOrder = 3
-      OnClick = chkFieldNameLowerCamelCasePatternClick
-    end
     object edtFormatDate: TEdit
-      Left = 466
+      Left = 242
       Top = 27
-      Width = 326
+      Width = 289
       Height = 21
-      TabOrder = 4
+      TabOrder = 3
       Text = 'YYYY-MM-DD'
     end
     object btnApplyFormatDate: TButton
-      Left = 798
+      Left = 537
       Top = 25
       Width = 58
       Height = 25
       Caption = 'Apply'
-      TabOrder = 5
+      TabOrder = 4
       OnClick = btnApplyFormatDateClick
     end
     object edtFormatCurrency: TEdit
-      Left = 466
+      Left = 242
       Top = 75
-      Width = 326
+      Width = 289
       Height = 21
-      TabOrder = 6
+      TabOrder = 5
       Text = '0.00##'
     end
     object btnFormatCurrency: TButton
-      Left = 798
+      Left = 537
       Top = 73
       Width = 58
       Height = 25
       Caption = 'Apply'
-      TabOrder = 7
+      TabOrder = 6
       OnClick = btnFormatCurrencyClick
     end
     object chkImportOnlyFieldsVisible: TCheckBox
       Left = 10
-      Top = 98
-      Width = 300
+      Top = 77
+      Width = 207
       Height = 17
       Caption = 'Import only fields visible'
       Checked = True
       State = cbChecked
-      TabOrder = 8
+      TabOrder = 7
       OnClick = chkImportOnlyFieldsVisibleClick
     end
     object chkExportEmptyDataSet: TCheckBox
       Left = 10
-      Top = 121
-      Width = 300
+      Top = 100
+      Width = 207
       Height = 17
       Caption = 'Export empty dataset'
       Checked = True
       State = cbChecked
-      TabOrder = 9
+      TabOrder = 8
       OnClick = chkExportEmptyDataSetClick
     end
     object chkExportChildDataSetAsJsonObject: TCheckBox
       Left = 10
-      Top = 142
-      Width = 300
+      Top = 121
+      Width = 207
       Height = 17
       Hint = 
         'Child dataset needs to have just one record, if child dataset ha' +
@@ -167,8 +177,67 @@ object FrmSamples: TFrmSamples
       Caption = 'Export child dataset as json object'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 10
+      TabOrder = 9
       OnClick = chkExportChildDataSetAsJsonObjectClick
+    end
+    object cbxCaseNameDefinition: TComboBox
+      Left = 242
+      Top = 121
+      Width = 289
+      Height = 21
+      Style = csDropDownList
+      ItemIndex = 3
+      TabOrder = 10
+      Text = 'lowerCamelCase'
+      Items.Strings = (
+        'None'
+        'lower case'
+        'UPPER CASE'
+        'lowerCamelCase'
+        'UpperCamelCase')
+    end
+    object btnCaseNameDefinition: TButton
+      Left = 537
+      Top = 119
+      Width = 58
+      Height = 25
+      Caption = 'Apply'
+      TabOrder = 11
+      OnClick = btnCaseNameDefinitionClick
+    end
+    object btnApplyFormatTime: TButton
+      Left = 896
+      Top = 25
+      Width = 58
+      Height = 25
+      Caption = 'Apply'
+      TabOrder = 12
+      OnClick = btnApplyFormatTimeClick
+    end
+    object edtFormatTime: TEdit
+      Left = 601
+      Top = 27
+      Width = 289
+      Height = 21
+      TabOrder = 13
+      Text = 'hh:nn:ss.zzz'
+    end
+    object edtFormatDateTime: TEdit
+      Left = 601
+      Top = 75
+      Width = 289
+      Height = 21
+      TabOrder = 14
+      Text = 'yyyy-mm-dd hh:nn:ss.zzz'
+    end
+    object btnApplyFormatDateTime: TButton
+      Left = 896
+      Top = 73
+      Width = 58
+      Height = 25
+      Caption = 'Apply'
+      TabOrder = 15
+      OnClick = btnApplyFormatDateTimeClick
     end
   end
   object Panel3: TPanel
@@ -179,8 +248,6 @@ object FrmSamples: TFrmSamples
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 171
-    ExplicitHeight = 390
     object Panel4: TPanel
       AlignWithMargins = True
       Left = 0
@@ -194,7 +261,6 @@ object FrmSamples: TFrmSamples
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitHeight = 390
       object Panel5: TPanel
         Left = 0
         Top = 0
@@ -223,7 +289,6 @@ object FrmSamples: TFrmSamples
         ItemHeight = 13
         TabOrder = 1
         OnClick = chbFieldsClick
-        ExplicitHeight = 365
       end
     end
     object Panel6: TPanel
@@ -239,7 +304,6 @@ object FrmSamples: TFrmSamples
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitHeight = 390
       object Panel7: TPanel
         Left = 0
         Top = 0
@@ -316,7 +380,6 @@ object FrmSamples: TFrmSamples
         Caption = 'ToJSONArray'
         TabOrder = 2
         OnClick = Button1Click
-        ExplicitTop = 355
       end
       object DBGrid2: TDBGrid
         Left = 0
@@ -367,7 +430,6 @@ object FrmSamples: TFrmSamples
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitHeight = 390
       object Panel10: TPanel
         Left = 0
         Top = 0
@@ -402,7 +464,6 @@ object FrmSamples: TFrmSamples
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 1
-        ExplicitHeight = 365
       end
     end
   end

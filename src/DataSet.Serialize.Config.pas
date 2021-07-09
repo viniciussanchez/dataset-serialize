@@ -1,12 +1,14 @@
 unit DataSet.Serialize.Config;
 
 {$IF DEFINED(FPC)}
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 {$ENDIF}
 
 interface
 
 type
+  TCaseNameDefinition = (cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase);
+
   TDataSetSerializeConfigExport = class
   private
     FExportNullValues: Boolean;
@@ -15,10 +17,14 @@ type
     FExportEmptyDataSet: Boolean;
     FFormatCurrency: string;
     FFormatDate: string;
+    FFormatTime: string;
+    FFormatDateTime: string;
     FExportChildDataSetAsJsonObject: Boolean;
   public
     constructor Create;
     property FormatDate: string read FFormatDate write FFormatDate;
+    property FormatTime: string read FFormatTime write FFormatTime;
+    property FormatDateTime: string read FFormatDateTime write FFormatDateTime;
     property FormatCurrency: string read FFormatCurrency write FFormatCurrency;
     property ExportOnlyFieldsVisible: Boolean read FExportOnlyFieldsVisible write FExportOnlyFieldsVisible;
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
@@ -37,7 +43,7 @@ type
 
   TDataSetSerializeConfig = class
   private
-    FLowerCamelCase: Boolean;
+    FCaseNameDefinition: TCaseNameDefinition;
     FDataSetPrefix: TArray<string>;
     FDateInputIsUTC: Boolean;
     FExport: TDataSetSerializeConfigExport;
@@ -49,7 +55,7 @@ type
     constructor Create;
     destructor Destroy; override;
     property DataSetPrefix: TArray<string> read FDataSetPrefix write FDataSetPrefix;
-    property LowerCamelCase: Boolean read FLowerCamelCase write FLowerCamelCase;
+    property CaseNameDefinition: TCaseNameDefinition read FCaseNameDefinition write FCaseNameDefinition;
     property DateInputIsUTC: Boolean read FDateInputIsUTC write FDateInputIsUTC;
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
     property Import: TDataSetSerializeConfigImport read FImport write FImport;
@@ -88,7 +94,7 @@ begin
   if not Assigned(FInstance) then
   begin
     FInstance := TDataSetSerializeConfig.Create;
-    FInstance.LowerCamelCase := True;
+    FInstance.CaseNameDefinition := cndLowerCamelCase;
     FInstance.DataSetPrefix := ['mt', 'qry'];
     FInstance.DateInputIsUTC := True;
   end;
@@ -114,6 +120,8 @@ begin
   ExportEmptyDataSet := False;
   FFormatCurrency := EmptyStr;
   FFormatDate := 'YYYY-MM-DD';
+  FFormatTime := 'hh:nn:ss.zzz';
+  FFormatDateTime := 'yyyy-mm-dd hh:nn:ss.zzz';
   FExportChildDataSetAsJsonObject := False;
 end;
 

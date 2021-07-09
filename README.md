@@ -1,5 +1,5 @@
-<a href="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.jpg">
-  <img alt="DataSet-Serialize" height="120" src="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.jpg">
+<a href="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.png">
+  <img alt="DataSet-Serialize" height="120" src="https://github.com/viniciussanchez/dataset-serialize/blob/master/img/dataset-serialize.png">
 </a>  
 
 # DataSet Serialize for Delphi and Lazarus (FPC)
@@ -18,11 +18,6 @@ boss install github.com/viniciussanchez/dataset-serialize
 If you choose to install manually, simply add the following folders to your project, in *Project > Options > Resource Compiler > Directories and Conditionals > Include file search path*
 ```
 ../dataset-serialize/src
-../dataset-serialize/src/core
-../dataset-serialize/src/helpers
-../dataset-serialize/src/providers
-../dataset-serialize/src/singletons
-../dataset-serialize/src/types
 ```
 
 ## Getting Started
@@ -176,9 +171,25 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := True;
 ```
-* Field name in lowerCamelCase pattern
+* Case name definition
 ```pascal
-  TDataSetSerializeConfig.GetInstance.LowerCamelCase := True;
+  // cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase
+  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := cndLowerCamelCase;
+  
+  cndNone:
+  [{"MOB_ICADASTRO":11795,"MOB_EMI_REG":6,"CODIGODOCLIENTE":1,"CDOCUMEN1":"999999"}]
+  
+  cndLower:
+  [{"mob_icadastro":11795,"mob_emi_reg":6,"codigodocliente":1,"cdocumen1":"999999"}]
+
+  cndUpper:
+  [{"MOB_ICADASTRO":11795,"MOB_EMI_REG":6,"CODIGODOCLIENTE":1,"CDOCUMEN1":"999999"}]
+
+  cndLowerCamelCase :
+  [{"mobIcadastro":11795,"mobEmiReg":6,"codigodocliente":1,"cdocumen1":"999999"}]
+
+  cndUpperCamelCase::
+  [{"MobIcadastro":11795,"MobEmiReg":6,"Codigodocliente":1,"Cdocumen1":"999999"}]  
 ```
 * Format date (for export field type equals ftDate)
 ```pascal
