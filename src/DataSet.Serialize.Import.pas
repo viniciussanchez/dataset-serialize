@@ -289,7 +289,7 @@ begin
     end
     else
     begin
-      if ADataSet.State <> dsInsert then
+      if not (ADataSet.State in [dsInsert, dsEdit]) then
         ADataSet.Append;
     end;
 
