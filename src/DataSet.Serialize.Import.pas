@@ -10,7 +10,7 @@ uses
 {$IF DEFINED(FPC)}
   DB, fpjson,
 {$ELSE}
-  System.JSON, Data.DB, System.StrUtils, System.SysUtils, System.Rtti,
+  System.JSON, Data.DB, System.StrUtils, System.SysUtils, System.Rtti, System.Character,
 {$ENDIF}
   DataSet.Serialize.Language, DataSet.Serialize.Utils;
 
@@ -409,6 +409,9 @@ function TJSONSerialize.JSONPairToFieldName(const AValue: string): string;
 var
   I: Integer;
   LFieldName: string;
+  LCharacter: Char;
+  LCharacterBefore: Char;
+
 begin
   Result := AValue;
   if TDataSetSerializeConfig.GetInstance.CaseNameDefinition = cndLowerCamelCase then
@@ -419,8 +422,16 @@ begin
     {$ELSE}
     for I := 1 to Length(Result) do
     {$ENDIF}
-    begin
+{    begin
       if CharInSet(Result[I], ['A'..'Z']) and CharInSet(Result[Pred(I)], ['a'..'z']) then
+        LFieldName := LFieldName + '_';
+      LFieldName := LFieldName + Result[I];
+    end;}
+    begin
+      LCharacter:= Result[I];
+      LCharacterBefore:= Result[Pred(I)];
+
+      if LCharacter.IsUpper and LCharacterBefore.IsLower then
         LFieldName := LFieldName + '_';
       LFieldName := LFieldName + Result[I];
     end;

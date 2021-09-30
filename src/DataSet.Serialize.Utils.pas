@@ -115,7 +115,8 @@ begin
   SetLength(Result, Length(AName));
   for LCharacter in AName do
   begin
-    if CharInSet(LCharacter, ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '_']) then
+    if LCharacter.IsLower or LCharacter.IsUpper or LCharacter.IsNumber
+        or LCharacter.IsInArray(['_']) then
     begin
       Inc(I);
       Result[I] := LCharacter;
@@ -124,8 +125,14 @@ begin
   SetLength(Result, I);
   if I = 0 then
     Result := '_'
-  else if CharInSet(Result[1], ['0' .. '9']) then
-    Result := '_' + Result;
+//  else if CharInSet(Result[1], ['0' .. '9']) then
+//    Result := '_' + Result;
+  else
+  begin
+    LCharacter:= Result[1];
+    if LCharacter.IsNumber then
+      Result := '_' + Result;
+  end;
 end;
 
 class function TDataSetSerializeUtils.FormatCaseNameDefinition(const AFieldName: string): string;
