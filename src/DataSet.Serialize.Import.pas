@@ -11,6 +11,7 @@ uses
   DB, fpjson,
 {$ELSE}
   System.JSON, Data.DB, System.StrUtils, System.SysUtils, System.Rtti,
+    {$IF CompilerVersion >= 20.0}System.Character,{$ENDIF}
 {$ENDIF}
   DataSet.Serialize.Language, DataSet.Serialize.Utils;
 
@@ -409,6 +410,10 @@ function TJSONSerialize.JSONPairToFieldName(const AValue: string): string;
 var
   I: Integer;
   LFieldName: string;
+  {$IF CompilerVersion >= 20.0}
+  LCharacter: Char;
+  LCharacterBefore: Char;
+  {$ENDIF}
 begin
   Result := AValue;
   if TDataSetSerializeConfig.GetInstance.CaseNameDefinition = cndLowerCamelCase then
@@ -419,11 +424,23 @@ begin
     {$ELSE}
     for I := 1 to Length(Result) do
     {$ENDIF}
+  {$IF CompilerVersion >= 20.0}
+    begin
+      LCharacter:= Result[I];
+      LCharacterBefore:= Result[Pred(I)];
+
+      if LCharacter.IsUpper and LCharacterBefore.IsLower then
+        LFieldName := LFieldName + '_';
+      LFieldName := LFieldName + Result[I];
+    end;
+  {$ELSE}
     begin
       if CharInSet(Result[I], ['A'..'Z']) and CharInSet(Result[Pred(I)], ['a'..'z']) then
         LFieldName := LFieldName + '_';
       LFieldName := LFieldName + Result[I];
     end;
+  {$ENDIF}
+
     Result := LFieldName.ToUpper;
   end;
 end;
