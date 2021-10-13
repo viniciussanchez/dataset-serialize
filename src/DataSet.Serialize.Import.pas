@@ -11,7 +11,9 @@ uses
   DB, fpjson,
 {$ELSE}
   System.JSON, Data.DB, System.StrUtils, System.SysUtils, System.Rtti,
-    {$IF CompilerVersion >= 20.0}System.Character,{$ENDIF}
+  {$IF CompilerVersion >= 20}
+    System.Character,
+  {$ENDIF}
 {$ENDIF}
   DataSet.Serialize.Language, DataSet.Serialize.Utils;
 
@@ -410,9 +412,9 @@ function TJSONSerialize.JSONPairToFieldName(const AValue: string): string;
 var
   I: Integer;
   LFieldName: string;
-  {$IF CompilerVersion >= 20.0}
-  LCharacter: Char;
-  LCharacterBefore: Char;
+  {$IF NOT DEFINED(FPC) AND (CompilerVersion >= 20)}
+    LCharacter: Char;
+    LCharacterBefore: Char;
   {$ENDIF}
 begin
   Result := AValue;
@@ -424,24 +426,18 @@ begin
     {$ELSE}
     for I := 1 to Length(Result) do
     {$ENDIF}
-  {$IF CompilerVersion >= 20.0}
     begin
-      LCharacter:= Result[I];
-      LCharacterBefore:= Result[Pred(I)];
-
-      if LCharacter.IsUpper and LCharacterBefore.IsLower then
-        LFieldName := LFieldName + '_';
-      LFieldName := LFieldName + Result[I];
-    end;
-  {$ELSE}
-    begin
+      {$IF DEFINED(FPC) or (CompilerVersion < 20)}
       if CharInSet(Result[I], ['A'..'Z']) and CharInSet(Result[Pred(I)], ['a'..'z']) then
+      {$ELSE}
+      LCharacter := Result[I];
+      LCharacterBefore := Result[Pred(I)];
+      if LCharacter.IsUpper and LCharacterBefore.IsLower then
+      {$ENDIF}
         LFieldName := LFieldName + '_';
       LFieldName := LFieldName + Result[I];
     end;
-  {$ENDIF}
-
-    Result := LFieldName.ToUpper;
+    Result := UpperCase(LFieldName);
   end;
 end;
 
@@ -567,10 +563,12 @@ begin
 end;
 
 function TJSONSerialize.LoadFieldStructure(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}): TFieldStructure;
+{$IF NOT DEFINED(FPC)}
 var
   LStrTemp: string;
   LIntTemp: Integer;
   LBoolTemp: Boolean;
+{$ENDIF}
 begin
 {$IF NOT DEFINED(FPC)}
   if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_DATA_TYPE, LStrTemp) then
