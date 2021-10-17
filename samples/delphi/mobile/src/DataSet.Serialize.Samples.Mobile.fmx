@@ -1,0 +1,333 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object Layout1: TLayout
+    Align = Contents
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    OnPainting = Layout1Painting
+    object GridLayout1: TGridLayout
+      Align = Top
+      ItemHeight = 40.000000000000000000
+      ItemWidth = 64.000000000000000000
+      Orientation = Horizontal
+      Position.Y = 225.000000000000000000
+      Size.Width = 640.000000000000000000
+      Size.Height = 40.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object Button1: TButton
+        Size.Width = 64.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Text = 'JSON to DS'
+        OnClick = Button1Click
+      end
+      object Button2: TButton
+        Position.X = 64.000000000000000000
+        Size.Width = 64.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Text = 'DS to JSON'
+        OnClick = Button2Click
+      end
+    end
+    object Memo1: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      DataDetectorTypes = []
+      Lines.Strings = (
+        '['
+        '  {'
+        '    "ID": 3,'
+        '    "DESCRICAO": "Coca Cola",'
+        '    "ATIVO": true,'
+        '    "PRECO": 2.50,'
+        '    "CADASTRO": "03/08/1995",'
+        
+          '    "OBSERVACAO": "test test test test test test test test test ' +
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test te'
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test"'
+        '  },'
+        '  {'
+        '    "ID": 1,'
+        '    "DESCRICAO": "RedBull",'
+        '    "ATIVO": false,'
+        '    "PRECO": 2.39,'
+        '    "CADASTRO": "21/04/1996",'
+        
+          '    "OBSERVACAO": "test test test test test test test test test ' +
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test test test test test test test test test test test te' +
+          'st test test test test test '
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test test test tes' +
+          't test test te'
+        
+          'test test test test test test test test test test test test test' +
+          ' test test test test test test test test test test"'
+        '  }'
+        ']'
+        '')
+      Align = Top
+      Size.Width = 640.000000000000000000
+      Size.Height = 225.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Viewport.Width = 620.000000000000000000
+      Viewport.Height = 205.000000000000000000
+    end
+    object ListView1: TListView
+      ItemAppearanceClassName = 'TListItemRightDetailAppearance'
+      ItemEditAppearanceClassName = 'TListItemRightDetailDeleteAppearance'
+      HeaderAppearanceClassName = 'TListHeaderObjects'
+      FooterAppearanceClassName = 'TListHeaderObjects'
+      EditMode = True
+      Align = Client
+      Size.Width = 640.000000000000000000
+      Size.Height = 215.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+    end
+  end
+  object FDMemTable1: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 256
+    Top = 217
+    object FDMemTable1DESCRICAO: TStringField
+      FieldName = 'DESCRICAO'
+      Size = 100
+    end
+    object FDMemTable1CADASTRO: TDateField
+      FieldName = 'CADASTRO'
+    end
+    object FDMemTable1OBSERVACAO: TStringField
+      FieldName = 'OBSERVACAO'
+      Size = 255
+    end
+    object FDMemTable1PRECO: TCurrencyField
+      FieldName = 'PRECO'
+    end
+  end
+  object BindSourceDB1: TBindSourceDB
+    DataSet = FDMemTable1
+    ScopeMappings = <>
+    Left = 368
+    Top = 184
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 20
+    Top = 5
+    object LinkListControlToField1: TLinkListControlToField
+      Category = 'Quick Bindings'
+      DataSource = BindSourceDB1
+      FieldName = 'CADASTRO'
+      Control = ListView1
+      FillExpressions = <
+        item
+          SourceMemberName = 'PRECO'
+          ControlMemberName = 'Detail'
+        end>
+      FillHeaderExpressions = <>
+      FillHeaderFieldName = 'DESCRICAO'
+      FillBreakGroups = <>
+    end
+  end
+end
