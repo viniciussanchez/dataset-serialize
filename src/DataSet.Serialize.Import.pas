@@ -336,7 +336,7 @@ begin
                 LField.AsBoolean := LBooleanValue;
               {$ENDIF}
             end;
-          TFieldType.ftInteger, TFieldType.ftSmallint{$IF NOT DEFINED(FPC)}, TFieldType.ftShortint, TFieldType.ftLongWord{$ENDIF}:
+          TFieldType.ftInteger, TFieldType.ftSmallint{$IF NOT DEFINED(FPC)}, TFieldType.ftShortint, TFieldType.ftLongWord, TFieldType.ftWord, TFieldType.ftByte{$ENDIF}:
             LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
           TFieldType.ftLargeint, TFieldType.ftAutoInc:
             LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
