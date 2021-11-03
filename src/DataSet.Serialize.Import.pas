@@ -421,17 +421,20 @@ begin
   if TDataSetSerializeConfig.GetInstance.CaseNameDefinition = cndLowerCamelCase then
   begin
     LFieldName := EmptyStr;
-    {$IFDEF ANDROID}
+    {$IF (DEFINED(ANDROID) or DEFINED(IOS)) and (CompilerVersion < 33.0)}
     for I := 0 to Pred(Length(Result)) do
     {$ELSE}
     for I := 1 to Length(Result) do
-    {$ENDIF}
+    {$IFEND}
     begin
       {$IF DEFINED(FPC) or (CompilerVersion < 20)}
       if CharInSet(Result[I], ['A'..'Z']) and CharInSet(Result[Pred(I)], ['a'..'z']) then
       {$ELSE}
       LCharacter := Result[I];
-      LCharacterBefore := Result[Pred(I)];
+      {$IF CompilerVersion >= 33.0}
+      if i > 1 then
+      {$ENDIF}
+        LCharacterBefore := Result[Pred(I)];
       if LCharacter.IsUpper and LCharacterBefore.IsLower then
       {$ENDIF}
         LFieldName := LFieldName + '_';
