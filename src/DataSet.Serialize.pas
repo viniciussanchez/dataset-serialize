@@ -30,13 +30,16 @@ type
     /// <param name="AChildRecords">
     ///   Exports only childs records from child datasets.
     /// </param>
+    /// <param name="AValueRecords">
+    ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
+    /// </param>
     /// <returns>
     ///   Returns a JSON string containing the record data.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): string;
+    function ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): string;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -46,13 +49,16 @@ type
     /// <param name="AChildRecords">
     ///   Exports only childs records from child datasets.
     /// </param>
+    /// <param name="AValueRecords">
+    ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
+    /// </param>
     /// <returns>
     ///   Returns a JSON string with all records from the DataSet.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): string;
+    function ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): string;
     /// <summary>
     ///   Creates a JSON object with the data from the current record of DataSet.
     /// </summary>
@@ -62,13 +68,16 @@ type
     /// <param name="AChildRecords">
     ///   Exports only childs records from child datasets.
     /// </param>
+    /// <param name="AValueRecords">
+    ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
+    /// </param>
     /// <returns>
     ///   Returns a JSON object containing the record data.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONObject;
+    function ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONObject;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -232,11 +241,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): TJSONObject;
+function TDataSetSerializeHelper.ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONObject;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords);
   try
     Result := LDataSetSerialize.ToJSONObject;
   finally
@@ -244,11 +253,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): string;
+function TDataSetSerializeHelper.ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): string;
 var
   LJSONObject: TJSONObject;
 begin
-  LJSONObject := Self.ToJSONObject(AOnlyUpdatedRecords, AChildRecords);
+  LJSONObject := Self.ToJSONObject(AOnlyUpdatedRecords, AChildRecords, AValueRecords);
   try
     Result := {$IF DEFINED(FPC)}LJSONObject.AsJSON{$ELSE}LJSONObject.ToString{$ENDIF};
   finally
@@ -256,11 +265,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True): string;
+function TDataSetSerializeHelper.ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): string;
 var
   LJSONArray: TJSONArray;
 begin
-  LJSONArray := Self.ToJSONArray(AOnlyUpdatedRecords, AChildRecords);
+  LJSONArray := Self.ToJSONArray(AOnlyUpdatedRecords, AChildRecords, AValueRecords);
   try
     Result := {$IF DEFINED(FPC)}LJSONArray.AsJSON{$ELSE}LJSONArray.ToString{$ENDIF};
   finally
