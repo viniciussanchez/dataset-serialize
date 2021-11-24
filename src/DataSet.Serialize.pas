@@ -33,13 +33,16 @@ type
     /// <param name="AValueRecords">
     ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
     /// </param>
+    /// <param name="AEncodeBase64Blob">
+    ///   Convert blob fields to base64.
+    /// </param>
     /// <returns>
     ///   Returns a JSON string containing the record data.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): string;
+    function ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): string;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -52,13 +55,16 @@ type
     /// <param name="AValueRecords">
     ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
     /// </param>
+    /// <param name="AEncodeBase64Blob">
+    ///   Convert blob fields to base64.
+    /// </param>
     /// <returns>
     ///   Returns a JSON string with all records from the DataSet.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): string;
+    function ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): string;
     /// <summary>
     ///   Creates a JSON object with the data from the current record of DataSet.
     /// </summary>
@@ -71,13 +77,16 @@ type
     /// <param name="AValueRecords">
     ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
     /// </param>
+    /// <param name="AEncodeBase64Blob">
+    ///   Convert blob fields to base64.
+    /// </param>
     /// <returns>
     ///   Returns a JSON object containing the record data.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONObject;
+    function ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): TJSONObject;
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -90,13 +99,16 @@ type
     /// <param name="AValueRecords">
     ///   Inform if it's to export only field values (when there is only 1 field in the DataSet)
     /// </param>
+    /// <param name="AEncodeBase64Blob">
+    ///   Convert blob fields to base64.
+    /// </param>
     /// <returns>
     ///   Returns a JSONArray with all records from the DataSet.
     /// </returns>
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True; AEncodeBase64Blob : Boolean = true): TJSONArray;
+    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): TJSONArray;
     /// <summary>
     ///   Responsible for exporting the structure of a DataSet in JSON Array format.
     /// </summary>
@@ -229,7 +241,7 @@ uses
 {$ENDIF}
   DataSet.Serialize.Export, DataSet.Serialize.Import;
 
-function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True; AEncodeBase64Blob : Boolean = true): TJSONArray;
+function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): TJSONArray;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
@@ -241,11 +253,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONObject;
+function TDataSetSerializeHelper.ToJSONObject(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): TJSONObject;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords, AEncodeBase64Blob);
   try
     Result := LDataSetSerialize.ToJSONObject;
   finally
@@ -253,11 +265,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): string;
+function TDataSetSerializeHelper.ToJSONObjectString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): string;
 var
   LJSONObject: TJSONObject;
 begin
-  LJSONObject := Self.ToJSONObject(AOnlyUpdatedRecords, AChildRecords, AValueRecords);
+  LJSONObject := Self.ToJSONObject(AOnlyUpdatedRecords, AChildRecords, AValueRecords, AEncodeBase64Blob);
   try
     Result := {$IF DEFINED(FPC)}LJSONObject.AsJSON{$ELSE}LJSONObject.ToString{$ENDIF};
   finally
@@ -265,11 +277,11 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): string;
+function TDataSetSerializeHelper.ToJSONArrayString(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): string;
 var
   LJSONArray: TJSONArray;
 begin
-  LJSONArray := Self.ToJSONArray(AOnlyUpdatedRecords, AChildRecords, AValueRecords);
+  LJSONArray := Self.ToJSONArray(AOnlyUpdatedRecords, AChildRecords, AValueRecords, AEncodeBase64Blob);
   try
     Result := {$IF DEFINED(FPC)}LJSONArray.AsJSON{$ELSE}LJSONArray.ToString{$ENDIF};
   finally
