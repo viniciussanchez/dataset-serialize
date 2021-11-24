@@ -96,7 +96,7 @@ type
     /// <remarks>
     ///   Invisible fields will not be generated.
     /// </remarks>
-    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONArray;
+    function ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True; AEncodeBase64Blob : Boolean = true): TJSONArray;
     /// <summary>
     ///   Responsible for exporting the structure of a DataSet in JSON Array format.
     /// </summary>
@@ -229,11 +229,11 @@ uses
 {$ENDIF}
   DataSet.Serialize.Export, DataSet.Serialize.Import;
 
-function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True): TJSONArray;
+function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; AValueRecords: Boolean = True; AEncodeBase64Blob : Boolean = true): TJSONArray;
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords, AEncodeBase64Blob);
   try
     Result := LDataSetSerialize.ToJSONArray;
   finally
