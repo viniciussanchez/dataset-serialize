@@ -365,10 +365,16 @@ begin
             end;
           TFieldType.ftTime:
           begin
-             LFormatSettings.TimeSeparator := ':';
-             LFormatSettings.DecimalSeparator := '.';
-             LFormatSettings.ShortTimeFormat := 'hh:mm:ss.zzz';
-             LField.AsDateTime := StrToTime(LJSONValue.Value, LFormatSettings);
+             if LJsonValue.InheritsFrom(TJSONNumber) then
+                LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
+              else
+              begin
+                LFormatSettings.TimeSeparator := ':';
+                LFormatSettings.DecimalSeparator := '.';
+                LFormatSettings.ShortTimeFormat := 'hh:mm:ss.zzz';
+                LTryStrToDateTime := StrToTime(LJSONValue.Value, LFormatSettings);
+              end;
+              LField.AsDateTime := LTryStrToDateTime;
           end;
           {$IF NOT DEFINED(FPC)}
           TFieldType.ftDataSet:
