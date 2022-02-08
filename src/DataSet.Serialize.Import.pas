@@ -220,6 +220,7 @@ var
   {$ENDIF}
   LObjectState: string;
   LFormatSettings: TFormatSettings;
+  LTryStrToDateTime: TDateTime
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
@@ -347,9 +348,17 @@ begin
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
             LField.AsString := LJSONValue.Value;
           TFieldType.ftDate:
-             LField.AsDateTime := DateOf(ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
+            begin
+              if not TryStrToDateTime(LJSONValue.Value, LTryStrToDateTime) then
+                LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
+              LField.AsDateTime := DateOf(LTryStrToDateTime);
+            end;
           TFieldType.ftTimeStamp, TFieldType.ftDateTime:
-             LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
+            begin
+              if not TryStrToDateTime(LJSONValue.Value, LTryStrToDateTime) then
+                LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
+              LField.AsDateTime := LTryStrToDateTime;
+            end;
           TFieldType.ftTime:
           begin
              LFormatSettings.TimeSeparator := ':';
