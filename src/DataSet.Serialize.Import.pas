@@ -221,7 +221,7 @@ var
   LObjectState: string;
   LFormatSettings: TFormatSettings;
   LKeyValues: TKeyValues;
-  LTryStrToDateTime: TDateTime
+  LTryStrToDateTime: TDateTime;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
