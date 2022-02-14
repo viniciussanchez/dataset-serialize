@@ -220,6 +220,7 @@ var
   {$ENDIF}
   LObjectState: string;
   LFormatSettings: TFormatSettings;
+  LKeyValues: TKeyValues;
   LTryStrToDateTime: TDateTime
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
@@ -264,8 +265,12 @@ begin
           TFDDataSet(ADataSet).MasterSource := nil;
         end;
         {$ENDIF}
-        if not ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
-          Exit;
+        LKeyValues := GetKeyValuesDataSet(ADataSet, AJSONObject);
+        if (Length(LKeyValues) = 0) or (not ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(LKeyValues), [])) then
+        begin
+          if ADataSet.State <> dsInsert then
+            ADataSet.Append;
+        end;
         if TUpdateStatus.usModified.ToString = LObjectState then
         begin
           if ADataSet.State <> dsEdit then
