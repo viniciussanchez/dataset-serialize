@@ -221,6 +221,7 @@ var
   LObjectState: string;
   LFormatSettings: TFormatSettings;
   LKeyValues: TKeyValues;
+  LTryStrToDateTime: TDateTime
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
@@ -352,15 +353,33 @@ begin
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
             LField.AsString := LJSONValue.Value;
           TFieldType.ftDate:
-             LField.AsDateTime := DateOf(ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
+            begin
+              if LJsonValue.InheritsFrom(TJSONNumber) then
+                LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
+              else if not TryStrToDateTime(LJSONValue.Value, LTryStrToDateTime) then
+                LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
+              LField.AsDateTime := DateOf(LTryStrToDateTime);
+            end;
           TFieldType.ftTimeStamp, TFieldType.ftDateTime:
-             LField.AsDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
+            begin
+              if LJsonValue.InheritsFrom(TJSONNumber) then
+                LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
+              else if not TryStrToDateTime(LJSONValue.Value, LTryStrToDateTime) then
+                LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
+              LField.AsDateTime := LTryStrToDateTime;
+            end;
           TFieldType.ftTime:
           begin
-             LFormatSettings.TimeSeparator := ':';
-             LFormatSettings.DecimalSeparator := '.';
-             LFormatSettings.ShortTimeFormat := 'hh:mm:ss.zzz';
-             LField.AsDateTime := StrToTime(LJSONValue.Value, LFormatSettings);
+             if LJsonValue.InheritsFrom(TJSONNumber) then
+                LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
+              else
+              begin
+                LFormatSettings.TimeSeparator := ':';
+                LFormatSettings.DecimalSeparator := '.';
+                LFormatSettings.ShortTimeFormat := 'hh:mm:ss.zzz';
+                LTryStrToDateTime := StrToTime(LJSONValue.Value, LFormatSettings);
+              end;
+              LField.AsDateTime := LTryStrToDateTime;
           end;
           {$IF NOT DEFINED(FPC)}
           TFieldType.ftDataSet:
