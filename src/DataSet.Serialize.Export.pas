@@ -166,13 +166,33 @@ begin
           TFieldType.ftSingle, TFieldType.ftFloat:
             Result.Add(ADataSet.Fields[0].AsFloat);
           TFieldType.ftDateTime:
-               Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, ADataSet.Fields[0].AsDateTime));
-           TFieldType.ftTimeStamp:
-               Result.Add(DateToISO8601(ADataSet.Fields[0].AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
-           TFieldType.ftTime:
-               Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, ADataSet.Fields[0].AsDateTime));
-           TFieldType.ftDate:
-               Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, ADataSet.Fields[0].AsDateTime));
+          begin
+            if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+              Result.Add(ADataSet.Fields[0].AsDateTime)
+            else
+              Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, ADataSet.Fields[0].AsDateTime));
+          end;
+          TFieldType.ftTimeStamp:
+          begin
+            if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+              Result.Add(ADataSet.Fields[0].AsDateTime)
+            else
+              Result.Add(DateToISO8601(ADataSet.Fields[0].AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC));
+          end;
+          TFieldType.ftTime:
+          begin
+            if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+              Result.Add(ADataSet.Fields[0].AsDateTime)
+            else
+              Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, ADataSet.Fields[0].AsDateTime));
+          end;
+          TFieldType.ftDate:
+          begin
+            if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+              Result.Add(ADataSet.Fields[0].AsDateTime)
+            else
+              Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, ADataSet.Fields[0].AsDateTime));
+          end;
           TFieldType.ftCurrency:
             begin
               if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
@@ -244,13 +264,33 @@ begin
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftDateTime:
-           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, LField.AsDateTime)));
-       TFieldType.ftTimeStamp:
-           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
-       TFieldType.ftTime:
-           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, LField.AsDateTime)));
-       TFieldType.ftDate:
-           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
+        begin
+          if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
+          else
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, LField.AsDateTime)));
+        end;
+      TFieldType.ftTimeStamp:
+        begin
+          if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
+          else
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)));
+        end;
+      TFieldType.ftTime:
+        begin
+          if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
+          else
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, LField.AsDateTime)));
+        end;
+      TFieldType.ftDate:
+        begin
+          if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
+          else
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
+        end;
       TFieldType.ftCurrency:
         begin
           if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
