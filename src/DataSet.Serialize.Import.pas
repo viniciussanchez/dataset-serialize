@@ -347,9 +347,19 @@ begin
           TFieldType.ftLargeint, TFieldType.ftAutoInc:
             LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
           TFieldType.ftCurrency:
-            LField.AsCurrency := StrToCurr(LJSONValue.Value);
+            begin
+              LFormatSettings.DecimalSeparator := FormatSettings.DecimalSeparator;
+              if (TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator <> '') then
+                LFormatSettings.DecimalSeparator := TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator;
+              LField.AsCurrency := StrToCurr(LJSONValue.Value, LFormatSettings);
+            end;
           TFieldType.ftFloat, TFieldType.ftFMTBcd, TFieldType.ftBCD{$IF NOT DEFINED(FPC)}, TFieldType.ftSingle{$ENDIF}:
-            LField.AsFloat := StrToFloat(LJSONValue.Value);
+            begin
+              LFormatSettings.DecimalSeparator := FormatSettings.DecimalSeparator;
+              if (TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator <> '') then
+                LFormatSettings.DecimalSeparator := TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator;
+              LField.AsFloat := StrToFloat(LJSONValue.Value, LFormatSettings);
+            end;
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
             LField.AsString := LJSONValue.Value;
           TFieldType.ftDate:
@@ -362,7 +372,7 @@ begin
             end;
           TFieldType.ftTimeStamp, TFieldType.ftDateTime:
             begin
-              if LJsonValue.InheritsFrom(TJSONNumber) then
+              if LJSONValue.InheritsFrom(TJSONNumber) then
                 LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
               else if not TryStrToDateTime(LJSONValue.Value, LTryStrToDateTime) then
                 LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
@@ -370,7 +380,7 @@ begin
             end;
           TFieldType.ftTime:
           begin
-             if LJsonValue.InheritsFrom(TJSONNumber) then
+             if LJSONValue.InheritsFrom(TJSONNumber) then
                 LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
               else
               begin
