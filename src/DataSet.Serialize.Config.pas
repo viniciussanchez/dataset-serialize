@@ -36,9 +36,11 @@ type
   TDataSetSerializeConfigImport = class
   private
     FImportOnlyFieldsVisible: Boolean;
+    FDecimalSeparator: Char;
   public
     constructor Create;
     property ImportOnlyFieldsVisible: Boolean read FImportOnlyFieldsVisible write FImportOnlyFieldsVisible;
+    property DecimalSeparator: Char read FDecimalSeparator write FDecimalSeparator;
   end;
 
   TDataSetSerializeConfig = class
