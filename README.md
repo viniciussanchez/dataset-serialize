@@ -199,6 +199,10 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.FormatCurrency := '0.00##';
 ```
+* Format float (for export field type equals ftFloat)
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.FormatFloat := ',0.00';
+```
 * Define DataSet prefixes
 ```pascal
   TDataSetSerializeConfig.GetInstance.DataSetPrefix := ['mt', 'qry'];
