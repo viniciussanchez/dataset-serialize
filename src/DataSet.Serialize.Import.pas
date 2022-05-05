@@ -334,6 +334,11 @@ begin
           LField.Clear;
           Continue;
         end;
+        if Assigned(LField.OnSetText) then
+        begin
+          LField.Text := LJSONValue.Value;
+          Continue;
+        end;
         case LField.DataType of
           TFieldType.ftBoolean:
             begin
