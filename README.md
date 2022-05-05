@@ -174,21 +174,21 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 * Case name definition
 ```pascal
   // cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase
-  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := cndLowerCamelCase;
+  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := TCaseNameDefinition.cndLowerCamelCase;
   
-  cndNone:
+  TCaseNameDefinition.cndNone:
   [{"MOB_ICADASTRO":11795,"MOB_EMI_REG":6,"CODIGODOCLIENTE":1,"CDOCUMEN1":"999999"}]
   
-  cndLower:
+  TCaseNameDefinition.cndLower:
   [{"mob_icadastro":11795,"mob_emi_reg":6,"codigodocliente":1,"cdocumen1":"999999"}]
 
-  cndUpper:
+  TCaseNameDefinition.cndUpper:
   [{"MOB_ICADASTRO":11795,"MOB_EMI_REG":6,"CODIGODOCLIENTE":1,"CDOCUMEN1":"999999"}]
 
-  cndLowerCamelCase :
+  TCaseNameDefinition.cndLowerCamelCase:
   [{"mobIcadastro":11795,"mobEmiReg":6,"codigodocliente":1,"cdocumen1":"999999"}]
 
-  cndUpperCamelCase::
+  TCaseNameDefinition.cndUpperCamelCase:
   [{"MobIcadastro":11795,"MobEmiReg":6,"Codigodocliente":1,"Cdocumen1":"999999"}]  
 ```
 * Format date (for export field type equals ftDate)
