@@ -213,13 +213,9 @@ Check out our sample project for each situation presented above in operation. If
 
 ![dataset-serialize](img/img-02.png)
 
-## Team
+## 💻 Code Contributors
 
-This project is maintained by the following person(s) and a bunch of [awesome contributors](https://github.com/viniciussanchez/dataset-serialize/graphs/contributors).
-
-[![Vinicius Sanchez](https://avatars3.githubusercontent.com/u/16382981?s=60&v=4)](https://github.com/viniciussanchez) | [![Mateus Vicente](https://avatars0.githubusercontent.com/u/50463556?s=60&v=4)](https://github.com/mateusvicente100)
---- | ---
-[Vinicius Sanchez](https://github.com/viniciussanchez) | [Mateus Vicente](https://github.com/mateusvicente100)
+<img src="https://opencollective.com/dataset-serialize/contributors.svg?width=890&button=false" alt="Code Contributors" style="max-width:100%;">
 
 ## License
 
