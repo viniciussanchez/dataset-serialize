@@ -211,6 +211,9 @@ type
     ///   Walk the DataSet fields by checking the required property.
     ///   Uses the DisplayLabel property to mount the message.
     /// </remarks>
+
+    procedure MergeFromJSONObject(const AJSONArray: TJSONArray; const AOwns: Boolean = True); overload;
+
     function ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS; const AOwns: Boolean = True): TJSONArray; overload;
     /// <summary>
     ///   Responsible for validating whether JSON has all the necessary information for a particular DataSet.
@@ -361,6 +364,18 @@ begin
   end;
 end;
 
+procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONArray: TJSONArray; const AOwns: Boolean = True);
+var
+  LJSONSerialize: TJSONSerialize;
+begin
+  LJSONSerialize := TJSONSerialize.Create(AJSONArray, AOwns);
+  try
+    LJSONSerialize.Merge(Self);
+  finally
+    LJSONSerialize.Free;
+  end;
+end;
+
 function TDataSetSerializeHelper.ValidateJSON(const AJSONString: string; const ALang: TLanguageType): TJSONArray;
 begin
   if Trim(AJSONString).StartsWith('{') then
@@ -387,6 +402,8 @@ procedure TDataSetSerializeHelper.MergeFromJSONObject(const AJSONString: string)
 begin
   if Trim(AJSONString).StartsWith('{') then
     MergeFromJSONObject({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONObject)
+  else if Trim(AJSONString).StartsWith('[') then
+    MergeFromJSONObject({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONArray)
 end;
 
 end.
