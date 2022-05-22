@@ -8,12 +8,26 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  DB, fpjson;
+  Classes, DB, Generics.Collections, fpjson;
 {$ELSE}
-  Data.DB, System.JSON;
+  Data.DB, System.Generics.Collections, System.JSON;
 {$ENDIF}
 
 type
+  {$IF DEFINED(FPC)}
+  // hack para conhecer o DetailDataset. delphi tem este método mas FreePascal não.
+  TMyHackDataset = class(DB.TDataset)
+  public
+    procedure GetDetailDataSets(List: TList<TDataSet>);
+  end;
+
+  TMyHackDataSource = class(DB.TDatasource)
+  protected
+    Property DataLink;
+    Property DataLinkCount;
+  end;
+  {$ENDIF}
+
   TDataSetSerialize = class
   private
     FDataSet: TDataSet;
@@ -76,6 +90,13 @@ type
     ///   Verifify if a DataSet has at least one visible field.
     /// </summary>
     function HasVisibleFields(const ADataSet: TDataSet): Boolean;
+    /// <summary>
+    ///   Return in ADataSetDetails all child datasets of ADataSet (Master dataset)
+    /// </summary>
+    procedure GetDetailsDatasets(const ADataSet: TDataSet; ADataSetDetails: TList<TDataSet>);
+    /// <summary>
+    ///   Return if ADataset has children datasets
+    /// </summary>
   public
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
@@ -117,12 +138,41 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  DateUtils, SysUtils, Classes, FmtBCD, TypInfo, base64, StrUtils,
+  DateUtils, SysUtils, FmtBCD, TypInfo, base64, StrUtils,
 {$ELSE}
-  System.DateUtils, Data.FmtBcd, System.SysUtils, System.StrUtils, System.TypInfo, System.Classes, System.NetEncoding, System.Generics.Collections,
+  System.DateUtils, Data.FmtBcd, System.SysUtils, System.StrUtils, System.TypInfo, System.Classes, System.NetEncoding,
   FireDAC.Comp.DataSet,
 {$ENDIF}
   DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
+
+{ TDataset }
+
+{$IF DEFINED(FPC)}
+procedure TMyHackDataset.GetDetailDataSets(List: TList<TDataSet>);
+var
+  I, J: Integer;
+  s: String;
+begin
+  List.Clear;
+  for I := MyDataSourceCount - 1 downto 0 do
+  begin
+    with TMyHackDataSource(MyDataSources[I]) do
+    begin
+      for J := DataLinkCount - 1 downto 0 do
+      begin
+        if (DataLink[J] is TDetailDataLink)
+          and (TDetailDataLink(DataLink[J]).DetailDataSet <> nil) then
+        begin
+          s := Self.Name;
+          s := IntToStr(DataLinkCount);
+          s := TDetailDataLink(DataLink[J]).DetailDataSet.Name;
+          List.Add(TDetailDataLink(DataLink[J]).DetailDataSet);
+        end;
+      end;
+    end;
+  end;
+end;
+{$ENDIF}
 
 { TDataSetSerialize }
 
@@ -233,10 +283,8 @@ end;
 function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
 var
   LKey: string;
-  {$IF NOT DEFINED(FPC)}
   LNestedDataSet: TDataSet;
   LDataSetDetails: TList<TDataSet>;
-  {$ENDIF}
   LField: TField;
 begin
   Result := TJSONObject.Create;
@@ -330,35 +378,37 @@ begin
   end;
   if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
     Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatCaseNameDefinition('object_state'), TJSONString.Create(ADataSet.UpdateStatus.ToString));
-  {$IF NOT DEFINED(FPC)}
   if FChildRecord then
   begin
     LDataSetDetails := TList<TDataSet>.Create;
     try
-      ADataSet.GetDetailDataSets(LDataSetDetails);
+      GetDetailsDatasets(ADataSet, LDataSetDetails);
       for LNestedDataSet in LDataSetDetails do
       begin
+        {$IF NOT DEFINED(FPC)}
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
+        {$ENDIF}
         try
           if (not TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet) and (LNestedDataSet.RecordCount = 0) then
             Continue;
           if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible and (not HasVisibleFields(LNestedDataSet)) then
             Continue;
           if TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject and (LNestedDataSet.RecordCount = 1) then
-            Result.AddPair(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJsonObject(LNestedDataSet))
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJsonObject(LNestedDataSet))
           else
-            Result.AddPair(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet, True));
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet, True));
         finally
+          {$IF NOT DEFINED(FPC)}
           if FOnlyUpdatedRecords then
             TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+          {$ENDIF}
         end;
       end;
     finally
       LDataSetDetails.Free;
     end;
   end;
-  {$ENDIF}
 end;
 
 function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
@@ -485,6 +535,15 @@ begin
     {$ENDIF}
     Result.{$IF DEFINED(FPC)}Add{$ELSE}AddElement{$ENDIF}(LJSONObject);
   end;
+end;
+
+procedure TDataSetSerialize.GetDetailsDatasets(const ADataSet: TDataSet; ADataSetDetails: TList<TDataSet>);
+begin
+  {$IF DEFINED(FPC)}
+  TMyHackDataset(ADataSet).GetDetailDataSets(ADataSetDetails);
+  {$ELSE}
+  ADataSet.GetDetailDataSets(ADataSetDetails);
+  {$ENDIF}
 end;
 
 constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True);

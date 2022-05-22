@@ -66,7 +66,7 @@ type
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
     property Import: TDataSetSerializeConfigImport read FImport write FImport;
     class function GetInstance: TDataSetSerializeConfig;
-    class destructor UnInitialize;
+    class procedure UnInitialize;
   end;
 
 implementation
@@ -113,7 +113,7 @@ begin
   Result := TDataSetSerializeConfig.GetDefaultInstance;
 end;
 
-class destructor TDataSetSerializeConfig.UnInitialize;
+class procedure TDataSetSerializeConfig.UnInitialize;
 begin
   if Assigned(FInstance) then
     FreeAndNil(FInstance);
@@ -133,9 +133,16 @@ begin
   FExportChildDataSetAsJsonObject := False;
 end;
 
+{ TDataSetSerializeConfigImport }
+
 constructor TDataSetSerializeConfigImport.Create;
 begin
   FImportOnlyFieldsVisible := True;
 end;
+
+initialization
+
+finalization
+  TDataSetSerializeConfig.UnInitialize;
 
 end.
