@@ -135,6 +135,7 @@ end;
 
 constructor TDataSetSerializeConfigImport.Create;
 begin
+  FDecimalSeparator := '.';
   FImportOnlyFieldsVisible := True;
 end;
 
