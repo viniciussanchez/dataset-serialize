@@ -397,8 +397,10 @@ begin
             begin
               if LJSONValue.InheritsFrom(TJSONNumber) then
                 LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
-              else if not TryStrToDateTime(VarToStr(LJSONValue.Value), LTryStrToDateTime) then
-                LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
+              else if TDataSetSerializeConfig.GetInstance.DateTimeIsISO8601 then
+                LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)
+              else
+                TryStrToDateTime(VarToStr(LJSONValue.Value), LTryStrToDateTime);
               LField.AsDateTime := LTryStrToDateTime;
             end;
           TFieldType.ftTime:
