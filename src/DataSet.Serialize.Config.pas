@@ -50,6 +50,7 @@ type
     FCaseNameDefinition: TCaseNameDefinition;
     FDataSetPrefix: TArray<string>;
     FDateInputIsUTC: Boolean;
+    FDateTimeIsISO8601: Boolean;
     FDateIsFloatingPoint: Boolean;
     FExport: TDataSetSerializeConfigExport;
     FImport: TDataSetSerializeConfigImport;
@@ -61,6 +62,7 @@ type
     destructor Destroy; override;
     property DataSetPrefix: TArray<string> read FDataSetPrefix write FDataSetPrefix;
     property CaseNameDefinition: TCaseNameDefinition read FCaseNameDefinition write FCaseNameDefinition;
+    property DateTimeIsISO8601: Boolean read FDateTimeIsISO8601 write FDateTimeIsISO8601;
     property DateInputIsUTC: Boolean read FDateInputIsUTC write FDateInputIsUTC;
     property DateIsFloatingPoint: Boolean read FDateIsFloatingPoint write FDateIsFloatingPoint;
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
@@ -104,6 +106,7 @@ begin
     FInstance.DataSetPrefix := ['mt', 'qry'];
     FInstance.DateInputIsUTC := True;
     FInstance.DateIsFloatingPoint := False;
+    FInstance.DateTimeIsISO8601 := True;
   end;
   Result := FInstance;
 end;
