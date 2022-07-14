@@ -292,7 +292,9 @@ begin
         if ADetail then
         begin
           if ADataSet.Locate(GetKeyFieldsDataSet(ADataSet), VarArrayOf(GetKeyValuesDataSet(ADataSet, AJSONObject)), []) then
-            ADataSet.Edit;
+            ADataSet.Edit
+          else
+            ADataSet.Append;
         end
         else
           ADataSet.Edit;
