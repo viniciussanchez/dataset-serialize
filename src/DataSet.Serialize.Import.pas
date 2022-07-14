@@ -222,6 +222,8 @@ var
   LFormatSettings: TFormatSettings;
   LKeyValues: TKeyValues;
   LTryStrToDateTime: TDateTime;
+  LTryStrToCurr: Currency;
+  LTryStrToFloat: Double;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
@@ -332,6 +334,11 @@ begin
           LField.Clear;
           Continue;
         end;
+        if Assigned(LField.OnSetText) then
+        begin
+          LField.Text := LJSONValue.Value;
+          Continue;
+        end;
         case LField.DataType of
           TFieldType.ftBoolean:
             begin
@@ -348,17 +355,33 @@ begin
             LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
           TFieldType.ftCurrency:
             begin
-              LFormatSettings.DecimalSeparator := FormatSettings.DecimalSeparator;
-              if (TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator <> '') then
-                LFormatSettings.DecimalSeparator := TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator;
-              LField.AsCurrency := StrToCurr(LJSONValue.Value, LFormatSettings);
+              LTryStrToCurr := 0;
+              if not TryStrToCurr(LJSONValue.Value, LTryStrToCurr) then
+              begin
+                LFormatSettings.DecimalSeparator := FormatSettings.DecimalSeparator;
+                if (TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator <> '') then
+                  LFormatSettings.DecimalSeparator := TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator;
+                  if not TryStrToCurr(LJSONValue.Value, LTryStrToCurr, LFormatSettings) then
+                  begin
+                    LTryStrToCurr := StrToCurr(LJSONValue.Value, LFormatSettings);
+                  end;
+              end;
+              LField.AsCurrency := LTryStrToCurr;
             end;
           TFieldType.ftFloat, TFieldType.ftFMTBcd, TFieldType.ftBCD{$IF NOT DEFINED(FPC)}, TFieldType.ftSingle{$ENDIF}:
             begin
-              LFormatSettings.DecimalSeparator := FormatSettings.DecimalSeparator;
-              if (TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator <> '') then
-                LFormatSettings.DecimalSeparator := TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator;
-              LField.AsFloat := StrToFloat(LJSONValue.Value, LFormatSettings);
+              LTryStrToFloat:= 0;
+              if not TryStrToFloat(LJSONValue.Value, LTryStrToFloat) then
+              begin
+                LFormatSettings.DecimalSeparator := FormatSettings.DecimalSeparator;
+                if (TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator <> '') then
+                  LFormatSettings.DecimalSeparator := TDataSetSerializeConfig.GetInstance.Import.DecimalSeparator;
+                if not TryStrToFloat(LJSONValue.Value, LTryStrToFloat, LFormatSettings) then
+                  begin
+                    LTryStrToFloat := StrToFloat(LJSONValue.Value, LFormatSettings);
+                  end;
+              end;
+              LField.AsFloat := LTryStrToFloat;
             end;
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
             LField.AsString := LJSONValue.Value;
@@ -366,7 +389,7 @@ begin
             begin
               if LJsonValue.InheritsFrom(TJSONNumber) then
                 LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
-              else if not TryStrToDateTime(LJSONValue.Value, LTryStrToDateTime) then
+              else if not TryStrToDateTime(VarToStr(LJSONValue.Value), LTryStrToDateTime) then
                 LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
               LField.AsDateTime := DateOf(LTryStrToDateTime);
             end;
@@ -374,7 +397,7 @@ begin
             begin
               if LJSONValue.InheritsFrom(TJSONNumber) then
                 LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
-              else if not TryStrToDateTime(LJSONValue.Value, LTryStrToDateTime) then
+              else if not TryStrToDateTime(VarToStr(LJSONValue.Value), LTryStrToDateTime) then
                 LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC);
               LField.AsDateTime := LTryStrToDateTime;
             end;
