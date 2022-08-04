@@ -14,6 +14,13 @@ uses
 {$ENDIF}
 
 type
+  {$IF DEFINED(FPC)}
+  { TJSONExtFloatNumber }
+  TJSONExtFloatNumber =class(TJSONFloatNumber)
+    function GetAsString: TJSONStringType; override;
+  end;
+  {$ENDIF}
+
   TDataSetSerialize = class
   private
     FDataSet: TDataSet;
@@ -123,6 +130,28 @@ uses
   FireDAC.Comp.DataSet,
 {$ENDIF}
   DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
+
+{$IF DEFINED(FPC)}
+{ TJSONExtFloatNumber }
+
+function TJSONExtFloatNumber.GetAsString: TJSONStringType;
+var
+  LFormatSettings: TFormatSettings;
+begin
+  if TDataSetSerializeConfig.GetInstance.&Export.ExportFloatScientificNotation then
+    Result:=inherited GetAsString
+  else
+  begin
+    LFormatSettings.DecimalSeparator := FormatSettings.DecimalSeparator;
+    if (TDataSetSerializeConfig.GetInstance.&Export.DecimalSeparator <> '') then
+      LFormatSettings.DecimalSeparator := TDataSetSerializeConfig.GetInstance.&Export.DecimalSeparator;
+    Result := FloatToStr(GetAsFloat, LFormatSettings);
+    // Str produces a ' ' in front where the - can go.
+    if (Result<>'') and (Result[1]=' ') then
+      Delete(Result,1,1);
+  end;
+end;
+{$ENDIF}
 
 { TDataSetSerialize }
 
@@ -267,7 +296,7 @@ begin
       {$IF NOT DEFINED(FPC)}TFieldType.ftSingle, TFieldType.ftExtended, {$ENDIF}TFieldType.ftFloat:
         begin
           if TDataSetSerializeConfig.GetInstance.Export.FormatFloat.Trim.IsEmpty then
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}TJSONExtFloatNumber.Create(LField.AsFloat){$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
           else
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatFloat(TDataSetSerializeConfig.GetInstance.Export.FormatFloat, LField.AsFloat)));
         end;
@@ -299,7 +328,7 @@ begin
       TFieldType.ftCurrency:
         begin
           if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsCurrency{$ELSE}TJSONNumber.Create(LField.AsCurrency){$ENDIF})
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}TJSONExtFloatNumber.Create(LField.AsCurrency){$ELSE}TJSONNumber.Create(LField.AsCurrency){$ENDIF})
           else
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, LField.AsCurrency)));
         end;

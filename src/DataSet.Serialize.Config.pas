@@ -21,6 +21,10 @@ type
     FFormatDateTime: string;
     FFormatFloat: string;
     FExportChildDataSetAsJsonObject: Boolean;
+    {$IF DEFINED(FPC)}
+    FDecimalSeparator: Char;
+    FExportFloatScientificNotation : Boolean;
+    {$ENDIF}
   public
     constructor Create;
     property FormatDate: string read FFormatDate write FFormatDate;
@@ -33,6 +37,10 @@ type
     property ExportNullAsEmptyString: Boolean read FExportNullAsEmptyString write FExportNullAsEmptyString;
     property ExportEmptyDataSet: Boolean read FExportEmptyDataSet write FExportEmptyDataSet;
     property ExportChildDataSetAsJsonObject: Boolean read FExportChildDataSetAsJsonObject write FExportChildDataSetAsJsonObject;
+    {$IF DEFINED(FPC)}
+    property DecimalSeparator: Char read FDecimalSeparator write FDecimalSeparator;
+    property ExportFloatScientificNotation: Boolean read FExportFloatScientificNotation write FExportFloatScientificNotation;
+    {$ENDIF}
   end;
 
   TDataSetSerializeConfigImport = class
@@ -134,6 +142,10 @@ begin
   FFormatTime := 'hh:nn:ss.zzz';
   FFormatDateTime := 'yyyy-mm-dd hh:nn:ss.zzz';
   FExportChildDataSetAsJsonObject := False;
+  {$IF DEFINED(FPC)}
+  FDecimalSeparator := '.';
+  FExportFloatScientificNotation := False;
+  {$ENDIF}
 end;
 
 constructor TDataSetSerializeConfigImport.Create;
