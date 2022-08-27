@@ -8,6 +8,7 @@ interface
 
 type
   TCaseNameDefinition = (cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase);
+  TDateTimeFormat = (dtfISO8601, dtfISO8601Utc, dtfFloatingPoint, dtfTimeStamp);
 
   TDataSetSerializeConfigExport = class
   private
@@ -55,26 +56,41 @@ type
 
   TDataSetSerializeConfig = class
   private
+    class var FInstance: TDataSetSerializeConfig;
+
+    var
     FCaseNameDefinition: TCaseNameDefinition;
     FDataSetPrefix: TArray<string>;
-    FDateInputIsUTC: Boolean;
-    FDateTimeIsISO8601: Boolean;
-    FDateIsFloatingPoint: Boolean;
+    FDateTimeFormat: TDateTimeFormat;
     FExport: TDataSetSerializeConfigExport;
     FImport: TDataSetSerializeConfigImport;
-    class var FInstance: TDataSetSerializeConfig;
+
+    function GetDateInputIsUTC: Boolean;
+    function GetDateIsFloatingPoint: Boolean;
+    function GetDateTimeIsISO8601: Boolean;
+    procedure SetDateInputIsUTC(const Value: Boolean);
+    procedure SetDateIsFloatingPoint(const Value: Boolean);
+    procedure SetDateTimeIsISO8601(const Value: Boolean);
+    function GetDateTimeIsTimeStamp: Boolean;
+    procedure SetDateTimeIsTimeStamp(const Value: Boolean);
   protected
     class function GetDefaultInstance: TDataSetSerializeConfig;
   public
     constructor Create;
     destructor Destroy; override;
+
     property DataSetPrefix: TArray<string> read FDataSetPrefix write FDataSetPrefix;
     property CaseNameDefinition: TCaseNameDefinition read FCaseNameDefinition write FCaseNameDefinition;
-    property DateTimeIsISO8601: Boolean read FDateTimeIsISO8601 write FDateTimeIsISO8601;
-    property DateInputIsUTC: Boolean read FDateInputIsUTC write FDateInputIsUTC;
-    property DateIsFloatingPoint: Boolean read FDateIsFloatingPoint write FDateIsFloatingPoint;
+
+    property DateTimeFormat: TDateTimeFormat read FDateTimeFormat write FDateTimeFormat;
+    property DateTimeIsISO8601: Boolean read GetDateTimeIsISO8601 write SetDateTimeIsISO8601;
+    property DateInputIsUTC: Boolean read GetDateInputIsUTC write SetDateInputIsUTC;
+    property DateIsFloatingPoint: Boolean read GetDateIsFloatingPoint write SetDateIsFloatingPoint;
+    property DateTimeIsTimeStamp: Boolean read GetDateTimeIsTimeStamp write SetDateTimeIsTimeStamp;
+
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
     property Import: TDataSetSerializeConfigImport read FImport write FImport;
+
     class function GetInstance: TDataSetSerializeConfig;
     class destructor UnInitialize;
   end;
@@ -105,6 +121,26 @@ begin
   inherited;
 end;
 
+function TDataSetSerializeConfig.GetDateInputIsUTC: Boolean;
+begin
+  Result := FDateTimeFormat = dtfISO8601Utc;
+end;
+
+function TDataSetSerializeConfig.GetDateIsFloatingPoint: Boolean;
+begin
+  Result := FDateTimeFormat = dtfFloatingPoint;
+end;
+
+function TDataSetSerializeConfig.GetDateTimeIsISO8601: Boolean;
+begin
+  Result := FDateTimeFormat = dtfISO8601;
+end;
+
+function TDataSetSerializeConfig.GetDateTimeIsTimeStamp: Boolean;
+begin
+  Result := FDateTimeFormat = dtfTimeStamp;
+end;
+
 class function TDataSetSerializeConfig.GetDefaultInstance: TDataSetSerializeConfig;
 begin
   if not Assigned(FInstance) then
@@ -112,9 +148,7 @@ begin
     FInstance := TDataSetSerializeConfig.Create;
     FInstance.CaseNameDefinition := cndLowerCamelCase;
     FInstance.DataSetPrefix := ['mt', 'qry'];
-    FInstance.DateInputIsUTC := True;
-    FInstance.DateIsFloatingPoint := False;
-    FInstance.DateTimeIsISO8601 := True;
+    FInstance.DateTimeFormat := dtfISO8601Utc;
   end;
   Result := FInstance;
 end;
@@ -122,6 +156,38 @@ end;
 class function TDataSetSerializeConfig.GetInstance: TDataSetSerializeConfig;
 begin
   Result := TDataSetSerializeConfig.GetDefaultInstance;
+end;
+
+procedure TDataSetSerializeConfig.SetDateInputIsUTC(const Value: Boolean);
+begin
+  if Value then
+    FDateTimeFormat := dtfISO8601Utc
+  else
+    FDateTimeFormat := dtfISO8601;
+end;
+
+procedure TDataSetSerializeConfig.SetDateIsFloatingPoint(const Value: Boolean);
+begin
+  if Value then
+    FDateTimeFormat := dtfFloatingPoint
+  else
+    FDateTimeFormat := dtfISO8601Utc;
+end;
+
+procedure TDataSetSerializeConfig.SetDateTimeIsISO8601(const Value: Boolean);
+begin
+  if Value then
+    FDateTimeFormat := dtfISO8601
+  else
+    FDateTimeFormat := dtfISO8601Utc;
+end;
+
+procedure TDataSetSerializeConfig.SetDateTimeIsTimeStamp(const Value: Boolean);
+begin
+  if Value then
+    FDateTimeFormat := dtfTimeStamp
+  else
+    FDateTimeFormat := dtfISO8601Utc;
 end;
 
 class destructor TDataSetSerializeConfig.UnInitialize;

@@ -431,7 +431,7 @@ begin
           {$ENDIF}
           TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
             LoadBlobFieldFromStream(LField, LJSONValue);
-          else
+        else
             raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
         end;
       end;
