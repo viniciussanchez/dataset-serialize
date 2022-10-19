@@ -625,11 +625,12 @@ begin
 end;
 
 function TJSONSerialize.LoadFieldStructure(const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF}): TFieldStructure;
-{$IF NOT DEFINED(FPC)}
 var
   LStrTemp: string;
   LIntTemp: Integer;
   LBoolTemp: Boolean;
+{$IF DEFINED(FPC)}
+  LJSONObject : TJSONObject;
 {$ENDIF}
 begin
 {$IF NOT DEFINED(FPC)}
@@ -669,6 +670,45 @@ begin
 
   if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_AUTO_GENERATE_VALUE, LStrTemp) then
     Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), LStrTemp));
+  {$ELSE}
+  LJSONObject := AJSONValue as TJSONObject;
+  try
+    LStrTemp := LJSONObject.Strings['dataType'];
+    Result.FieldType := TFieldType(GetEnumValue(TypeInfo(TFieldType), LStrTemp));
+  except
+    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', [FIELD_PROPERTY_DATA_TYPE]);
+  end;
+
+  LStrTemp := LJSONObject.Strings['alignment'];
+  Result.Alignment := TAlignment(GetEnumValue(TypeInfo(TAlignment), LStrTemp));
+
+  try
+    LStrTemp := LJSONObject.Strings['fieldName'];
+    Result.FieldName := LStrTemp;
+  except
+    raise EDataSetSerializeException.CreateFmt('Attribute %s not found in json!', [FIELD_PROPERTY_FIELD_NAME]);
+  end;
+
+  LIntTemp := LJSONObject.Integers['size'];
+  Result.Size := LIntTemp;
+
+  LStrTemp := LJSONObject.Strings['origin'];
+  Result.Origin := LStrTemp;
+
+  LStrTemp := LJSONObject.Strings['displayLabel'];
+  Result.DisplayLabel := LStrTemp;
+
+  LBoolTemp := LJSONObject.Booleans['key'];
+  Result.Key := LBoolTemp;
+
+  LBoolTemp := LJSONObject.Booleans['required'];
+  Result.Required := LBoolTemp;
+
+  LBoolTemp := LJSONObject.Booleans['visible'];
+  Result.Visible := LBoolTemp;
+
+  LBoolTemp := LJSONObject.Booleans['readOnly'];
+  Result.ReadOnly := LBoolTemp;
 {$ENDIF}
 end;
 
