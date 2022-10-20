@@ -631,6 +631,7 @@ var
   LBoolTemp: Boolean;
 {$IF DEFINED(FPC)}
   LJSONObject : TJSONObject;
+  LJSONNumber: TJSONNumber;
 {$ENDIF}
 begin
 {$IF NOT DEFINED(FPC)}
@@ -670,6 +671,9 @@ begin
 
   if AJSONValue.TryGetValue<string>(FIELD_PROPERTY_AUTO_GENERATE_VALUE, LStrTemp) then
     Result.AutoGenerateValue := TAutoRefreshFlag(GetEnumValue(TypeInfo(TAutoRefreshFlag), LStrTemp));
+
+  if AJSONValue.TryGetValue<Integer>(FIELD_PROPERTY_PRECISION, LIntTemp) then
+    Result.Precision := LIntTemp;
   {$ELSE}
   LJSONObject := AJSONValue as TJSONObject;
   try
@@ -709,6 +713,9 @@ begin
 
   LBoolTemp := LJSONObject.Booleans['readOnly'];
   Result.ReadOnly := LBoolTemp;
+
+  if LJSONObject.Find('precision', LJSONNumber) then
+    Result.Precision := LJSONNumber.AsInteger;
 {$ENDIF}
 end;
 
