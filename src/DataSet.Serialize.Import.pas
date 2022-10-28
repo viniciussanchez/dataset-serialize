@@ -8,7 +8,7 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  DB, fpjson,
+  DB, fpjson, Generics.Collections,
 {$ELSE}
   System.JSON, Data.DB, System.StrUtils, System.SysUtils, System.Rtti,
   {$IF CompilerVersion >= 20}
@@ -212,12 +212,13 @@ var
   LJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
   {$IF DEFINED(FPC)}
   I: Integer;
+  LBookMark: TBookmark;
   {$ELSE}
-  LNestedDataSet: TDataSet;
-  LBooleanValue: Boolean;
-  LDataSetDetails: TList<TDataSet>;
   LMasterSource: TDataSource;
+  LBooleanValue: Boolean;
   {$ENDIF}
+  LNestedDataSet: TDataSet;
+  LDataSetDetails: TList<TDataSet>;
   LObjectState: string;
   LFormatSettings: TFormatSettings;
   LKeyValues: TKeyValues;
@@ -443,14 +444,25 @@ begin
       TFDDataSet(ADataSet).MasterSource := LMasterSource;
     {$ENDIF}
   end;
-  {$IF NOT DEFINED(FPC)}
   LDataSetDetails := TList<TDataSet>.Create;
   try
-    ADataSet.GetDetailDataSets(LDataSetDetails);
+    TDataSetSerializeUtils.GetDetailsDatasets(ADataSet, LDataSetDetails);
     for LNestedDataSet in LDataSetDetails do
     begin
+      {$IF DEFINED(FPC)}
+      LBookMark := ADataSet.BookMark;
+      try
+        ADataSet.Refresh;
+        if ADataSet.BookmarkValid(LBookMark) then
+          ADataSet.GotoBookmark(LBookMark);
+      finally
+        ADataSet.FreeBookmark(LBookMark);
+      end;
+      LJSONValue := AJSONObject.Find(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name));
+      {$ELSE}
       if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), LJSONValue) then
         Continue;
+      {$ENDIF}
       if LJSONValue is TJSONNull then
         Continue;
       if TUpdateStatus.usUnmodified.ToString = LObjectState then
@@ -464,7 +476,6 @@ begin
   finally
     LDataSetDetails.Free;
   end;
-  {$ENDIF}
 end;
 
 function TJSONSerialize.JSONPairToFieldName(const AValue: string): string;

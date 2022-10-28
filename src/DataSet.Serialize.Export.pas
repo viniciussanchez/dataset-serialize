@@ -8,7 +8,7 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  DB, fpjson;
+  Classes, DB, Generics.Collections, fpjson;
 {$ELSE}
   Data.DB, System.JSON;
 {$ENDIF}
@@ -124,7 +124,7 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  DateUtils, SysUtils, Classes, FmtBCD, TypInfo, base64, StrUtils,
+  DateUtils, SysUtils, FmtBCD, TypInfo, base64, StrUtils,
 {$ELSE}
   System.DateUtils, Data.FmtBcd, System.SysUtils, System.StrUtils, System.TypInfo, System.Classes, System.NetEncoding, System.Generics.Collections,
   FireDAC.Comp.DataSet,
@@ -257,10 +257,8 @@ end;
 function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
 var
   LKey: string;
-  {$IF NOT DEFINED(FPC)}
   LNestedDataSet: TDataSet;
   LDataSetDetails: TList<TDataSet>;
-  {$ENDIF}
   LField: TField;
 begin
   Result := TJSONObject.Create;
@@ -349,35 +347,37 @@ begin
   end;
   if (FOnlyUpdatedRecords) and (FDataSet <> ADataSet) then
     Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatCaseNameDefinition('object_state'), TJSONString.Create(ADataSet.UpdateStatus.ToString));
-  {$IF NOT DEFINED(FPC)}
   if FChildRecord then
   begin
     LDataSetDetails := TList<TDataSet>.Create;
     try
-      ADataSet.GetDetailDataSets(LDataSetDetails);
+      TDataSetSerializeUtils.GetDetailsDatasets(ADataSet, LDataSetDetails);
       for LNestedDataSet in LDataSetDetails do
       begin
+        {$IF NOT DEFINED(FPC)}
         if FOnlyUpdatedRecords then
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
+        {$ENDIF}
         try
           if (not TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet) and (LNestedDataSet.RecordCount = 0) then
             Continue;
           if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible and (not HasVisibleFields(LNestedDataSet)) then
             Continue;
           if TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject and (LNestedDataSet.RecordCount = 1) then
-            Result.AddPair(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJsonObject(LNestedDataSet))
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJsonObject(LNestedDataSet))
           else
-            Result.AddPair(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet, True));
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet, True));
         finally
+          {$IF NOT DEFINED(FPC)}
           if FOnlyUpdatedRecords then
             TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtUnmodified];
+          {$ENDIF}
         end;
       end;
     finally
       LDataSetDetails.Free;
     end;
   end;
-  {$ENDIF}
 end;
 
 function TDataSetSerialize.EncodingBlobField(const AField: TField): string;
