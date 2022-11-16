@@ -382,7 +382,10 @@ begin
                     LTryStrToFloat := StrToFloat(LJSONValue.Value, LFormatSettings);
                   end;
               end;
-              LField.AsFloat := LTryStrToFloat;
+              if (LField.DataType = TFieldType.ftFMTBcd) then
+                LField.AsBCD := LTryStrToFloat
+              else
+                LField.AsFloat := LTryStrToFloat;
             end;
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
             LField.AsString := LJSONValue.Value;
