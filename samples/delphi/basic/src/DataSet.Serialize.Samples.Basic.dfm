@@ -266,6 +266,10 @@ object FrmSamples: TFrmSamples
     object tabJSON: TTabSheet
       Caption = '  JSON  '
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel13: TPanel
         Left = 0
         Top = 0
@@ -547,6 +551,10 @@ object FrmSamples: TFrmSamples
     object tabEmptyDataSet: TTabSheet
       Caption = 'Load empty DataSet'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel16: TPanel
         Left = 0
         Top = 244

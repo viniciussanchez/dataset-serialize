@@ -4,9 +4,9 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, DataSet.Serialize.Config, FireDAC.Stan.Intf,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, DataSet.Serialize, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.CheckLst, Vcl.Grids, Vcl.DBGrids, System.JSON, DataSet.Serialize;
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.CheckLst, Vcl.Grids, Vcl.DBGrids, System.JSON;
 
 type
   TFrmSamples = class(TForm)

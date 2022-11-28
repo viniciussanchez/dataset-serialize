@@ -1,0 +1,547 @@
+object FrmSamples: TFrmSamples
+  Left = 422
+  Height = 561
+  Top = 151
+  Width = 984
+  Caption = 'DataSet-Serialize - Samples'
+  ClientHeight = 561
+  ClientWidth = 984
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Segoe UI'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.0.12.0'
+  object pclSamples: TPageControl
+    Left = 0
+    Height = 561
+    Top = 0
+    Width = 984
+    ActivePage = tabNestedJSON
+    Align = alClient
+    MultiLine = True
+    TabIndex = 0
+    TabOrder = 0
+    Options = [nboMultiLine]
+    object tabNestedJSON: TTabSheet
+      Caption = ' Nested JSON'
+      ClientHeight = 535
+      ClientWidth = 976
+      object Panel7: TPanel
+        Left = 0
+        Height = 535
+        Top = 0
+        Width = 976
+        Align = alClient
+        BevelOuter = bvNone
+        ClientHeight = 535
+        ClientWidth = 976
+        ParentBackground = False
+        TabOrder = 0
+        object Panel2: TPanel
+          Left = 0
+          Height = 535
+          Top = 0
+          Width = 250
+          Align = alLeft
+          BevelOuter = bvNone
+          ClientHeight = 535
+          ClientWidth = 250
+          TabOrder = 0
+          object memoJSONNested: TMemo
+            Left = 0
+            Height = 500
+            Top = 0
+            Width = 250
+            Align = alClient
+            Lines.Strings = (
+              '['
+              '  {'
+              '    "name": "Brazil",'
+              '    "sigle": "BRL",'
+              '    "states": ['
+              '      {'
+              '        "name": "São Paulo",'
+              '        "sigle": "SP",'
+              '        "cities": ['
+              '          {'
+              '            "name": "Tatuí",'
+              '            "zipCode": "18270-001"'
+              '          },'
+              '          {'
+              '            "name": "Fernandópolis",'
+              '            "zipCode": "15600-000"'
+              '          },'
+              '          {'
+              '            "name": "Macedônia",'
+              '            "zipCode": "15620-000"'
+              '          },'
+              '          {'
+              '            "name": "Jales",'
+              '            "zipCode": "14859-000"'
+              '          },'
+              '          {'
+              '            "name": "São José do Rio Preto",'
+              '            "zipCode": "18450-450"'
+              '          },'
+              '          {'
+              '            "name": "Bálsamo",'
+              '            "zipCode": "15140-000"'
+              '          }'
+              '        ]'
+              '      },'
+              '      {'
+              '        "name": "Paraná",'
+              '        "sigle": "PR",'
+              '        "cities": ['
+              '          {'
+              '            "name": "Maringá",'
+              '            "zipCode": "87050-000"'
+              '          },'
+              '          {'
+              '            "name": "Londrina",'
+              '            "zipCode": "86010-190"'
+              '          }'
+              '        ]'
+              '      }'
+              '    ]'
+              '  },'
+              '  {'
+              '    "name": "United States",'
+              '    "sigle": "USD",'
+              '    "states": ['
+              '      {'
+              '        "name": "Texas",'
+              '        "sigle": "TX",'
+              '        "cities": ['
+              '          {'
+              '            "name": "Houston",'
+              '            "zipCode": "77001"'
+              '          },'
+              '          {'
+              '            "name": "Dalas",'
+              '            "zipCode": "75001"'
+              '          },'
+              '          {'
+              '            "name": "Austin",'
+              '            "zipCode": "73301"'
+              '          }'
+              '        ]'
+              '      },'
+              '      {'
+              '        "name": "California",'
+              '        "sigle": "CA",'
+              '        "cities": ['
+              '          {'
+              '            "name": "Los Angeles",'
+              '            "zipCode": "90001"'
+              '          },'
+              '          {'
+              '            "name": "San Diego",'
+              '            "zipCode": "22434"'
+              '          }'
+              '        ]'
+              '      }'
+              '    ]'
+              '  }'
+              ']'
+            )
+            ScrollBars = ssVertical
+            TabOrder = 0
+          end
+          object btnLoadFromJSONArray: TButton
+            Left = 0
+            Height = 35
+            Top = 500
+            Width = 250
+            Align = alBottom
+            Caption = 'Load from JSONArray'
+            OnClick = btnLoadFromJSONArrayClick
+            TabOrder = 1
+          end
+        end
+        object Panel3: TPanel
+          Left = 726
+          Height = 535
+          Top = 0
+          Width = 250
+          Align = alRight
+          BevelOuter = bvNone
+          ClientHeight = 535
+          ClientWidth = 250
+          TabOrder = 1
+          object btnExportJSONArray: TButton
+            Left = 0
+            Height = 35
+            Top = 500
+            Width = 250
+            Align = alBottom
+            Caption = 'Export to JSONArray'
+            OnClick = btnExportJSONArrayClick
+            TabOrder = 0
+          end
+          object memoExportedDataSetNested: TMemo
+            Left = 0
+            Height = 500
+            Top = 0
+            Width = 250
+            Align = alClient
+            ReadOnly = True
+            ScrollBars = ssVertical
+            TabOrder = 1
+          end
+        end
+        object Panel5: TPanel
+          Left = 250
+          Height = 535
+          Top = 0
+          Width = 476
+          Align = alClient
+          BevelOuter = bvNone
+          ClientHeight = 535
+          ClientWidth = 476
+          TabOrder = 2
+          object Panel6: TPanel
+            Left = 0
+            Height = 261
+            Top = 274
+            Width = 476
+            Align = alClient
+            BevelOuter = bvNone
+            ClientHeight = 261
+            ClientWidth = 476
+            TabOrder = 0
+            object Panel12: TPanel
+              Left = 0
+              Height = 25
+              Top = 0
+              Width = 476
+              Align = alTop
+              Alignment = taLeftJustify
+              BevelOuter = bvNone
+              Caption = '  Cities'
+              Color = 16091980
+              Font.Color = clWhite
+              Font.Height = -12
+              Font.Name = 'Segoe UI'
+              Font.Style = [fsBold]
+              ParentBackground = False
+              ParentColor = False
+              ParentFont = False
+              TabOrder = 0
+            end
+            object DBGrid3: TDBGrid
+              Left = 0
+              Height = 236
+              Top = 25
+              Width = 476
+              Align = alClient
+              Color = clWindow
+              Columns = <              
+                item
+                  Title.Caption = 'Name'
+                  Width = 290
+                  FieldName = 'NAME'
+                end              
+                item
+                  Title.Caption = 'Zip code'
+                  Width = 100
+                  FieldName = 'ZIP_CODE'
+                end>
+              DataSource = dsCities
+              TabOrder = 1
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -11
+              TitleFont.Name = 'Segoe UI'
+            end
+          end
+          object Panel8: TPanel
+            Left = 0
+            Height = 137
+            Top = 137
+            Width = 476
+            Align = alTop
+            BevelOuter = bvNone
+            ClientHeight = 137
+            ClientWidth = 476
+            TabOrder = 1
+            object Panel13: TPanel
+              Left = 0
+              Height = 25
+              Top = 0
+              Width = 476
+              Align = alTop
+              Alignment = taLeftJustify
+              BevelOuter = bvNone
+              Caption = '  States'
+              Color = 16091980
+              Font.Color = clWhite
+              Font.Height = -12
+              Font.Name = 'Segoe UI'
+              Font.Style = [fsBold]
+              ParentBackground = False
+              ParentColor = False
+              ParentFont = False
+              TabOrder = 0
+            end
+            object DBGrid1: TDBGrid
+              Left = 0
+              Height = 112
+              Top = 25
+              Width = 476
+              Align = alClient
+              Color = clWindow
+              Columns = <              
+                item
+                  Title.Caption = 'Name'
+                  Width = 350
+                  FieldName = 'NAME'
+                end              
+                item
+                  Title.Alignment = taCenter
+                  Title.Caption = 'Sigle'
+                  Width = 40
+                  FieldName = 'SIGLE'
+                end>
+              DataSource = dsStates
+              TabOrder = 1
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -11
+              TitleFont.Name = 'Segoe UI'
+            end
+          end
+          object Panel10: TPanel
+            Left = 0
+            Height = 137
+            Top = 0
+            Width = 476
+            Align = alTop
+            BevelOuter = bvNone
+            ClientHeight = 137
+            ClientWidth = 476
+            TabOrder = 2
+            object Panel11: TPanel
+              Left = 0
+              Height = 25
+              Top = 0
+              Width = 476
+              Align = alTop
+              Alignment = taLeftJustify
+              BevelOuter = bvNone
+              Caption = '  Countries'
+              Color = 16091980
+              Font.Color = clWhite
+              Font.Height = -12
+              Font.Name = 'Segoe UI'
+              Font.Style = [fsBold]
+              ParentBackground = False
+              ParentColor = False
+              ParentFont = False
+              TabOrder = 0
+            end
+            object DBGrid2: TDBGrid
+              Left = 0
+              Height = 112
+              Top = 25
+              Width = 476
+              Align = alClient
+              Color = clWindow
+              Columns = <              
+                item
+                  Title.Caption = 'Name'
+                  Width = 350
+                  FieldName = 'NAME'
+                end              
+                item
+                  Title.Alignment = taCenter
+                  Title.Caption = 'Sigle'
+                  Width = 40
+                  FieldName = 'SIGLE'
+                end>
+              DataSource = dsCountries
+              TabOrder = 1
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -11
+              TitleFont.Name = 'Segoe UI'
+            end
+          end
+        end
+      end
+    end
+  end
+  object dsCountries: TDataSource
+    DataSet = qrCountries
+    Left = 568
+    Top = 496
+  end
+  object dsStates: TDataSource
+    DataSet = qrStates
+    Left = 568
+    Top = 440
+  end
+  object dsCities: TDataSource
+    DataSet = qrCities
+    Left = 568
+    Top = 384
+  end
+  object ZConnection1: TZConnection
+    ControlsCodePage = cCP_UTF8
+    AutoEncodeStrings = True
+    Properties.Strings = (
+      'AutoEncodeStrings=True'
+      'controls_cp=CP_UTF8'
+    )
+    TransactIsolationLevel = tiReadCommitted
+    Connected = True
+    HostName = 'localhost:3052'
+    Port = 0
+    Database = 'E:\GitHub\dataset-serialize\samples\lazarus\master-detail\EXAMPLE.FDB'
+    User = 'SYSDBA'
+    Password = 'masterkey'
+    Protocol = 'firebird-3.0'
+    Left = 502
+    Top = 227
+  end
+  object qrCountries: TZQuery
+    Connection = ZConnection1
+    SQL.Strings = (
+      'select * from Countries'
+    )
+    Params = <>
+    Left = 640
+    Top = 496
+    object qrCountriesID: TLongintField
+      FieldKind = fkData
+      FieldName = 'ID'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      ReadOnly = False
+      Required = True
+    end
+    object qrCountriesNAME: TStringField
+      FieldKind = fkData
+      FieldName = 'NAME'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qrCountriesSIGLE: TStringField
+      FieldKind = fkData
+      FieldName = 'SIGLE'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 3
+    end
+  end
+  object qrStates: TZQuery
+    Connection = ZConnection1
+    SortedFields = 'ID_COUNTRY'
+    SQL.Strings = (
+      'select * from States'
+    )
+    Params = <>
+    MasterFields = 'ID'
+    MasterSource = dsCountries
+    LinkedFields = 'ID_COUNTRY'
+    IndexFieldNames = 'ID_COUNTRY Asc'
+    Left = 640
+    Top = 440
+    object qrStatesID: TLongintField
+      FieldKind = fkData
+      FieldName = 'ID'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      ReadOnly = False
+      Required = True
+    end
+    object qrStatesID_COUNTRY: TLongintField
+      FieldKind = fkData
+      FieldName = 'ID_COUNTRY'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrStatesNAME: TStringField
+      FieldKind = fkData
+      FieldName = 'NAME'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qrStatesSIGLE: TStringField
+      FieldKind = fkData
+      FieldName = 'SIGLE'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 2
+    end
+  end
+  object qrCities: TZQuery
+    Connection = ZConnection1
+    SortedFields = 'ID_STATE'
+    SQL.Strings = (
+      'select * from Cities'
+    )
+    Params = <>
+    MasterFields = 'ID'
+    MasterSource = dsStates
+    LinkedFields = 'ID_STATE'
+    IndexFieldNames = 'ID_STATE Asc'
+    Left = 640
+    Top = 384
+    object qrCitiesID: TLongintField
+      FieldKind = fkData
+      FieldName = 'ID'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      ReadOnly = False
+      Required = True
+    end
+    object qrCitiesID_STATE: TLongintField
+      FieldKind = fkData
+      FieldName = 'ID_STATE'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrCitiesNAME: TStringField
+      FieldKind = fkData
+      FieldName = 'NAME'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qrCitiesZIP_CODE: TStringField
+      FieldKind = fkData
+      FieldName = 'ZIP_CODE'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+end

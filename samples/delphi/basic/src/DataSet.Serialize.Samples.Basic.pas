@@ -76,7 +76,7 @@ var
 
 implementation
 
-uses DataSet.Serialize.Utils, System.TypInfo;
+uses System.TypInfo;
 
 {$R *.dfm}
 

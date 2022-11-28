@@ -26,6 +26,10 @@ object FrmSamples: TFrmSamples
     TabOrder = 0
     object tabNestedJSON: TTabSheet
       Caption = ' Nested JSON'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel7: TPanel
         Left = 0
         Top = 0

@@ -19,18 +19,28 @@ type
     FFormatDate: string;
     FFormatTime: string;
     FFormatDateTime: string;
+    FFormatFloat: string;
     FExportChildDataSetAsJsonObject: Boolean;
+    {$IF DEFINED(FPC)}
+    FDecimalSeparator: Char;
+    FExportFloatScientificNotation : Boolean;
+    {$ENDIF}
   public
     constructor Create;
     property FormatDate: string read FFormatDate write FFormatDate;
     property FormatTime: string read FFormatTime write FFormatTime;
     property FormatDateTime: string read FFormatDateTime write FFormatDateTime;
     property FormatCurrency: string read FFormatCurrency write FFormatCurrency;
+    property FormatFloat: string read FFormatFloat write FFormatFloat;
     property ExportOnlyFieldsVisible: Boolean read FExportOnlyFieldsVisible write FExportOnlyFieldsVisible;
     property ExportNullValues: Boolean read FExportNullValues write FExportNullValues;
     property ExportNullAsEmptyString: Boolean read FExportNullAsEmptyString write FExportNullAsEmptyString;
     property ExportEmptyDataSet: Boolean read FExportEmptyDataSet write FExportEmptyDataSet;
     property ExportChildDataSetAsJsonObject: Boolean read FExportChildDataSetAsJsonObject write FExportChildDataSetAsJsonObject;
+    {$IF DEFINED(FPC)}
+    property DecimalSeparator: Char read FDecimalSeparator write FDecimalSeparator;
+    property ExportFloatScientificNotation: Boolean read FExportFloatScientificNotation write FExportFloatScientificNotation;
+    {$ENDIF}
   end;
 
   TDataSetSerializeConfigImport = class
@@ -48,6 +58,7 @@ type
     FCaseNameDefinition: TCaseNameDefinition;
     FDataSetPrefix: TArray<string>;
     FDateInputIsUTC: Boolean;
+    FDateTimeIsISO8601: Boolean;
     FDateIsFloatingPoint: Boolean;
     FExport: TDataSetSerializeConfigExport;
     FImport: TDataSetSerializeConfigImport;
@@ -59,12 +70,13 @@ type
     destructor Destroy; override;
     property DataSetPrefix: TArray<string> read FDataSetPrefix write FDataSetPrefix;
     property CaseNameDefinition: TCaseNameDefinition read FCaseNameDefinition write FCaseNameDefinition;
+    property DateTimeIsISO8601: Boolean read FDateTimeIsISO8601 write FDateTimeIsISO8601;
     property DateInputIsUTC: Boolean read FDateInputIsUTC write FDateInputIsUTC;
     property DateIsFloatingPoint: Boolean read FDateIsFloatingPoint write FDateIsFloatingPoint;
     property &Export: TDataSetSerializeConfigExport read FExport write FExport;
     property Import: TDataSetSerializeConfigImport read FImport write FImport;
     class function GetInstance: TDataSetSerializeConfig;
-    class destructor UnInitialize;
+    class procedure UnInitialize;
   end;
 
 implementation
@@ -102,6 +114,7 @@ begin
     FInstance.DataSetPrefix := ['mt', 'qry'];
     FInstance.DateInputIsUTC := True;
     FInstance.DateIsFloatingPoint := False;
+    FInstance.DateTimeIsISO8601 := True;
   end;
   Result := FInstance;
 end;
@@ -111,7 +124,7 @@ begin
   Result := TDataSetSerializeConfig.GetDefaultInstance;
 end;
 
-class destructor TDataSetSerializeConfig.UnInitialize;
+class procedure TDataSetSerializeConfig.UnInitialize;
 begin
   if Assigned(FInstance) then
     FreeAndNil(FInstance);
@@ -124,15 +137,28 @@ begin
   FExportOnlyFieldsVisible := True;
   ExportEmptyDataSet := False;
   FFormatCurrency := EmptyStr;
+  FFormatFloat := EmptyStr;
   FFormatDate := 'YYYY-MM-DD';
   FFormatTime := 'hh:nn:ss.zzz';
   FFormatDateTime := 'yyyy-mm-dd hh:nn:ss.zzz';
   FExportChildDataSetAsJsonObject := False;
+  {$IF DEFINED(FPC)}
+  FDecimalSeparator := '.';
+  FExportFloatScientificNotation := False;
+  {$ENDIF}
 end;
+
+{ TDataSetSerializeConfigImport }
 
 constructor TDataSetSerializeConfigImport.Create;
 begin
+  FDecimalSeparator := '.';
   FImportOnlyFieldsVisible := True;
 end;
+
+initialization
+
+finalization
+  TDataSetSerializeConfig.UnInitialize;
 
 end.
