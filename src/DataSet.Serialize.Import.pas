@@ -197,7 +197,7 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  Classes, Variants, SysUtils, DateUtils, TypInfo, base64,
+  Classes, Variants, SysUtils, DateUtils, TypInfo, base64, FmtBCD,
 {$ELSE}
   System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, System.Generics.Collections,
   System.Variants, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
@@ -383,7 +383,7 @@ begin
                   end;
               end;
               if (LField.DataType = TFieldType.ftFMTBcd) then
-                LField.AsBCD := LTryStrToFloat
+                LField.AsBCD := {$IF DEFINED(FPC)}DoubleToBCD(LTryStrToFloat){$ELSE}LTryStrToFloat{$ENDIF}
               else
                 LField.AsFloat := LTryStrToFloat;
             end;
