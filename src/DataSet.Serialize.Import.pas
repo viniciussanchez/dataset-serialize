@@ -608,7 +608,7 @@ end;
 
 procedure TJSONSerialize.LoadFieldsFromJSON(const ADataSet: TDataSet; const AJSONObject: TJSONObject);
 const
-  SIZE = 4096;
+  MAX_SIZE_STRING = 4096;
 var
   {$IF DEFINED(FPC)}
   I: Integer;
@@ -629,14 +629,14 @@ begin
       if DataType = ftString then
       begin
         if {$IF DEFINED(FPC)}AJSONObject.Items[I].IsNull{$ELSE}LJSONPair.Null{$ENDIF} then
-          Size := SIZE
-        else if Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF}) > SIZE then
+          Size := MAX_SIZE_STRING
+        else if Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF}) > MAX_SIZE_STRING then
         begin
           DataType := ftBlob;
           Size := Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF});
         end
         else
-          Size := SIZE;
+          Size := MAX_SIZE_STRING;
       end;
     end;
   end;
