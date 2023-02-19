@@ -340,6 +340,11 @@ begin
           LField.Text := LJSONValue.Value;
           Continue;
         end;
+        if LJSONValue is TJSONObject then
+        begin
+          LField.Text := LJSONValue.ToJSON;
+          Continue;
+        end;
         case LField.DataType of
           TFieldType.ftBoolean:
             begin
