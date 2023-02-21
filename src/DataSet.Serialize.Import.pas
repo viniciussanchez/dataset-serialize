@@ -388,7 +388,12 @@ begin
                 LField.AsFloat := LTryStrToFloat;
             end;
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
-            LField.AsString := LJSONValue.Value;
+          begin
+            if LJSONValue is TJSONObject then
+              LField.Text := LJSONValue.ToJSON
+            else
+              LField.AsString := LJSONValue.Value;
+          end;
           TFieldType.ftDate:
             begin
               if LJsonValue.InheritsFrom(TJSONNumber) then
