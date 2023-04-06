@@ -45,12 +45,14 @@ type
 
   TDataSetSerializeConfigImport = class
   private
+    FDecodeBase64BlobField: Boolean;
     FImportOnlyFieldsVisible: Boolean;
     FDecimalSeparator: Char;
   public
     constructor Create;
     property ImportOnlyFieldsVisible: Boolean read FImportOnlyFieldsVisible write FImportOnlyFieldsVisible;
     property DecimalSeparator: Char read FDecimalSeparator write FDecimalSeparator;
+    property DecodeBase64BlobField: Boolean read FDecodeBase64BlobField write FDecodeBase64BlobField;
   end;
 
   TDataSetSerializeConfig = class
@@ -154,6 +156,7 @@ constructor TDataSetSerializeConfigImport.Create;
 begin
   FDecimalSeparator := '.';
   FImportOnlyFieldsVisible := True;
+  FDecodeBase64BlobField := True;
 end;
 
 initialization

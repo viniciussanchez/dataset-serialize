@@ -390,7 +390,7 @@ begin
           TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
           begin
             if LJSONValue is TJSONObject then
-              LField.Text := LJSONValue.ToJSON
+              LField.Text := {$IF DEFINED(FPC)}LJSONValue.AsJSON{$ELSE}LJSONValue.ToJSON{$ENDIF}
             else
               LField.AsString := LJSONValue.Value;
           end;
@@ -439,7 +439,17 @@ begin
             end;
           {$ENDIF}
           TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
-            LoadBlobFieldFromStream(LField, LJSONValue);
+            begin
+              if TDataSetSerializeConfig.GetInstance.Import.DecodeBase64BlobField then
+                LoadBlobFieldFromStream(LField, LJSONValue)
+              else
+              begin
+                if LJSONValue is TJSONObject then
+                  LField.Text := {$IF DEFINED(FPC)}LJSONValue.AsJSON{$ELSE}LJSONValue.ToJSON{$ENDIF}
+                else
+                  LField.AsString := LJSONValue.Value;
+              end;
+            end
           else
             raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
         end;
@@ -620,6 +630,7 @@ var
   {$ELSE}
   LJSONPair: TJSONPair;
   {$ENDIF}
+  LFieldDef: TFieldDef;
 begin
   {$IF DEFINED(FPC)}
   for I := 0 to Pred(AJSONObject.Count) do
@@ -627,22 +638,20 @@ begin
   for LJSONPair in AJSONObject do
   {$ENDIF}
   begin
-    with ADataSet.FieldDefs.AddFieldDef do
+    LFieldDef := ADataSet.FieldDefs.AddFieldDef;
+    LFieldDef.Name := JSONPairToFieldName({$IF DEFINED(FPC)}AJSONObject.Names[I]{$ELSE}LJSONPair.JsonString.Value{$ENDIF});
+    LFieldDef.DataType := TDataSetSerializeUtils.GetDataType({$IF DEFINED(FPC)}AJSONObject.Items[I]{$ELSE}LJSONPair.JsonValue{$ENDIF});
+    if LFieldDef.DataType = ftString then
     begin
-      Name := JSONPairToFieldName({$IF DEFINED(FPC)}AJSONObject.Names[I]{$ELSE}LJSONPair.JsonString.Value{$ENDIF});
-      DataType := TDataSetSerializeUtils.GetDataType({$IF DEFINED(FPC)}AJSONObject.Items[I]{$ELSE}LJSONPair.JsonValue{$ENDIF});
-      if DataType = ftString then
+      if {$IF DEFINED(FPC)}AJSONObject.Items[I].IsNull{$ELSE}LJSONPair.Null{$ENDIF} then
+        LFieldDef.Size := MAX_SIZE_STRING
+      else if Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF}) > MAX_SIZE_STRING then
       begin
-        if {$IF DEFINED(FPC)}AJSONObject.Items[I].IsNull{$ELSE}LJSONPair.Null{$ENDIF} then
-          Size := MAX_SIZE_STRING
-        else if Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF}) > MAX_SIZE_STRING then
-        begin
-          DataType := ftBlob;
-          Size := Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF});
-        end
-        else
-          Size := MAX_SIZE_STRING;
-      end;
+        LFieldDef.DataType := ftBlob;
+        LFieldDef.Size := Length({$IF DEFINED(FPC)}AJSONObject.Items[I].AsString{$ELSE}LJSONPair.JsonValue.Value{$ENDIF});
+      end
+      else
+        LFieldDef.Size := MAX_SIZE_STRING;
     end;
   end;
 end;

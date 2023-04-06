@@ -171,6 +171,10 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := True;
 ```
+* Base64 decode Blob fields on import
+```pascal
+  TDataSetSerializeConfig.GetInstance.Import.DecodeBase64BlobField := True;
+```
 * Case name definition
 ```pascal
   // cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase
