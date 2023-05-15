@@ -45,6 +45,7 @@ type
 
   TDataSetSerializeConfigImport = class
   private
+    FDecodeBase64BlobField: Boolean;
     FImportOnlyFieldsVisible: Boolean;
     FDecimalSeparator: Char;
     FFormatDateTime: String;
@@ -57,6 +58,7 @@ type
     property FormatDate: string read FFormatDate write FFormatDate;
     property FormatTime: string read FFormatTime write FFormatTime;
     property FormatDateTime: string read FFormatDateTime write FFormatDateTime;
+    property DecodeBase64BlobField: Boolean read FDecodeBase64BlobField write FDecodeBase64BlobField;
   end;
 
   TDataSetSerializeConfig = class
@@ -163,6 +165,7 @@ begin
   FFormatDate := 'YYYY-MM-DD';
   FFormatTime := 'hh:nn:ss.zzz';
   FFormatDateTime := 'yyyy-mm-dd hh:nn:ss.zzz';
+  FDecodeBase64BlobField := True;
 end;
 
 initialization
