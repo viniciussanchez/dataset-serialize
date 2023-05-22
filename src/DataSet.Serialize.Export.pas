@@ -256,7 +256,8 @@ end;
 
 function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
 var
-  LKey: string;
+  LDataSetNameNotDefinedCount: Integer;
+  LKey, LDataSetName: string;
   LNestedDataSet: TDataSet;
   LDataSetDetails: TList<TDataSet>;
   LField: TField;
@@ -351,6 +352,7 @@ begin
   begin
     LDataSetDetails := TList<TDataSet>.Create;
     try
+      LDataSetNameNotDefinedCount := 0;
       TDataSetSerializeUtils.GetDetailsDatasets(ADataSet, LDataSetDetails);
       for LNestedDataSet in LDataSetDetails do
       begin
@@ -363,10 +365,17 @@ begin
             Continue;
           if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible and (not HasVisibleFields(LNestedDataSet)) then
             Continue;
-          if TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject and (LNestedDataSet.RecordCount = 1) then
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJsonObject(LNestedDataSet))
+          if string(LNestedDataSet.Name).Trim.IsEmpty then
+          begin
+            Inc(LDataSetNameNotDefinedCount);
+            LDataSetName := TDataSetSerializeUtils.FormatDataSetName('dataset_name_not_defined_' + LDataSetNameNotDefinedCount.ToString);
+          end
           else
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name), DataSetToJSONArray(LNestedDataSet, True));
+            LDataSetName := TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name);
+          if TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject and (LNestedDataSet.RecordCount = 1) then
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LDataSetName, DataSetToJsonObject(LNestedDataSet))
+          else
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LDataSetName, DataSetToJSONArray(LNestedDataSet, True));
         finally
           {$IF NOT DEFINED(FPC)}
           if FOnlyUpdatedRecords then

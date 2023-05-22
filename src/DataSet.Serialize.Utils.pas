@@ -234,6 +234,8 @@ var
   LPrefix: string;
 begin
   Result := ADataSetName;
+  if Result.Trim.IsEmpty then
+    Exit;
   for LPrefix in TDataSetSerializeConfig.GetInstance.DataSetPrefix do
     if ADataSetName.StartsWith(LPrefix) then
     begin
