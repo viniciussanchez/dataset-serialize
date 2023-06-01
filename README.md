@@ -175,6 +175,10 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Import.DecodeBase64BlobField := True;
 ```
+* Remove blank space on FieldName
+```pascal
+  TDataSetSerializeConfig.GetInstance.RemoveBlankSpaceFieldName := True; // default
+```
 * Case name definition
 ```pascal
   // cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase
