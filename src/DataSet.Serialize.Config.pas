@@ -11,6 +11,7 @@ type
 
   TDataSetSerializeConfigExport = class
   private
+    FExportBCDAsFloat: boolean;
     FExportLargeintAsString: boolean;      
     FExportNullValues: Boolean;
     FExportNullAsEmptyString: Boolean;
@@ -43,6 +44,7 @@ type
     property ExportFloatScientificNotation: Boolean read FExportFloatScientificNotation write FExportFloatScientificNotation;
     {$ENDIF}
     property ExportLargeintAsString: boolean read FExportLargeintAsString write FExportLargeintAsString;
+    property ExportBCDAsFloat: boolean read FExportBCDAsFloat write FExportBCDAsFloat;   
   end;
 
   TDataSetSerializeConfigImport = class
@@ -154,6 +156,7 @@ begin
   FExportFloatScientificNotation := False;
   {$ENDIF}
   FExportLargeintAsString := False;
+  FExportBCDAsFloat := False;                
 end;
 
 { TDataSetSerializeConfigImport }
