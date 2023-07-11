@@ -225,6 +225,9 @@ var
   LTryStrToDateTime: TDateTime;
   LTryStrToCurr: Currency;
   LTryStrToFloat: Double;
+  IHex : Integer;
+  ByteValue: Byte;
+  Bytes: TBytes;
 begin
   if (not Assigned(AJSONObject)) or (not Assigned(ADataSet)) or (AJSONObject.Count = 0) then
     Exit;
@@ -449,7 +452,19 @@ begin
                 else
                   LField.AsString := LJSONValue.Value;
               end;
-            end
+            end;
+          TFieldType.ftVarBytes :
+           begin
+            SetLength(Bytes, Length(LJSONValue.Value) div 2);
+            IHex := 1;
+            while IHex <= Length(LJSONValue.Value) do
+            begin
+            ByteValue := StrToInt('$' + Copy(LJSONValue.Value, IHex, 2));
+            Bytes[(IHex + 1) div 2 - 1] := ByteValue;
+            Inc(IHex, 2);
+            end;
+            LField.AsBytes := Bytes;
+           end
           else
             raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LField.FieldName]);
         end;
