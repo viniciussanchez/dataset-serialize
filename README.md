@@ -167,6 +167,14 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject := False;
 ```
+* Export Largeint as string
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.ExportLargeintAsString := False;
+```
+* Export BCD as float
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.ExportBCDAsFloat := False;
+```
 * Import only fields visible
 ```pascal
   TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := True;

@@ -11,6 +11,8 @@ type
 
   TDataSetSerializeConfigExport = class
   private
+    FExportBCDAsFloat: boolean;
+    FExportLargeintAsString: boolean;      
     FExportNullValues: Boolean;
     FExportNullAsEmptyString: Boolean;
     FExportOnlyFieldsVisible: Boolean;
@@ -41,6 +43,8 @@ type
     property DecimalSeparator: Char read FDecimalSeparator write FDecimalSeparator;
     property ExportFloatScientificNotation: Boolean read FExportFloatScientificNotation write FExportFloatScientificNotation;
     {$ENDIF}
+    property ExportLargeintAsString: boolean read FExportLargeintAsString write FExportLargeintAsString;
+    property ExportBCDAsFloat: boolean read FExportBCDAsFloat write FExportBCDAsFloat;   
   end;
 
   TDataSetSerializeConfigImport = class
@@ -151,6 +155,8 @@ begin
   FDecimalSeparator := '.';
   FExportFloatScientificNotation := False;
   {$ENDIF}
+  FExportLargeintAsString := False;
+  FExportBCDAsFloat := False;                
 end;
 
 { TDataSetSerializeConfigImport }
