@@ -161,9 +161,6 @@ begin
 end;
 
 function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const IsValue: Boolean = True; const IsEncodeBlob: Boolean = True): TJSONArray;
-const
-  MAX_SIZE_STRING = 4096;
-
 var
   LBookMark: TBookmark;
 begin
@@ -191,18 +188,8 @@ begin
             Result.Add(ADataSet.Fields[0].AsBoolean);
           TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint:
             Result.Add(ADataSet.Fields[0].AsInteger);
-          TFieldType.ftLongWord, TFieldType.ftAutoInc, TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
-            begin
-              if (ADataSet.Fields[0].DataType = TFieldType.ftMemo)
-              and (Length(ADataSet.Fields[0].AsWideString) > MAX_SIZE_STRING) then
-              begin
-                if IsEncodeBlob then
-                  Result.Add(EncodingBlobField(ADataSet.Fields[0]))
-                else
-                  Result.Add(ADataSet.Fields[0].AsWideString);
-              end else
-                Result.Add(ADataSet.Fields[0].AsWideString);
-            end;
+          TFieldType.ftLongWord, TFieldType.ftAutoInc, TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftWideMemo, TFieldType.ftGuid:
+            Result.Add(ADataSet.Fields[0].AsWideString);
           TFieldType.ftLargeint:
             Result.Add(ADataSet.Fields[0].AsLargeInt);
           TFieldType.ftSingle, TFieldType.ftFloat:
@@ -244,7 +231,7 @@ begin
             end;
           TFieldType.ftFMTBcd, TFieldType.ftBCD:
             Result.Add(BcdToDouble(ADataSet.Fields[0].AsBcd));
-          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob, TFieldType.ftStream:
+          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftMemo, TFieldType.ftOraBlob, TFieldType.ftStream:
             begin
               if IsEncodeBlob then
                 Result.Add(EncodingBlobField(ADataSet.Fields[0]))
@@ -268,8 +255,6 @@ begin
 end;
 
 function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
-const
-  MAX_SIZE_STRING = 4096;
 var
   LDataSetNameNotDefinedCount: Integer;
   LKey, LDataSetName, LStringValue: string;
@@ -319,24 +304,19 @@ begin
           else
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatFloat(TDataSetSerializeConfig.GetInstance.Export.FormatFloat, LField.AsFloat)));
         end;
-      TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
+      TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
         begin
           LStringValue := Trim(LField.AsWideString);
-          if (LField.DataType = TFieldType.ftMemo)
-          and (Length(LStringValue) > MAX_SIZE_STRING) then
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(IfThen(FEncodeBase64Blob, EncodingBlobField(LField), LField.AsString)))
-          else begin
-            if (LStringValue.StartsWith('{') and LStringValue.EndsWith('}')) or (LStringValue.StartsWith('[') and LStringValue.EndsWith(']')) then
-            begin
-              try
-                Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}GetJSON(LStringValue){$ELSE}TJSONObject.ParseJSONValue(LStringValue){$ENDIF});
-              except
-                Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
-              end;
-            end
-            else
+          if (LStringValue.StartsWith('{') and LStringValue.EndsWith('}')) or (LStringValue.StartsWith('[') and LStringValue.EndsWith(']')) then
+          begin
+            try
+              Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}GetJSON(LStringValue){$ELSE}TJSONObject.ParseJSONValue(LStringValue){$ENDIF});
+            except
               Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
-          end;
+            end;
+          end
+          else
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
         end;
       TFieldType.ftDateTime,TFieldType.ftTimeStamp:
         begin
@@ -380,7 +360,7 @@ begin
           Result.AddPair(LKey, DataSetToJSONArray(LNestedDataSet, False, AValue));
         end;
       {$ENDIF}
-      TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
+      TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftMemo, TFieldType.ftOraBlob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(IfThen(FEncodeBase64Blob, EncodingBlobField(LField), LField.AsString)));
       else
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LKey]);
