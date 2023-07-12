@@ -169,7 +169,7 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```
 * Export Largeint as string
 ```pascal
-  TDataSetSerializeConfig.GetInstance.Export.ExportLargeintAsString := False;
+  TDataSetSerializeConfig.GetInstance.Export.ExportLargeIntAsString := False;
 ```
 * Export BCD as float
 ```pascal
