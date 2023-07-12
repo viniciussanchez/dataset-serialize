@@ -120,10 +120,6 @@ type
     ///   Return in ADataSetDetails all child datasets of ADataSet (Master dataset)
     /// </summary>
     class procedure GetDetailsDatasets(const ADataSet: TDataSet; ADataSetDetails: TList<TDataSet>);
-    /// <summary>
-    ///   Return if a string is a valid encoded base64
-    /// </summary>
-    class function IsValidBase64EncodedString(const AValue: string): Boolean;
   end;
 
 implementation
@@ -267,29 +263,6 @@ begin
   {$ELSE}
   ADataSet.GetDetailDataSets(ADataSetDetails);
   {$ENDIF}
-end;
-
-class function TDataSetSerializeUtils.IsValidBase64EncodedString(
-  const AValue: string): Boolean;
-const
-  Base64Alphabet = ['A'..'Z', 'a'..'z', '0'..'9', '+', '/'];
-var
-  I: Integer;
-  LSize: Integer;
-begin
-  LSize := Length(AValue);
-  Result := (LSize > 0) and (LSize mod 4 = 0);
-  if Result then
-  begin
-    while (AValue[LSize] = '=') and (LSize > Length(AValue) - 2) do
-      Dec(LSize);
-    for I := LSize downto 1 do
-    if not (AValue[I] in Base64Alphabet) then
-    begin
-      Result := False;
-      Break;
-    end;
-  end;
 end;
 
 class function TDataSetSerializeUtils.NewDataSetField(const ADataSet: TDataSet; const AFieldStructure: TFieldStructure): TField;

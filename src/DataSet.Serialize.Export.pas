@@ -161,6 +161,9 @@ begin
 end;
 
 function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const IsValue: Boolean = True; const IsEncodeBlob: Boolean = True): TJSONArray;
+const
+  MAX_SIZE_STRING = 4096;
+
 var
   LBookMark: TBookmark;
 begin
@@ -189,7 +192,17 @@ begin
           TFieldType.ftInteger, TFieldType.ftSmallint, TFieldType.ftShortint:
             Result.Add(ADataSet.Fields[0].AsInteger);
           TFieldType.ftLongWord, TFieldType.ftAutoInc, TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid:
-            Result.Add(ADataSet.Fields[0].AsWideString);
+            begin
+              if (ADataSet.Fields[0].DataType = TFieldType.ftMemo)
+              and (Length(ADataSet.Fields[0].AsWideString) > MAX_SIZE_STRING) then
+              begin
+                if IsEncodeBlob then
+                  Result.Add(EncodingBlobField(ADataSet.Fields[0]))
+                else
+                  Result.Add(ADataSet.Fields[0].AsWideString);
+              end else
+                Result.Add(ADataSet.Fields[0].AsWideString);
+            end;
           TFieldType.ftLargeint:
             Result.Add(ADataSet.Fields[0].AsLargeInt);
           TFieldType.ftSingle, TFieldType.ftFloat:
@@ -255,6 +268,8 @@ begin
 end;
 
 function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
+const
+  MAX_SIZE_STRING = 4096;
 var
   LDataSetNameNotDefinedCount: Integer;
   LKey, LDataSetName, LStringValue: string;
@@ -307,16 +322,21 @@ begin
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftGuid, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
         begin
           LStringValue := Trim(LField.AsWideString);
-          if (LStringValue.StartsWith('{') and LStringValue.EndsWith('}')) or (LStringValue.StartsWith('[') and LStringValue.EndsWith(']')) then
-          begin
-            try
-              Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}GetJSON(LStringValue){$ELSE}TJSONObject.ParseJSONValue(LStringValue){$ENDIF});
-            except
+          if (LField.DataType = TFieldType.ftMemo)
+          and (Length(LStringValue) > MAX_SIZE_STRING) then
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(IfThen(FEncodeBase64Blob, EncodingBlobField(LField), LField.AsString)))
+          else begin
+            if (LStringValue.StartsWith('{') and LStringValue.EndsWith('}')) or (LStringValue.StartsWith('[') and LStringValue.EndsWith(']')) then
+            begin
+              try
+                Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}GetJSON(LStringValue){$ELSE}TJSONObject.ParseJSONValue(LStringValue){$ENDIF});
+              except
+                Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
+              end;
+            end
+            else
               Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
-            end;
-          end
-          else
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
+          end;
         end;
       TFieldType.ftDateTime,TFieldType.ftTimeStamp:
         begin

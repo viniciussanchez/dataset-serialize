@@ -604,22 +604,18 @@ begin
   LStringStream := TStringStream.Create((AJSONValue as TJSONString).Value);
   try
     LStringStream.Position := 0;
-    if TDataSetSerializeUtils.IsValidBase64EncodedString(LStringStream.DataString) then
-    begin
-      {$IF DEFINED(FPC)}
-      TBlobField(AField).AsString := DecodeStringBase64(LStringStream.DataString);
-      {$ELSE}
-      LMemoryStream := TMemoryStream.Create;
-      try
-        TNetEncoding.Base64.Decode(LStringStream, LMemoryStream);
-        LMemoryStream.Position := 0;
-        TBlobField(AField).LoadFromStream(LMemoryStream);
-      finally
-        LMemoryStream.Free;
-      end;
-      {$ENDIF}
-    end else
-      TBlobField(AField).AsString := LStringStream.DataString;
+    {$IF DEFINED(FPC)}
+    TBlobField(AField).AsString := DecodeStringBase64(LStringStream.DataString);
+    {$ELSE}
+    LMemoryStream := TMemoryStream.Create;
+    try
+      TNetEncoding.Base64.Decode(LStringStream, LMemoryStream);
+      LMemoryStream.Position := 0;
+      TBlobField(AField).LoadFromStream(LMemoryStream);
+    finally
+      LMemoryStream.Free;
+    end;
+    {$ENDIF}
   finally
     LStringStream.Free;
   end;
