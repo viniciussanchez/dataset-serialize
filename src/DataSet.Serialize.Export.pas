@@ -257,12 +257,11 @@ end;
 function TDataSetSerialize.DataSetToJSONObject(const ADataSet: TDataSet; const AValue: Boolean = True): TJSONObject;
 var
   LDataSetNameNotDefinedCount: Integer;
-  LKey, LDataSetName, LStringValue: string;
+  LKey, LHexString, LDataSetName, LStringValue: string;
   LNestedDataSet: TDataSet;
   LDataSetDetails: TList<TDataSet>;
   LField: TField;
-  HexString: string;
-  ByteValue: Byte;
+  LByteValue: Byte;
 begin
   Result := TJSONObject.Create;
   if not Assigned(ADataSet) or ADataSet.IsEmpty then
@@ -366,11 +365,11 @@ begin
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(IfThen(FEncodeBase64Blob, EncodingBlobField(LField), LField.AsString)));
       TFieldType.ftVarBytes:
         begin
-        HexString := '';
-        for ByteValue in LField.AsBytes do
-          HexString := HexString + IntToHex(ByteValue, 2);
-        Result.AddPair(LKey, TJSONString.Create(HexString));
-        end
+          LHexString := EmptyStr;
+          for LByteValue in LField.AsBytes do
+            LHexString := LHexString + IntToHex(LByteValue, 2);
+          Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, LHexString);
+        end;
       else
         raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [LKey]);
     end;
