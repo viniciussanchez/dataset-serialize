@@ -441,7 +441,7 @@ begin
               end;
             end;
           {$ENDIF}
-          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
+          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob, TFieldType.ftOraClob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
             begin
               if TDataSetSerializeConfig.GetInstance.Import.DecodeBase64BlobField then
                 LoadBlobFieldFromStream(LField, LJSONValue)
