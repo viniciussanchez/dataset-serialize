@@ -612,25 +612,11 @@ end;
 procedure TJSONSerialize.LoadBlobFieldFromStream(const AField: TField; const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF});
 var
   LStringStream: TStringStream;
-  {$IF NOT DEFINED(FPC)}
-  LMemoryStream: TMemoryStream;
-  {$ENDIF}
 begin
-  LStringStream := TStringStream.Create((AJSONValue as TJSONString).Value);
+  LStringStream := TStringStream.Create(DecodeStringBase64((AJSONValue as TJSONString).Value));
   try
     LStringStream.Position := 0;
-    {$IF DEFINED(FPC)}
-    TBlobField(AField).AsString := DecodeStringBase64(LStringStream.DataString);
-    {$ELSE}
-    LMemoryStream := TMemoryStream.Create;
-    try
-      TNetEncoding.Base64.Decode(LStringStream, LMemoryStream);
-      LMemoryStream.Position := 0;
-      TBlobField(AField).LoadFromStream(LMemoryStream);
-    finally
-      LMemoryStream.Free;
-    end;
-    {$ENDIF}
+    TBlobField(AField).LoadFromStream(LStringStream);
   finally
     LStringStream.Free;
   end;
@@ -656,6 +642,7 @@ begin
     LFieldDef := ADataSet.FieldDefs.AddFieldDef;
     LFieldDef.Name := JSONPairToFieldName({$IF DEFINED(FPC)}AJSONObject.Names[I]{$ELSE}LJSONPair.JsonString.Value{$ENDIF});
     LFieldDef.DataType := TDataSetSerializeUtils.GetDataType({$IF DEFINED(FPC)}AJSONObject.Items[I]{$ELSE}LJSONPair.JsonValue{$ENDIF});
+    LFieldDef.Size := 0;
     if LFieldDef.DataType = ftString then
     begin
       if {$IF DEFINED(FPC)}AJSONObject.Items[I].IsNull{$ELSE}LJSONPair.Null{$ENDIF} then
