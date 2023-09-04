@@ -612,11 +612,29 @@ end;
 procedure TJSONSerialize.LoadBlobFieldFromStream(const AField: TField; const AJSONValue: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF});
 var
   LStringStream: TStringStream;
+  {$IF NOT DEFINED(FPC)}
+  LMemoryStream: TMemoryStream;
+  {$ENDIF}
 begin
+  {$IF DEFINED(FPC)}
   LStringStream := TStringStream.Create(DecodeStringBase64((AJSONValue as TJSONString).Value));
+  {$ELSE}
+  LStringStream := TStringStream.Create((AJSONValue as TJSONString).Value);
+  {$ENDIF}
   try
     LStringStream.Position := 0;
+    {$IF DEFINED(FPC)}
     TBlobField(AField).LoadFromStream(LStringStream);
+    {$ELSE}
+    LMemoryStream := TMemoryStream.Create;
+    try
+      TNetEncoding.Base64.Decode(LStringStream, LMemoryStream);
+      LMemoryStream.Position := 0;
+      TBlobField(AField).LoadFromStream(LMemoryStream);
+    finally
+      LMemoryStream.Free;
+    end;
+    {$ENDIF}
   finally
     LStringStream.Free;
   end;
