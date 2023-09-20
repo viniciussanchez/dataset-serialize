@@ -347,16 +347,22 @@ begin
           TFieldType.ftBoolean:
             begin
               {$IF DEFINED(FPC)}
-              LField.AsBoolean := LJSONValue.AsBoolean;
+              LField.AsBoolean := (LJSONValue.AsString<>'') and LJSONValue.AsBoolean;
               {$ELSE}
               if LJSONValue.TryGetValue<Boolean>(LBooleanValue) then
                 LField.AsBoolean := LBooleanValue;
               {$ENDIF}
             end;
           TFieldType.ftInteger, TFieldType.ftSmallint{$IF NOT DEFINED(FPC)}, TFieldType.ftShortint, TFieldType.ftLongWord, TFieldType.ftWord, TFieldType.ftByte{$ENDIF}:
-            LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
+            if LJSONValue.AsString='' then
+              LField.AsVariant := null
+            else
+              LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
           TFieldType.ftLargeint, TFieldType.ftAutoInc:
-            LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
+            if LJSONValue.AsString='' then
+              LField.AsVariant := null
+            else
+              LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
           TFieldType.ftCurrency:
             begin
               LTryStrToCurr := 0;
