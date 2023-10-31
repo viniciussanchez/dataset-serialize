@@ -338,6 +338,11 @@ begin
           LField.Clear;
           Continue;
         end;
+        if LJSONValue.AsString='' then
+        begin
+          LField.Clear;
+          Continue;
+        end;
         if Assigned(LField.OnSetText) then
         begin
           LField.Text := LJSONValue.Value;
