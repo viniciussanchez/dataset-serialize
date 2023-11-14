@@ -616,11 +616,15 @@ var
   LMemoryStream: TMemoryStream;
   {$ENDIF}
 begin
+  {$IF DEFINED(FPC)}
+  LStringStream := TStringStream.Create(DecodeStringBase64((AJSONValue as TJSONString).Value));
+  {$ELSE}
   LStringStream := TStringStream.Create((AJSONValue as TJSONString).Value);
+  {$ENDIF}
   try
     LStringStream.Position := 0;
     {$IF DEFINED(FPC)}
-    TBlobField(AField).AsString := DecodeStringBase64(LStringStream.DataString);
+    TBlobField(AField).LoadFromStream(LStringStream);
     {$ELSE}
     LMemoryStream := TMemoryStream.Create;
     try
@@ -656,6 +660,7 @@ begin
     LFieldDef := ADataSet.FieldDefs.AddFieldDef;
     LFieldDef.Name := JSONPairToFieldName({$IF DEFINED(FPC)}AJSONObject.Names[I]{$ELSE}LJSONPair.JsonString.Value{$ENDIF});
     LFieldDef.DataType := TDataSetSerializeUtils.GetDataType({$IF DEFINED(FPC)}AJSONObject.Items[I]{$ELSE}LJSONPair.JsonValue{$ENDIF});
+    LFieldDef.Size := 0;
     if LFieldDef.DataType = ftString then
     begin
       if {$IF DEFINED(FPC)}AJSONObject.Items[I].IsNull{$ELSE}LJSONPair.Null{$ENDIF} then
