@@ -338,7 +338,7 @@ begin
           LField.Clear;
           Continue;
         end;
-        if LJSONValue.AsString='' then
+        if LJSONValue.Value = EmptyStr then
         begin
           LField.Clear;
           Continue;
@@ -359,15 +359,9 @@ begin
               {$ENDIF}
             end;
           TFieldType.ftInteger, TFieldType.ftSmallint{$IF NOT DEFINED(FPC)}, TFieldType.ftShortint, TFieldType.ftLongWord, TFieldType.ftWord, TFieldType.ftByte{$ENDIF}:
-            if LJSONValue.AsString='' then
-              LField.AsVariant := null
-            else
-              LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
+            LField.AsInteger := StrToIntDef(LJSONValue.Value, 0);
           TFieldType.ftLargeint, TFieldType.ftAutoInc:
-            if LJSONValue.AsString='' then
-              LField.AsVariant := null
-            else
-              LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
+            LField.AsLargeInt := StrToInt64Def(LJSONValue.Value, 0);
           TFieldType.ftCurrency:
             begin
               LTryStrToCurr := 0;
