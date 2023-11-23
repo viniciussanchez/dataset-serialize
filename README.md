@@ -159,6 +159,10 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := True;
 ```
+* Attempts to convert a string to JSON when the string starts with { or [
+```pascal
+  TDataSetSerializeConfig.GetInstance.Export.TryConvertStringToJson := True;
+```
 * Export only fields visible
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := True;
