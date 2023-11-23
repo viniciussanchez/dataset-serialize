@@ -11,6 +11,7 @@ type
 
   TDataSetSerializeConfigExport = class
   private
+    FTryConvertStringToJson: Boolean;
     FExportBCDAsFloat: Boolean;
     FExportLargeIntAsString: Boolean;
     FExportNullValues: Boolean;
@@ -39,6 +40,7 @@ type
     property ExportNullAsEmptyString: Boolean read FExportNullAsEmptyString write FExportNullAsEmptyString;
     property ExportEmptyDataSet: Boolean read FExportEmptyDataSet write FExportEmptyDataSet;
     property ExportChildDataSetAsJsonObject: Boolean read FExportChildDataSetAsJsonObject write FExportChildDataSetAsJsonObject;
+    property TryConvertStringToJson: Boolean read FTryConvertStringToJson write FTryConvertStringToJson;
     {$IF DEFINED(FPC)}
     property DecimalSeparator: Char read FDecimalSeparator write FDecimalSeparator;
     property ExportFloatScientificNotation: Boolean read FExportFloatScientificNotation write FExportFloatScientificNotation;
@@ -141,6 +143,7 @@ end;
 
 constructor TDataSetSerializeConfigExport.Create;
 begin
+  FTryConvertStringToJson := False;
   FExportNullValues := True;
   FExportNullAsEmptyString:= False;
   FExportOnlyFieldsVisible := True;
