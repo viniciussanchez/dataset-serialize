@@ -412,6 +412,11 @@ begin
             end;
           TFieldType.ftTimeStamp, TFieldType.ftDateTime:
             begin
+              if LJSONValue.Value.IsEmpty then
+              begin
+                LField.Clear;
+                Continue;
+              end;
               if LJSONValue.InheritsFrom(TJSONNumber) then
                 LTryStrToDateTime := StrToFloatDef(LJSONValue.Value, 0)
               else if TDataSetSerializeConfig.GetInstance.DateTimeIsISO8601 then
