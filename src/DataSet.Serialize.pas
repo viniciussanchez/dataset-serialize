@@ -352,7 +352,7 @@ end;
 
 procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject; const ARootElement: string = ''; const AOwns: Boolean = True);
 var
-  LJSON: TJSONValue;
+  LJSON: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
   LJSONSerialize: TJSONSerialize;
 begin
   if ARootElement.Trim.IsEmpty then
@@ -360,7 +360,11 @@ begin
   else
   begin
     try
+      {$IF DEFINED(FPC)}
+      LJSON := AJSONObject.Find(ARootElement);
+      {$ELSE}
       LJSON := AJSONObject.FindValue(ARootElement);
+      {$ENDIF}
       if not Assigned(LJSON) then
         raise Exception.Create('Root element not found!');
       if LJSON.InheritsFrom(TJSONArray) then
