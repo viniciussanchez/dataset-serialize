@@ -166,7 +166,7 @@ type
     ///   Only the keys that make up the DataSet field list will be loaded. The JSON keys must have the same name as the
     ///   DataSet fields. It's not case-sensitive.
     /// </remarks>
-    procedure LoadFromJSON(const AJSONObject: TJSONObject; const ARootElement: string = ''; const AOwns: Boolean = True); overload;
+    procedure LoadFromJSON(const AJSONObject: TJSONObject; const ARootElement: string; const AOwns: Boolean = True); overload;
     /// <summary>
     ///   Loads the DataSet with data from a JSON array.
     /// </summary>
@@ -350,7 +350,7 @@ begin
   LoadFromJSON(AJSONObject, EmptyStr, AOwns);
 end;
 
-procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject; const ARootElement: string = ''; const AOwns: Boolean = True);
+procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject; const ARootElement: string; const AOwns: Boolean = True);
 var
   LJSON: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
   LJSONSerialize: TJSONSerialize;
