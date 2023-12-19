@@ -363,8 +363,13 @@ begin
       {$IF DEFINED(FPC)}
       LJSON := AJSONObject.Find(ARootElement);
       {$ELSE}
-      LJSON := AJSONObject.FindValue(ARootElement);
-      {$ENDIF}
+        {$IF COMPILERVERSION <= 32}
+          if not AJSONObject.TryGetValue<TJSONValue>(ARootElement,LJSON) then
+            LJSON := nil;
+        {$ELSE}
+          LJSON := AJSONObject.FindValue(ARootElement);
+        {$IFEND}
+      {$ENDIF}	  
       if not Assigned(LJSON) then
         raise Exception.Create('Root element not found!');
       if LJSON.InheritsFrom(TJSONArray) then
