@@ -458,7 +458,7 @@ begin
                   LField.AsString := LJSONValue.Value;
               end;
             end;
-          TFieldType.ftVarBytes:
+          TFieldType.ftVarBytes, TFieldType.ftBytes:
             begin
               SetLength(LBytes, Length(LJSONValue.Value) div 2);
               LHex := 1;

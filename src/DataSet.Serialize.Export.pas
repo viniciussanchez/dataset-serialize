@@ -163,6 +163,8 @@ end;
 function TDataSetSerialize.DataSetToJSONArray(const ADataSet: TDataSet; const IsChild: Boolean; const IsValue: Boolean = True; const IsEncodeBlob: Boolean = True): TJSONArray;
 var
   LBookMark: TBookmark;
+  LHexString: String;
+  LByteValue: Byte;
 begin
   Result := TJSONArray.Create;
   if ADataSet.IsEmpty then
@@ -238,6 +240,13 @@ begin
               else
                 Result.Add(ADataSet.Fields[0].AsString);
             end;
+          TFieldType.ftVarBytes, TFieldType.ftBytes:
+            begin
+              LHexString := EmptyStr;
+              for LByteValue in ADataSet.Fields[0].AsBytes do
+                LHexString := LHexString + IntToHex(LByteValue, 2);
+              Result.Add(LHexString);
+            end
         else
           raise EDataSetSerializeException.CreateFmt(FIELD_TYPE_NOT_FOUND, [ADataSet.Fields[0].FieldName]);
         end;
@@ -370,7 +379,7 @@ begin
       {$ENDIF}
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftOraBlob, TFieldType.ftOraClob{$IF NOT DEFINED(FPC)}, TFieldType.ftStream{$ENDIF}:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(IfThen(FEncodeBase64Blob, EncodingBlobField(LField), LField.AsString)));
-      TFieldType.ftVarBytes:
+      TFieldType.ftVarBytes, TFieldType.ftBytes:
         begin
           LHexString := EmptyStr;
           for LByteValue in LField.AsBytes do
