@@ -15,7 +15,7 @@ boss install github.com/viniciussanchez/dataset-serialize
 ```
 
 ## Manual Installation for Delphi
-If you choose to install manually, simply add the following folders to your project, in *Project > Options > Resource Compiler > Directories and Conditionals > Include file search path*
+If you choose to install manually, simply add the following folders to your project, in *Project > Options > Building > Delphi Compiler > Search path*
 ```
 ../dataset-serialize/src
 ```
