@@ -338,7 +338,11 @@ begin
           LField.Clear;
           Continue;
         end;
+        {$IF DEFINED(FPC)}
+        if LJSONValue.AsString = EmptyStr then
+        {$ELSE}
         if LJSONValue.Value = EmptyStr then
+        {$ENDIF}
         begin
           LField.Clear;
           Continue;
