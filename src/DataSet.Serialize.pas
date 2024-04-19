@@ -119,6 +119,7 @@ type
     ///   Invisible fields will not be generated.
     /// </remarks>
     function SaveStructure: TJSONArray;
+    function SaveStructureString: string;
     /// <summary>
     ///   Loads fields from a DataSet based on a JSONArray.
     /// </summary>
@@ -318,6 +319,18 @@ begin
     Result := LDataSetSerialize.SaveStructure;
   finally
     LDataSetSerialize.Free;
+  end;
+end;
+
+function TDataSetSerializeHelper.SaveStructureString: string;
+var
+  LJSONArray: TJSONArray;
+begin
+  LJSONArray := Self.SaveStructure;
+  try
+    Result := {$IF DEFINED(FPC)}LJSONArray.AsJSON{$ELSE}LJSONArray.ToString{$ENDIF};
+  finally
+    LJSONArray.Free;
   end;
 end;
 
