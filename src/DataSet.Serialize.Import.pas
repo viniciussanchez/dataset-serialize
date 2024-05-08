@@ -421,7 +421,14 @@ begin
               else if TDataSetSerializeConfig.GetInstance.DateTimeIsISO8601 then
                 LTryStrToDateTime := ISO8601ToDate(LJSONValue.Value, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)
               else
-                TryStrToDateTime(VarToStr(LJSONValue.Value), LTryStrToDateTime);
+              begin
+                LFormatSettings.DateSeparator := '-';
+                LFormatSettings.TimeSeparator := ':';
+                LFormatSettings.ShortDateFormat := TDataSetSerializeConfig.GetInstance.Import.FormatDate;
+                LFormatSettings.LongDateFormat := TDataSetSerializeConfig.GetInstance.Import.FormatDateTime;
+                LFormatSettings.ShortTimeFormat := TDataSetSerializeConfig.GetInstance.Import.FormatTime;
+                TryStrToDateTime(VarToStr(LJSONValue.Value), LTryStrToDateTime, LFormatSettings);
+              end;
               LField.AsDateTime := LTryStrToDateTime;
             end;
           TFieldType.ftTime:
