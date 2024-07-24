@@ -372,6 +372,7 @@ begin
     LJSONSerialize := TJSONSerialize.Create(AJSONObject, AOwns)
   else
   begin
+    LJSON := nil;
     try
       {$IF DEFINED(FPC)}
       LJSON := AJSONObject.Find(ARootElement);
@@ -383,14 +384,17 @@ begin
           LJSON := AJSONObject.FindValue(ARootElement);
         {$IFEND}
       {$ENDIF}	  
-      if not Assigned(LJSON) then
-        raise Exception.Create('Root element not found!');
-      if LJSON.InheritsFrom(TJSONArray) then
-        LJSONSerialize := TJSONSerialize.Create(LJSON.Clone as TJSONArray, True)
+      if Assigned(LJSON) then
+      begin
+        if LJSON.InheritsFrom(TJSONArray) then
+          LJSONSerialize := TJSONSerialize.Create(LJSON.Clone as TJSONArray, True)
+        else
+          LJSONSerialize := TJSONSerialize.Create(LJSON.Clone as TJSONObject, True);
+      end
       else
-        LJSONSerialize := TJSONSerialize.Create(LJSON.Clone as TJSONObject, True);
+        LJSONSerialize := TJSONSerialize.Create(AJSONObject, AOwns);
     finally
-      if AOwns then
+      if AOwns and Assigned(LJSON) then
         AJSONObject.Free;
     end;
   end;
