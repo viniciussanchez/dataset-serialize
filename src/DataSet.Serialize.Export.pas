@@ -273,7 +273,7 @@ var
   LByteValue: Byte;
 begin
   Result := TJSONObject.Create;
-  if not Assigned(ADataSet) or ADataSet.IsEmpty then
+  if not Assigned(ADataSet) or (not TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet and ADataSet.IsEmpty) then
     Exit;
   for LField in ADataSet.Fields do
   begin
