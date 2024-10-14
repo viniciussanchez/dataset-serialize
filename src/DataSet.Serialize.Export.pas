@@ -517,7 +517,13 @@ end;
 function TDataSetSerialize.SaveStructure: TJSONArray;
 var
   LField: TField;
+  LFields: TJSONArray;
   LJSONObject: TJSONObject;
+  LDataSetName: string;
+  LNestedDataSet: TDataSet;
+  LDataSetDetails: TList<TDataSet>;
+  LDataSetSerialize: TDataSetSerialize;
+  LDataSetNameNotDefinedCount: Integer;
 begin
   Result := TJSONArray.Create;
   if FDataSet.FieldCount <= 0 then
@@ -558,6 +564,39 @@ begin
     LJSONObject.AddPair(FIELD_PROPERTY_AUTO_GENERATE_VALUE, TJSONString.Create(GetEnumName(TypeInfo(TAutoRefreshFlag), Integer(LField.AutoGenerateValue))));
     {$ENDIF}
     Result.{$IF DEFINED(FPC)}Add{$ELSE}AddElement{$ENDIF}(LJSONObject);
+  end;
+  if FChildRecord then
+  begin
+    LDataSetDetails := TList<TDataSet>.Create;
+    try
+      LDataSetNameNotDefinedCount := 0;
+      TDataSetSerializeUtils.GetDetailsDatasets(FDataSet, LDataSetDetails);
+      for LNestedDataSet in LDataSetDetails do
+      begin
+        LDataSetSerialize := TDataSetSerialize.Create(LNestedDataSet);
+        try
+          if string(LNestedDataSet.Name).Trim.IsEmpty then
+          begin
+            Inc(LDataSetNameNotDefinedCount);
+            LDataSetName := TDataSetSerializeUtils.FormatDataSetName('dataset_name_not_defined_' + LDataSetNameNotDefinedCount.ToString);
+          end
+          else
+            LDataSetName := TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name);
+
+          LFields := LDataSetSerialize.SaveStructure;
+          LJSONObject := TJSONObject.Create;
+          LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('name', LDataSetName);
+          LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('fields', LFields);
+          LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('count', LFields.Count);
+
+          Result.{$IF DEFINED(FPC)}Add{$ELSE}AddElement{$ENDIF}(LJSONObject);
+        finally
+          LDataSetSerialize.Free;
+        end;
+      end;
+    finally
+      LDataSetDetails.Free;
+    end;
   end;
 end;
 
