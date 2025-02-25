@@ -273,7 +273,7 @@ var
   LByteValue: Byte;
 begin
   Result := TJSONObject.Create;
-  if not Assigned(ADataSet) or ADataSet.IsEmpty then
+  if not Assigned(ADataSet) or (not TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet and ADataSet.IsEmpty) then
     Exit;
   for LField in ADataSet.Fields do
   begin
@@ -319,7 +319,9 @@ begin
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
         begin
           LStringValue := Trim(LField.AsWideString);
-          if TDataSetSerializeConfig.GetInstance.Export.TryConvertStringToJson then
+          if (LStringValue = EmptyStr) and (TDataSetSerializeConfig.GetInstance.Export.ExportEmptyStringAsNull) then
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONNull.Create())
+          else if TDataSetSerializeConfig.GetInstance.Export.TryConvertStringToJson then
           begin
             if (LStringValue.StartsWith('{') and LStringValue.EndsWith('}')) or (LStringValue.StartsWith('[') and LStringValue.EndsWith(']')) then
             begin
