@@ -85,7 +85,7 @@ type
     /// <summary>
     ///   Responsible for creating a new instance of TDataSetSerialize class.
     /// </summary>
-    constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True);
+    constructor Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True);
     /// <summary>
     ///   Creates an array of JSON objects with all DataSet records.
     /// </summary>
@@ -602,13 +602,13 @@ begin
   end;
 end;
 
-constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True);
+constructor TDataSetSerialize.Create(const ADataSet: TDataSet; const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True);
 begin
   FDataSet := ADataSet;
   FOnlyUpdatedRecords := AOnlyUpdatedRecords;
   FChildRecord := AChildRecords;
   FValueRecord := AValueRecords;
-  FEncodeBase64Blob := AEncodeBase64Blob;
+  FEncodeBase64Blob := TDataSetSerializeConfig.GetInstance.Export.EncodeBase64BlobField;
 end;
 
 function TDataSetSerialize.ToJSONArray: TJSONArray;

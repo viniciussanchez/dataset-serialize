@@ -266,7 +266,7 @@ function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean 
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords, AEncodeBase64Blob);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords);
   try
     Result := LDataSetSerialize.ToJSONArray;
   finally
@@ -278,7 +278,7 @@ function TDataSetSerializeHelper.ToJSONObject(const AOnlyUpdatedRecords: Boolean
 var
   LDataSetSerialize: TDataSetSerialize;
 begin
-  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords, AEncodeBase64Blob);
+  LDataSetSerialize := TDataSetSerialize.Create(Self, AOnlyUpdatedRecords, AChildRecords, AValueRecords);
   try
     Result := LDataSetSerialize.ToJSONObject;
   finally

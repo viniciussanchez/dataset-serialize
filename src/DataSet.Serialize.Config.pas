@@ -25,6 +25,7 @@ type
     FFormatDateTime: string;
     FFormatFloat: string;
     FExportChildDataSetAsJsonObject: Boolean;
+    FEncodeBase64BlobField: Boolean;
     {$IF DEFINED(FPC)}
     FDecimalSeparator: Char;
     FExportFloatScientificNotation : Boolean;
@@ -49,6 +50,7 @@ type
     {$ENDIF}
     property ExportLargeIntAsString: Boolean read FExportLargeIntAsString write FExportLargeIntAsString;
     property ExportBCDAsFloat: Boolean read FExportBCDAsFloat write FExportBCDAsFloat;
+    property EncodeBase64BlobField: Boolean read FEncodeBase64BlobField write FEncodeBase64BlobField;
   end;
 
   TDataSetSerializeConfigImport = class
@@ -169,6 +171,7 @@ begin
   {$ENDIF}
   FExportLargeIntAsString := False;
   FExportBCDAsFloat := False;                
+  FEncodeBase64BlobField := True;
 end;
 
 { TDataSetSerializeConfigImport }
