@@ -25,7 +25,6 @@ type
     FFormatDateTime: string;
     FFormatFloat: string;
     FExportChildDataSetAsJsonObject: Boolean;
-    FEncodeBase64BlobField: Boolean;
     {$IF DEFINED(FPC)}
     FDecimalSeparator: Char;
     FExportFloatScientificNotation : Boolean;
@@ -50,7 +49,6 @@ type
     {$ENDIF}
     property ExportLargeIntAsString: Boolean read FExportLargeIntAsString write FExportLargeIntAsString;
     property ExportBCDAsFloat: Boolean read FExportBCDAsFloat write FExportBCDAsFloat;
-    property EncodeBase64BlobField: Boolean read FEncodeBase64BlobField write FEncodeBase64BlobField;
   end;
 
   TDataSetSerializeConfigImport = class
@@ -58,10 +56,16 @@ type
     FDecodeBase64BlobField: Boolean;
     FImportOnlyFieldsVisible: Boolean;
     FDecimalSeparator: Char;
+    FFormatDateTime: String;
+    FFormatDate: string;
+    FFormatTime: string;
   public
     constructor Create;
     property ImportOnlyFieldsVisible: Boolean read FImportOnlyFieldsVisible write FImportOnlyFieldsVisible;
     property DecimalSeparator: Char read FDecimalSeparator write FDecimalSeparator;
+    property FormatDate: string read FFormatDate write FFormatDate;
+    property FormatTime: string read FFormatTime write FFormatTime;
+    property FormatDateTime: string read FFormatDateTime write FFormatDateTime;
     property DecodeBase64BlobField: Boolean read FDecodeBase64BlobField write FDecodeBase64BlobField;
   end;
 
@@ -165,7 +169,6 @@ begin
   {$ENDIF}
   FExportLargeIntAsString := False;
   FExportBCDAsFloat := False;                
-  FEncodeBase64BlobField := True;
 end;
 
 { TDataSetSerializeConfigImport }
@@ -174,6 +177,9 @@ constructor TDataSetSerializeConfigImport.Create;
 begin
   FDecimalSeparator := '.';
   FImportOnlyFieldsVisible := True;
+  FFormatDate := 'YYYY-MM-DD';
+  FFormatTime := 'hh:nn:ss.zzz';
+  FFormatDateTime := 'yyyy-mm-dd hh:nn:ss.zzz';
   FDecodeBase64BlobField := True;
 end;
 
