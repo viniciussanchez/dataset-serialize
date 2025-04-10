@@ -589,7 +589,7 @@ begin
           LJSONObject := TJSONObject.Create;
           LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('name', LDataSetName);
           LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('fields', LFields);
-          LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('count', LFields.Count.ToString);
+          LJSONObject.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}('count', TJSONNumber.Create(LFields.Count));
 
           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddElement{$ENDIF}(LJSONObject);
         finally
