@@ -10,7 +10,7 @@ uses
 {$IF DEFINED(FPC)}
   Classes, DB, Generics.Collections, fpjson;
 {$ELSE}
-  Data.DB, System.JSON;
+  Data.DB, System.JSON, System.Math;
 {$ENDIF}
 
 type
@@ -306,11 +306,20 @@ begin
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsLargeInt.ToString{$ELSE}TJSONString.Create(LField.AsLargeInt.ToString){$ENDIF})
           else
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsLargeInt{$ELSE}TJSONNumber.Create(LField.AsLargeInt){$ENDIF});
-        end; 
+        end;
       {$IF NOT DEFINED(FPC)}TFieldType.ftSingle, TFieldType.ftExtended, {$ENDIF}TFieldType.ftFloat:
         begin
           if TDataSetSerializeConfig.GetInstance.Export.FormatFloat.Trim.IsEmpty then
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}TJSONExtFloatNumber.Create(LField.AsFloat){$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
+          begin
+            {$IF DEFINED(FPC)}
+            Result.Add(LKey, TJSONExtFloatNumber.Create(LField.AsFloat));
+            {$ELSE}
+            if IsNan(LField.AsFloat) or IsInfinite(LField.AsFloat) then
+              Result.AddPair(LKey, TJSONNumber.Create(0))
+            else
+              Result.AddPair(LKey, TJSONNumber.Create(LField.AsFloat));
+            {$ENDIF}
+          end
           else
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatFloat(TDataSetSerializeConfig.GetInstance.Export.FormatFloat, LField.AsFloat)));
         end;
