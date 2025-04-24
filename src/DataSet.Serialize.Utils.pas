@@ -213,7 +213,8 @@ begin
           if (LField[I] = '_') then
           begin
             Inc(I);
-            Result := Result + UpperCase(LField[I]);
+            if I <= High(LField) then
+              Result := Result + UpperCase(LField[I]);
           end
           else
           begin
