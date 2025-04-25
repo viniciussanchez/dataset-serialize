@@ -382,8 +382,8 @@ begin
             LJSON := nil;
         {$ELSE}
           LJSON := AJSONObject.FindValue(ARootElement);
-        {$IFEND}
-      {$ENDIF}	  
+        {$ENDIF}
+      {$ENDIF}
       if Assigned(LJSON) then
       begin
         if LJSON.InheritsFrom(TJSONArray) then
