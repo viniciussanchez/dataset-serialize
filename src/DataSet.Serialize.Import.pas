@@ -331,7 +331,12 @@ begin
           Continue;
         {$ELSE}
         if not (AJSONObject.TryGetValue(TDataSetSerializeUtils.FormatCaseNameDefinition(LField.FieldName), LJSONValue) or (AJSONObject.TryGetValue(LField.FieldName, LJSONValue))) then
-          Continue;
+        begin
+          // In case the JSON key name has dots, the native method TryGetValue doesn't find it
+          LJSONValue := AJSONObject.GetValue(LField.FieldName);
+          if not Assigned(LJSONValue) then
+            Continue;
+        end;
         {$ENDIF}
         if LJSONValue is TJSONNull then
         begin
