@@ -1,5 +1,10 @@
 unit DataSet.Serialize.Consts;
 
+{$IF DEFINED(FPC)}
+  {$MODE DELPHI}{$H+}
+  {$codePage utf8}
+{$ENDIF}
+
 interface
 
 const

@@ -2,6 +2,7 @@ unit DataSet.Serialize.Config;
 
 {$IF DEFINED(FPC)}
   {$MODE DELPHI}{$H+}
+  {$codePage utf8}
 {$ENDIF}
 
 interface
