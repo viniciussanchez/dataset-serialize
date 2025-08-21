@@ -206,6 +206,22 @@ begin
               else
                 Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, ADataSet.Fields[0].AsDateTime));
             end;
+          {$IF NOT DEFINED(FPC)}
+           {$IF CompilerVersion >= 36.0} // Delphi 12 ou superior
+            TFieldType.ftTimeStampOffset :
+            begin
+              if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+                Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
+              else if TDataSetSerializeConfig.GetInstance.DateTimeIsISO8601 then
+                Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)))
+              else
+                Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, LField.AsDateTime)));
+
+            end;
+           {$ENDIF}
+          {$ENDIF}
+
+
           TFieldType.ftTime:
             begin
               if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
