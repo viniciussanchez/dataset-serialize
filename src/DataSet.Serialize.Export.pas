@@ -9,10 +9,11 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  Classes, DB, Generics.Collections, fpjson;
+  Classes, DB, Generics.Collections, fpjson,
 {$ELSE}
-  Data.DB, System.JSON, System.Math;
+  Data.DB, System.JSON, System.Math,
 {$ENDIF}
+  DataSet.Serialize.Config;
 
 type
   {$IF DEFINED(FPC)}
@@ -29,6 +30,7 @@ type
     FChildRecord: Boolean;
     FValueRecord: Boolean;
     FEncodeBase64Blob: Boolean;
+    FConfig: TDataSetSerializeConfig;
     /// <summary>
     ///   Creates a JSON object with the data from the current record of DataSet.
     /// </summary>
@@ -128,7 +130,7 @@ uses
   System.DateUtils, Data.FmtBcd, System.SysUtils, System.StrUtils, System.TypInfo, System.Classes, System.NetEncoding, System.Generics.Collections,
   FireDAC.Comp.DataSet,
 {$ENDIF}
-  DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus, DataSet.Serialize.Config;
+  DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus;
 
 {$IF DEFINED(FPC)}
 { TJSONExtFloatNumber }
@@ -136,14 +138,16 @@ uses
 function TJSONExtFloatNumber.GetAsString: TJSONStringType;
 var
   LFormatSettings: TFormatSettings;
+  LConfig: TDataSetSerializeConfig;
 begin
-  if TDataSetSerializeConfig.GetInstance.&Export.ExportFloatScientificNotation then
+  LConfig := TDataSetSerializeConfig.GetInstance;
+  if LConfig.&Export.ExportFloatScientificNotation then
     Result:=inherited GetAsString
   else
   begin
     LFormatSettings.DecimalSeparator := FormatSettings.DecimalSeparator;
-    if (TDataSetSerializeConfig.GetInstance.&Export.DecimalSeparator <> '') then
-      LFormatSettings.DecimalSeparator := TDataSetSerializeConfig.GetInstance.&Export.DecimalSeparator;
+    if (LConfig.&Export.DecimalSeparator <> '') then
+      LFormatSettings.DecimalSeparator := LConfig.&Export.DecimalSeparator;
     Result := FloatToStr(GetAsFloat, LFormatSettings);
     // Str produces a ' ' in front where the - can go.
     if (Result<>'') and (Result[1]=' ') then
@@ -192,40 +196,40 @@ begin
             Result.Add(ADataSet.Fields[0].AsLargeInt);
           {$IF NOT DEFINED(FPC)}TFieldType.ftSingle, {$ENDIF}TFieldType.ftFloat:
             begin
-              if TDataSetSerializeConfig.GetInstance.Export.FormatFloat.Trim.IsEmpty then
+              if FConfig.Export.FormatFloat.Trim.IsEmpty then
                 Result.Add(ADataSet.Fields[0].AsFloat)
               else
-                Result.Add(FormatFloat(TDataSetSerializeConfig.GetInstance.Export.FormatFloat, ADataSet.Fields[0].AsFloat));
+                Result.Add(FormatFloat(FConfig.Export.FormatFloat, ADataSet.Fields[0].AsFloat));
             end;
           TFieldType.ftDateTime, TFieldType.ftTimeStamp{$IF NOT DEFINED(FPC)}{$IF CompilerVersion >= 36.0}, TFieldType.ftTimeStampOffset{$ENDIF}{$ENDIF}:
             begin
-              if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+              if FConfig.DateIsFloatingPoint then
                 Result.Add(ADataSet.Fields[0].AsDateTime)
-              else if TDataSetSerializeConfig.GetInstance.DateTimeIsISO8601 then
-                Result.Add(DateToISO8601(ADataSet.Fields[0].AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC))
+              else if FConfig.DateTimeIsISO8601 then
+                Result.Add(DateToISO8601(ADataSet.Fields[0].AsDateTime, FConfig.DateInputIsUTC))
               else
-                Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, ADataSet.Fields[0].AsDateTime));
+                Result.Add(FormatDateTime(FConfig.Export.FormatDateTime, ADataSet.Fields[0].AsDateTime));
             end;
           TFieldType.ftTime:
             begin
-              if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+              if FConfig.DateIsFloatingPoint then
                 Result.Add(ADataSet.Fields[0].AsDateTime)
               else
-                Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, ADataSet.Fields[0].AsDateTime));
+                Result.Add(FormatDateTime(FConfig.Export.FormatTime, ADataSet.Fields[0].AsDateTime));
             end;
           TFieldType.ftDate:
             begin
-              if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+              if FConfig.DateIsFloatingPoint then
                 Result.Add(ADataSet.Fields[0].AsDateTime)
               else
-                Result.Add(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, ADataSet.Fields[0].AsDateTime));
+                Result.Add(FormatDateTime(FConfig.Export.FormatDate, ADataSet.Fields[0].AsDateTime));
             end;
           TFieldType.ftCurrency:
             begin
-              if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
+              if FConfig.Export.FormatCurrency.Trim.IsEmpty then
                 Result.Add(ADataSet.Fields[0].AsCurrency)
               else
-                Result.Add(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, ADataSet.Fields[0].AsCurrency));
+                Result.Add(FormatCurr(FConfig.Export.FormatCurrency, ADataSet.Fields[0].AsCurrency));
             end;
           TFieldType.ftFMTBcd, TFieldType.ftBCD:
             Result.Add(BcdToDouble(ADataSet.Fields[0].AsBcd));
@@ -274,18 +278,18 @@ var
   LByteValue: Byte;
 begin
   Result := TJSONObject.Create;
-  if not Assigned(ADataSet) or (not TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet and ADataSet.IsEmpty) then
+  if not Assigned(ADataSet) or (not FConfig.Export.ExportEmptyDataSet and ADataSet.IsEmpty) then
     Exit;
   for LField in ADataSet.Fields do
   begin
-    if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible then
+    if FConfig.Export.ExportOnlyFieldsVisible then
       if not(LField.Visible) then
         Continue;
     LKey := TDataSetSerializeUtils.FormatCaseNameDefinition(LField.FieldName);
     if LField.IsNull then
     begin
-      if TDataSetSerializeConfig.GetInstance.Export.ExportNullValues then
-        if TDataSetSerializeConfig.GetInstance.Export.ExportNullAsEmptyString then
+      if FConfig.Export.ExportNullValues then
+        if FConfig.Export.ExportNullAsEmptyString then
           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, '')
         else
           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONNull.Create);
@@ -303,14 +307,14 @@ begin
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsInteger{$ELSE}TJSONNumber.Create(LField.AsInteger){$ENDIF});
       TFieldType.ftLargeint:
         begin
-          if TDataSetSerializeConfig.GetInstance.Export.ExportLargeIntAsString then
+          if FConfig.Export.ExportLargeIntAsString then
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsLargeInt.ToString{$ELSE}TJSONString.Create(LField.AsLargeInt.ToString){$ENDIF})
           else
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsLargeInt{$ELSE}TJSONNumber.Create(LField.AsLargeInt){$ENDIF});
         end;
       {$IF NOT DEFINED(FPC)}TFieldType.ftSingle, TFieldType.ftExtended, {$ENDIF}TFieldType.ftFloat:
         begin
-          if TDataSetSerializeConfig.GetInstance.Export.FormatFloat.Trim.IsEmpty then
+          if FConfig.Export.FormatFloat.Trim.IsEmpty then
           begin
             {$IF DEFINED(FPC)}
             Result.Add(LKey, TJSONExtFloatNumber.Create(LField.AsFloat));
@@ -322,16 +326,16 @@ begin
             {$ENDIF}
           end
           else
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatFloat(TDataSetSerializeConfig.GetInstance.Export.FormatFloat, LField.AsFloat)));
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatFloat(FConfig.Export.FormatFloat, LField.AsFloat)));
         end;
       TFieldType.ftGuid:
         Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(LField.AsWideString));
       TFieldType.ftString, TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftFixedChar, TFieldType.ftFixedWideChar:
         begin
           LStringValue := Trim(LField.AsWideString);
-          if (LStringValue = EmptyStr) and (TDataSetSerializeConfig.GetInstance.Export.ExportEmptyStringAsNull) then
+          if (LStringValue = EmptyStr) and (FConfig.Export.ExportEmptyStringAsNull) then
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONNull.Create())
-          else if TDataSetSerializeConfig.GetInstance.Export.TryConvertStringToJson then
+          else if FConfig.Export.TryConvertStringToJson then
           begin
             if (LStringValue.StartsWith('{') and LStringValue.EndsWith('}')) or (LStringValue.StartsWith('[') and LStringValue.EndsWith(']')) then
             begin
@@ -349,36 +353,36 @@ begin
         end;
       TFieldType.ftDateTime,TFieldType.ftTimeStamp:
         begin
-          if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+          if FConfig.DateIsFloatingPoint then
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
-          else if TDataSetSerializeConfig.GetInstance.DateTimeIsISO8601 then
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, TDataSetSerializeConfig.GetInstance.DateInputIsUTC)))
+          else if FConfig.DateTimeIsISO8601 then
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(DateToISO8601(LField.AsDateTime, FConfig.DateInputIsUTC)))
           else
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDateTime, LField.AsDateTime)));
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(FConfig.Export.FormatDateTime, LField.AsDateTime)));
         end;
       TFieldType.ftTime:
         begin
-          if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+          if FConfig.DateIsFloatingPoint then
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
           else
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatTime, LField.AsDateTime)));
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(FConfig.Export.FormatTime, LField.AsDateTime)));
         end;
       TFieldType.ftDate:
         begin
-          if TDataSetSerializeConfig.GetInstance.DateIsFloatingPoint then
+          if FConfig.DateIsFloatingPoint then
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}LField.AsFloat{$ELSE}TJSONNumber.Create(LField.AsFloat){$ENDIF})
           else
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(TDataSetSerializeConfig.GetInstance.Export.FormatDate, LField.AsDateTime)));
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatDateTime(FConfig.Export.FormatDate, LField.AsDateTime)));
         end;
       TFieldType.ftCurrency:
         begin
-          if TDataSetSerializeConfig.GetInstance.Export.FormatCurrency.Trim.IsEmpty then
+          if FConfig.Export.FormatCurrency.Trim.IsEmpty then
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}TJSONExtFloatNumber.Create(LField.AsCurrency){$ELSE}TJSONNumber.Create(LField.AsCurrency){$ENDIF})
           else
-            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatCurr(TDataSetSerializeConfig.GetInstance.Export.FormatCurrency, LField.AsCurrency)));
+            Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, TJSONString.Create(FormatCurr(FConfig.Export.FormatCurrency, LField.AsCurrency)));
         end;
       TFieldType.ftFMTBcd, TFieldType.ftBCD:
-        if TDataSetSerializeConfig.GetInstance.Export.ExportBCDAsFloat then
+        if FConfig.Export.ExportBCDAsFloat then
           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}TJSONExtFloatNumber.Create(BcdToDouble(LField.AsBcd)){$ELSE}TJSONNumber.Create(BcdToDouble(LField.AsBcd)){$ENDIF})
         else
           Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LKey, {$IF DEFINED(FPC)}BcdToDouble(LField.AsBcd){$ELSE}TJSONNumber.Create(BcdToDouble(LField.AsBcd)){$ENDIF});
@@ -417,9 +421,9 @@ begin
           TFDDataSet(LNestedDataSet).FilterChanges := [rtInserted, rtModified, rtDeleted, rtUnmodified];
         {$ENDIF}
         try
-          if (not TDataSetSerializeConfig.GetInstance.Export.ExportEmptyDataSet) and (LNestedDataSet.RecordCount = 0) then
+          if (not FConfig.Export.ExportEmptyDataSet) and (LNestedDataSet.RecordCount = 0) then
             Continue;
-          if TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible and (not HasVisibleFields(LNestedDataSet)) then
+          if FConfig.Export.ExportOnlyFieldsVisible and (not HasVisibleFields(LNestedDataSet)) then
             Continue;
           if string(LNestedDataSet.Name).Trim.IsEmpty then
           begin
@@ -428,7 +432,7 @@ begin
           end
           else
             LDataSetName := TDataSetSerializeUtils.FormatDataSetName(LNestedDataSet.Name);
-          if TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject and (LNestedDataSet.RecordCount = 1) then
+          if FConfig.Export.ExportChildDataSetAsJsonObject and (LNestedDataSet.RecordCount = 1) then
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LDataSetName, DataSetToJsonObject(LNestedDataSet))
           else
             Result.{$IF DEFINED(FPC)}Add{$ELSE}AddPair{$ENDIF}(LDataSetName, DataSetToJSONArray(LNestedDataSet, True));
@@ -619,6 +623,7 @@ begin
   FChildRecord := AChildRecords;
   FValueRecord := AValueRecords;
   FEncodeBase64Blob := AEncodeBase64Blob;
+  FConfig := TDataSetSerializeConfig.GetInstance;
 end;
 
 function TDataSetSerialize.ToJSONArray: TJSONArray;
