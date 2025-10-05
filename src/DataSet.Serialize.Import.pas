@@ -334,7 +334,9 @@ begin
         if not Assigned(LJSONValue) then
           Continue;
         {$ELSE}
-        if not (AJSONObject.TryGetValue(TDataSetSerializeUtils.FormatCaseNameDefinition(LField.FieldName), LJSONValue) or (AJSONObject.TryGetValue(LField.FieldName, LJSONValue))) then
+        if not AJSONObject.TryGetValue(TDataSetSerializeUtils.FormatCaseNameDefinition(LField.FieldName), LJSONValue) then
+          AJSONObject.TryGetValue(LField.FieldName, LJSONValue);
+        if not Assigned(LJSONValue) then
         begin
           // In case the JSON key name has dots, the native method TryGetValue doesn't find it
           LJSONValue := AJSONObject.GetValue(LField.FieldName);
@@ -932,6 +934,7 @@ var
   LKeyValue: string;
 begin
   for LField in ADataSet.Fields do
+  begin
     if pfInKey in LField.ProviderFlags then
     begin
       if FConfig.CaseNameDefinition = cndLowerCamelCase then
@@ -953,13 +956,16 @@ begin
         LKeyValue := AJSONObject.Get(LField.FieldName, EmptyStr);
         if LKeyValue.Trim.IsEmpty then
         {$ELSE}
-        if not (AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) or AJSONObject.TryGetValue(LField.FieldName, LKeyValue)) then
+        if not AJSONObject.TryGetValue(LowerCase(LField.FieldName), LKeyValue) then
+          AJSONObject.TryGetValue(LField.FieldName, LKeyValue);
+        if LKeyValue.Trim.IsEmpty then
         {$ENDIF}
           Continue;
       end;
       SetLength(Result, Length(Result) + 1);
       Result[Pred(Length(Result))] := LKeyValue;
     end;
+  end;
 end;
 
 end.
