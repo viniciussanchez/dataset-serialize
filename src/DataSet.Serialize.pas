@@ -9,11 +9,14 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  DB, fpjson,
+  DB,
+  fpjson,
 {$ELSE}
-  System.JSON, Data.DB,
+  System.JSON,
+  Data.DB,
 {$ENDIF}
-  DataSet.Serialize.Language, DataSet.Serialize.Config;
+  DataSet.Serialize.Language,
+  DataSet.Serialize.Config;
 
 type
   TLanguageType = DataSet.Serialize.Language.TLanguageType;
@@ -261,7 +264,8 @@ uses
 {$ELSE}
   System.SysUtils,
 {$ENDIF}
-  DataSet.Serialize.Export, DataSet.Serialize.Import;
+  DataSet.Serialize.Export,
+  DataSet.Serialize.Import;
 
 function TDataSetSerializeHelper.ToJSONArray(const AOnlyUpdatedRecords: Boolean = False; const AChildRecords: Boolean = True; const AValueRecords: Boolean = True; const AEncodeBase64Blob: Boolean = True): TJSONArray;
 var

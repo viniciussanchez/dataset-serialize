@@ -9,9 +9,12 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  DB, fpjson, Generics.Collections,
+  DB,
+  fpjson,
+  Generics.Collections,
 {$ELSE}
-  System.JSON, Data.DB, System.StrUtils, System.SysUtils, System.Rtti,
+  System.JSON,
+  Data.DB,
   {$IF CompilerVersion >= 20}
     System.Character,
   {$ENDIF}
@@ -201,12 +204,27 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  Classes, Variants, SysUtils, DateUtils, TypInfo, base64, FmtBCD,
+  Classes,
+  Variants,
+  SysUtils,
+  DateUtils,
+  TypInfo,
+  base64,
+  FmtBCD,
 {$ELSE}
-  System.Classes, System.NetEncoding, System.TypInfo, System.DateUtils, System.Generics.Collections,
-  System.Variants, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  System.Classes,
+  System.NetEncoding,
+  System.TypInfo,
+  System.DateUtils,
+  System.Generics.Collections,
+  System.Variants,
+  FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,
+  System.SysUtils,
+  System.Rtti,
 {$ENDIF}
-  DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus;
+  DataSet.Serialize.Consts,
+  DataSet.Serialize.UpdatedStatus;
 
 { TJSONSerialize }
 

@@ -9,9 +9,20 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  DB, fpjson, SysUtils, Classes, Generics.Collections;
+  DB,
+  fpjson,
+  SysUtils,
+  Classes,
+  Generics.Collections;
 {$ELSE}
-  {$IF CompilerVersion >= 20}System.Character,{$ENDIF} System.Generics.Collections, System.DateUtils, System.JSON, Data.DB, System.SysUtils, System.Classes;
+  {$IF CompilerVersion >= 20}
+    System.Character,
+  {$ENDIF}
+  System.Generics.Collections,
+  System.JSON,
+  Data.DB,
+  System.SysUtils,
+  System.Classes;
 {$ENDIF}
 
 type
@@ -125,7 +136,8 @@ type
 
 implementation
 
-uses DataSet.Serialize.Consts, DataSet.Serialize.Config;
+uses DataSet.Serialize.Consts,
+  DataSet.Serialize.Config;
 
 { TMyHackDataset }
 

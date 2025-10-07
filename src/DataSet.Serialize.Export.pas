@@ -9,9 +9,13 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  Classes, DB, Generics.Collections, fpjson,
+  Classes,
+  DB,
+  Generics.Collections,
+  fpjson,
 {$ELSE}
-  Data.DB, System.JSON, System.Math,
+  Data.DB,
+  System.JSON,
 {$ENDIF}
   DataSet.Serialize.Config;
 
@@ -125,12 +129,27 @@ implementation
 
 uses
 {$IF DEFINED(FPC)}
-  DateUtils, SysUtils, FmtBCD, TypInfo, base64, StrUtils,
+  DateUtils,
+  SysUtils,
+  FmtBCD,
+  TypInfo,
+  base64,
+  StrUtils,
 {$ELSE}
-  System.DateUtils, Data.FmtBcd, System.SysUtils, System.StrUtils, System.TypInfo, System.Classes, System.NetEncoding, System.Generics.Collections,
+  System.DateUtils,
+  Data.FmtBcd,
+  System.SysUtils,
+  System.StrUtils,
+  System.TypInfo,
+  System.Classes,
+  System.NetEncoding,
+  System.Generics.Collections,
   FireDAC.Comp.DataSet,
+  System.Math,
 {$ENDIF}
-  DataSet.Serialize.Utils, DataSet.Serialize.Consts, DataSet.Serialize.UpdatedStatus;
+  DataSet.Serialize.Utils,
+  DataSet.Serialize.Consts,
+  DataSet.Serialize.UpdatedStatus;
 
 {$IF DEFINED(FPC)}
 { TJSONExtFloatNumber }
