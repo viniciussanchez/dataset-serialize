@@ -566,6 +566,9 @@ var
   {$ENDIF}
 begin
   Result := AValue;
+  {$IF NOT DEFINED(FPC) AND (CompilerVersion >= 20)}
+    LCharacterBefore := #0;
+  {$ENDIF}
   if FConfig.CaseNameDefinition = cndLowerCamelCase then
   begin
     LFieldName := EmptyStr;
